@@ -22,4 +22,4 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
 
 [Installer - Mirror 2](https://goo.gl/jUqmqe)
 
-For more info check the [Project Page](https://code.google.com/p/delphi-ide-theme-editor/wiki/DICFeatures)
+For more info check the [Project Page](https://github.com/RRUZ/Delphi-IDE-Colorizer/wiki/DICFeatures)
