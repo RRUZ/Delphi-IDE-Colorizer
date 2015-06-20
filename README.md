@@ -5,7 +5,7 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
 
 ### Features ###
 
-  * DIC is compatible with <a href='http://www.embarcadero.com/kr/products/delphi'>RAD Studio</a> XE2-XE8 and <a href='http://www.appmethod.com/'>Appmethod</a> 1.14-1.15
+  * DIC is compatible with <a href='http://www.embarcadero.com/kr/products/delphi'>RAD Studio</a> XE2-XE8 and <a href='http://www.appmethod.com/'>Appmethod</a> 1.14-1.16
   * Support for VCL Styles.
   * Transparent menus.
   * Allow to change the icons, set the colors, and gradient direction of the title bar of the docked windows.
@@ -15,11 +15,11 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
   * Replace the icons used in the gutter and the debugger.
   * Includes 80+ themes.
 
-![https://theroadtodelphi.files.wordpress.com/2014/07/dic_transparent_menus.png](https://theroadtodelphi.files.wordpress.com/2014/07/dic_transparent_menus.png)
+![](https://dl.dropboxusercontent.com/u/12733424/Blog/Delphi%20IDE%20Theme%20Editor/DIC/xe8_codeeditor.png)
+![](https://dl.dropboxusercontent.com/u/12733424/Blog/Delphi%20IDE%20Theme%20Editor/DIC/xe8_mobilview.png)
 
-### Download ###
-[Installer - Mirror 1](https://goo.gl/qtOSmK)
+**Note** : If you want customize the syntax highlighting of the RAD Studio IDE try the [Delphi IDE Theme Editor](https://github.com/RRUZ/delphi-ide-theme-editor) project
 
-[Installer - Mirror 2](https://goo.gl/jUqmqe)
-
-For more info check the [Project Page](https://github.com/RRUZ/Delphi-IDE-Colorizer/wiki/DICFeatures)
+## Download ##
+* [Installer - Mirror 1](https://goo.gl/qtOSmK)
+* [Installer - Mirror 2](https://goo.gl/jUqmqe)
