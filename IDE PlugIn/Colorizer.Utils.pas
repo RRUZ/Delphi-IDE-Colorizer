@@ -47,7 +47,7 @@ uses
  Colorizer.Settings,
  Colorizer.XPStyleActnCtrls;
 
-{$DEFINE ENABLELOG}
+{.$DEFINE ENABLELOG}
 
 procedure AddLog2(const Message : string); overload;
 procedure AddLog2(const Category, Message : string); overload;
