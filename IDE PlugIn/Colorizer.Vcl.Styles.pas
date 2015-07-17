@@ -470,7 +470,7 @@ implementation
 uses
   System.SysUtils,
   System.TypInfo,
-  Buttons,
+  Vcl.Buttons,
   Vcl.GraphUtil,
   Vcl.ExtCtrls,
   Colorizer.Utils;

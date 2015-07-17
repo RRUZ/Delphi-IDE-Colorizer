@@ -21,7 +21,7 @@ RequestExecutionLevel admin
 !endif
 
 !ifndef VER_MINOR
-  !define VER_MINOR "7.9.1"
+  !define VER_MINOR "7.9.2"
 !endif
 
 !ifndef IDE_VERSION_DXE
@@ -512,7 +512,7 @@ SectionEnd
 Function .onInit
 
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Auric.vsf "..\Styles\Auric.vsf"
+  File /oname=$PLUGINSDIR\Auric.vsf "Styles\Auric.vsf"
   NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Auric.vsf
   
   ;!insertmacro MUI_LANGDLL_DISPLAY
@@ -681,7 +681,7 @@ SectionEnd
 
 Function un.onInit
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Auric.vsf "..\Styles\Auric.vsf"
+  File /oname=$PLUGINSDIR\Auric.vsf "Styles\Auric.vsf"
   NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Auric.vsf
 FunctionEnd
 

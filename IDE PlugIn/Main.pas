@@ -418,6 +418,7 @@ begin
           {$IFDEF DELPHIXE2_UP}
           AddLog2('TIDEWizard.InitColorizer', 'RegisterVClStylesFiles');
           RegisterVClStylesFiles();
+          TColorizerLocalSettings.Settings.UseVCLStyles:= TColorizerLocalSettings.Settings.UseVCLStyles and (TColorizerLocalSettings.Settings.VCLStyleName<>'');
           if (TColorizerLocalSettings.Settings.UseVCLStyles) and (TColorizerLocalSettings.Settings.VCLStyleName<>'') then
           begin
             //RegisterVClStylesFiles();

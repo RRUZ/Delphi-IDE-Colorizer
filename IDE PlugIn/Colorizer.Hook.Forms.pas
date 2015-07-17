@@ -200,9 +200,12 @@ begin
 
   end;
 
+  AddLog2('HandleColorizerStyleMessage', Self.ClassName+' '+WM_To_String(Message.Msg));
   if LHook<>nil then
+  begin
    Result := LHook.HandleMessage(Message);
-  //AddLog('HandleColorizerStyleMessage', Self.ClassName+' '+WM_To_String(Message.Msg));
+   AddLog2('HandleColorizerStyleMessage', Self.ClassName+' Hooked');
+  end;
 end;
 
 //procedure Detour_TWinControl_WndProc(Self : TWinControl;var Message: TMessage);

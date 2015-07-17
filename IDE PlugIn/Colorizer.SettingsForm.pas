@@ -27,7 +27,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, pngimage, ExtCtrls, StdCtrls, Grids, ComCtrls, ImgList,
   ActnMan, ActnColorMaps, Colorizer.Settings, uDelphiVersions{$IF CompilerVersion >= 23}, Vcl.Styles.Ext{$IFEND}
-  ,Colorizer.XPStyleActnCtrls{$IFDEF DELPHIXE8_UP}, System.ImageList {$ENDIF};
+  ,Colorizer.XPStyleActnCtrls {$IFDEF DELPHIXE8_UP}, System.ImageList {$ENDIF};
 
 type
   TColorListBox = class(ExtCtrls.TColorListBox)
@@ -758,12 +758,12 @@ end;
 
 procedure TFormIDEColorizerSettings.ButtonReportIssuesClick(Sender: TObject);
 begin
-  ShellExecute(0, 'open', 'https://code.google.com/p/delphi-ide-theme-editor/issues/list', '', '', SW_SHOWNORMAL);
+  ShellExecute(0, 'open', 'https://github.com/RRUZ/Delphi-IDE-Colorizer/issues', '', '', SW_SHOWNORMAL);
 end;
 
 procedure TFormIDEColorizerSettings.ButtonProjectPageClick(Sender: TObject);
 begin
-  ShellExecute(0, 'open', 'https://code.google.com/p/delphi-ide-theme-editor/', '', '', SW_SHOWNORMAL);
+  ShellExecute(0, 'open', 'https://github.com/RRUZ/Delphi-IDE-Colorizer', '', '', SW_SHOWNORMAL);
 end;
 
 procedure TFormIDEColorizerSettings.ButtonAddFormClassClick(Sender: TObject);
@@ -964,12 +964,14 @@ begin
   LabelVersion.Caption :='Delphi IDE Colorizer '+sVersion;
   LabelVersion2.Caption:='Copyright: 2011-2015 Rodrigo Ruz V. All rights reserved.';
   LabelVersion3.Caption:='blog http://theroadtodelphi.wordpress.com/';
-  LinkLabel1.Caption   :='<a href="https://code.google.com/p/delphi-ide-theme-editor">site https://code.google.com/p/delphi-ide-theme-editor</a>';
+  LinkLabel1.Caption   :='<a href="https://github.com/RRUZ/Delphi-IDE-Colorizer">site https://github.com/RRUZ/Delphi-IDE-Colorizer</a>';
 
   MemoThirdParty.Lines.Add('VCL Styles Utils');
-  MemoThirdParty.Lines.Add('https://code.google.com/p/vcl-styles-utils/');
+  MemoThirdParty.Lines.Add('https://github.com/RRUZ/vcl-styles-utils');
+  MemoThirdParty.Lines.Add('');
   MemoThirdParty.Lines.Add('Delphi Detours Library');
   MemoThirdParty.Lines.Add('https://code.google.com/p/delphi-detours-library/');
+  MemoThirdParty.Lines.Add('');
   MemoThirdParty.Lines.Add('JCL Debug');
   MemoThirdParty.Lines.Add('http://sourceforge.net/projects/jcl/');
   MemoThirdParty.Lines.Add('');
@@ -1137,7 +1139,7 @@ end;
 
 procedure TFormIDEColorizerSettings.ImageContributeClick(Sender: TObject);
 begin
-  ShellExecute(0, 'open', 'https://code.google.com/p/delphi-ide-theme-editor/', '', '', SW_SHOWNORMAL);
+  ShellExecute(0, 'open', 'https://github.com/RRUZ/Delphi-IDE-Colorizer', '', '', SW_SHOWNORMAL);
 end;
 
 procedure TFormIDEColorizerSettings.Init;
