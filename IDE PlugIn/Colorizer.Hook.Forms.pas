@@ -200,11 +200,11 @@ begin
 
   end;
 
-  AddLog2('HandleColorizerStyleMessage', Self.ClassName+' '+WM_To_String(Message.Msg));
   if LHook<>nil then
   begin
    Result := LHook.HandleMessage(Message);
-   AddLog2('HandleColorizerStyleMessage', Self.ClassName+' Hooked');
+  // if (Self is TCustomForm) and (Message.Msg<>$B03F) then
+  //   AddLog2('HandleColorizerStyleMessage', Self.ClassName+' Hooked '+WM_To_String(Message.Msg));
   end;
 end;
 
@@ -349,7 +349,7 @@ begin
               if (LWinControl<>nil) and ((LParentForm<>nil) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
               begin
                 Colorizer.Utils.ProcessComponent(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.ActionBarStyle, LWinControl);
-                //AddLog('HCBT_SETFOCUS '+ClassNameBuffer);
+                //AddLog2('HCBT_SETFOCUS '+ClassNameBuffer);
               end;
             end;
           end;

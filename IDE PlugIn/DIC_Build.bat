@@ -71,5 +71,9 @@ msbuild.exe "DelphiIDEColorizer_XE8.dproj" /target:Clean;Build /p:Platform=Win32
 set BUILD_STATUS=%ERRORLEVEL%
 if %BUILD_STATUS%==0 GOTO DONE
 :DONE
+
+del *.bpl
+del *.map
+
 pause
 EXIT

@@ -27,7 +27,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, pngimage, ExtCtrls, StdCtrls, Grids, ComCtrls, ImgList,
   ActnMan, ActnColorMaps, Colorizer.Settings, uDelphiVersions{$IF CompilerVersion >= 23}, Vcl.Styles.Ext{$IFEND}
-  ,Colorizer.XPStyleActnCtrls {$IFDEF DELPHIXE8_UP}, System.ImageList {$ENDIF};
+  ,Colorizer.XPStyleActnCtrls{$IFDEF DELPHIXE8_UP}, System.ImageList {$ENDIF};
 
 type
   TColorListBox = class(ExtCtrls.TColorListBox)
@@ -970,7 +970,7 @@ begin
   MemoThirdParty.Lines.Add('https://github.com/RRUZ/vcl-styles-utils');
   MemoThirdParty.Lines.Add('');
   MemoThirdParty.Lines.Add('Delphi Detours Library');
-  MemoThirdParty.Lines.Add('https://code.google.com/p/delphi-detours-library/');
+  MemoThirdParty.Lines.Add('https://github.com/mahdisafsafi/delphi-detours-library');
   MemoThirdParty.Lines.Add('');
   MemoThirdParty.Lines.Add('JCL Debug');
   MemoThirdParty.Lines.Add('http://sourceforge.net/projects/jcl/');

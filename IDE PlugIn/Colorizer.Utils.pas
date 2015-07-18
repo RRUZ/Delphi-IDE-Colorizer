@@ -323,7 +323,7 @@ var
 //  found          : Boolean;
 // p : Pointer;
 begin
-    if not Assigned(AComponent) or not Assigned(AColorMap) then  exit;
+    if not Assigned(AComponent) or not Assigned(AColorMap) or (csDesigning in AComponent.ComponentState) then  exit;
 
     //AddLog2('ProcessComponent '+AComponent.Name);
 
@@ -359,6 +359,8 @@ begin
       LForm:=TForm(AComponent);
       LForm.Color := AColorMap.Color;
       LForm.Font.Color:=AColorMap.FontColor;
+      //AddLog2('ProcessComponent '+AComponent.ClassName);
+
       //HideSeparators(LForm, 'TProjectManagerForm', 'ToolBar');
 
 //      if SameText('TIDEInsightForm', AComponent.ClassName) then
