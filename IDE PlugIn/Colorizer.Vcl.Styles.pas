@@ -3458,15 +3458,17 @@ begin
   if Control.HandleAllocated then
   begin
     if FVertScrollWnd <> nil then
-      if (Control.Visible) then
+      if (Control.Visible) and IsWindow(FVertScrollWnd.Handle) then
         ShowWindow(FVertScrollWnd.Handle, SW_SHOW)
       else
+      if IsWindow(FVertScrollWnd.Handle) then
         ShowWindow(FVertScrollWnd.Handle, SW_HIDE);
 
     if FHorzScrollWnd <> nil then
-      if (Control.Visible) then
+      if (Control.Visible) and IsWindow(FVertScrollWnd.Handle) then
         ShowWindow(FHorzScrollWnd.Handle, SW_SHOW)
       else
+      if IsWindow(FVertScrollWnd.Handle) then
         ShowWindow(FHorzScrollWnd.Handle, SW_HIDE);
   end;
   Handled := False;
@@ -3827,9 +3829,10 @@ begin
      SetWindowPos(FVertScrollWnd.Handle, HWND_TOP, Control.Left + Left, Control.Top + Top,
        Right - Left, Bottom - Top, SWP_NOREDRAW);
 
-  if IsRectEmpty(VertScrollRect) then
+  if IsRectEmpty(VertScrollRect) and IsWindow(FVertScrollWnd.Handle) then
     ShowWindow(FVertScrollWnd.Handle, SW_HIDE)
   else
+  if IsWindow(FVertScrollWnd.Handle) then
     ShowWindow(FVertScrollWnd.Handle, SW_SHOW);
 
   FHorzScrollWnd := TScrollWindow.CreateParented(GetParent(Control.Handle));
@@ -3840,17 +3843,19 @@ begin
   if (Control.BiDiMode = bdRightToLeft) and not IsRectEmpty(VertScrollRect) then
     OffsetRect(R, VertScrollRect.Width, 0);
   with R do
-    if IsPopupWindow then
+    if IsPopupWindow and IsWindow(FHorzScrollWnd.Handle) then
       SetWindowPos(FHorzScrollWnd.Handle, HWND_TOPMOST,
         Control.Left + Left, Control.Top + Top,
           Right - Left, Bottom - Top, SWP_NOREDRAW)
     else
+    if IsWindow(FHorzScrollWnd.Handle) then
       SetWindowPos(FHorzScrollWnd.Handle, HWND_TOP, Control.Left + Left, Control.Top + Top,
         Right - Left, Bottom - Top, SWP_NOREDRAW);
 
-  if IsRectEmpty(HorzScrollRect) then
+  if IsRectEmpty(HorzScrollRect) and IsWindow(FHorzScrollWnd.Handle) then
     ShowWindow(FHorzScrollWnd.Handle, SW_HIDE)
   else
+  if IsWindow(FHorzScrollWnd.Handle) then
     ShowWindow(FHorzScrollWnd.Handle, SW_SHOW);
 
   FInitingScrollBars := False;
@@ -3934,7 +3939,8 @@ procedure TColorizerScrollingStyleHook.UpdateScroll;
 var
   R: TRect;
 begin
-  if (FVertScrollWnd <> nil) and (FVertScrollWnd.HandleAllocated) then
+
+  if (FVertScrollWnd <> nil) and (FVertScrollWnd.HandleAllocated) and IsWindow(FVertScrollWnd.Handle) then
   begin
     R := VertScrollRect;
     if (Control.BiDiMode = bdRightToLeft) and not IsRectEmpty(R) then
@@ -3947,7 +3953,7 @@ begin
           OffsetRect(R, 1, 0);
     end;
 
-    if IsRectEmpty(R) then
+    if IsRectEmpty(R)  then
       ShowWindow(FVertScrollWnd.Handle, SW_HIDE)
     else
     begin
@@ -3962,7 +3968,8 @@ begin
            Control.Top + Top, Right - Left, Bottom - Top, SWP_SHOWWINDOW);
     end
   end;
-  if (FHorzScrollWnd <> nil) and (FHorzScrollWnd.HandleAllocated) then
+
+  if (FHorzScrollWnd <> nil) and (FHorzScrollWnd.HandleAllocated) and IsWindow(FHorzScrollWnd.Handle) then
   begin
     R := HorzScrollRect;
     if (Control.BiDiMode = bdRightToLeft) and not IsRectEmpty(VertScrollRect) then
@@ -4452,13 +4459,13 @@ procedure TColorizerScrollingStyleHook.WMShowWindow(var Msg: TWMShowWindow);
 begin
   CallDefaultProc(TMessage(Msg));
 
-  if (FVertScrollWnd <> nil) and FVertScrollWnd.HandleAllocated then
+  if (FVertScrollWnd <> nil) and FVertScrollWnd.HandleAllocated and IsWindow(FVertScrollWnd.Handle) then
     if Msg.Show then
       ShowWindow(FVertScrollWnd.Handle, SW_SHOW)
     else
       ShowWindow(FVertScrollWnd.Handle, SW_HIDE);
 
-  if (FHorzScrollWnd <> nil) and FHorzScrollWnd.HandleAllocated then
+  if (FHorzScrollWnd <> nil) and FHorzScrollWnd.HandleAllocated and IsWindow(FHorzScrollWnd.Handle)  then
     if Msg.Show then
       ShowWindow(FHorzScrollWnd.Handle, SW_SHOW)
     else
@@ -4488,9 +4495,9 @@ begin
   CallDefaultProc(TMessage(Msg));
   if Msg.WindowPos.Flags and SWP_HIDEWINDOW = SWP_HIDEWINDOW then
   begin
-    if FVertScrollWnd <> nil then
+    if (FVertScrollWnd <> nil) and IsWindow(FVertScrollWnd.Handle) then
       ShowWindow(FVertScrollWnd.Handle, SW_HIDE);
-    if FHorzScrollWnd <> nil then
+    if (FHorzScrollWnd <> nil) and IsWindow(FHorzScrollWnd.Handle) then
       ShowWindow(FHorzScrollWnd.Handle, SW_HIDE);
   end
   else
