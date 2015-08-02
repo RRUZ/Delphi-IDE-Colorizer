@@ -74,6 +74,9 @@ if %BUILD_STATUS%==0 GOTO DONE
 
 del *.bpl
 del *.map
+del *.drc
+del *.local
+del *.identcache
 
 pause
 EXIT

@@ -315,13 +315,8 @@ procedure ProcessComponent(AColorMap:TColorizerColorMap;AStyle: TActionBarStyle;
 var
   Index          : Integer;
   LActionManager : TActionManager;
-//  LStrings       : TStringList;
   LForm          : TForm;
-//  s              : string;
-//  ctx            : TRttiContext;
-//  LField         : TRttiField;
-//  found          : Boolean;
-// p : Pointer;
+  LParentForm : TCustomForm;
 begin
     if not Assigned(AComponent) or not Assigned(AColorMap) or (csDesigning in AComponent.ComponentState) then  exit;
 
@@ -354,72 +349,23 @@ begin
 //
 
 
-    if AComponent is TForm then
+    if (AComponent is TForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(AComponent.ClassName)>=0) then
     begin
       LForm:=TForm(AComponent);
       LForm.Color := AColorMap.Color;
       LForm.Font.Color:=AColorMap.FontColor;
-      //AddLog2('ProcessComponent '+AComponent.ClassName);
-
-      //HideSeparators(LForm, 'TProjectManagerForm', 'ToolBar');
-
-//      if SameText('TIDEInsightForm', AComponent.ClassName) then
-//       TRttiUtils.DumpObject(AComponent, 'C:\Delphi\google-code\DITE\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+AComponent.ClassName+'_XE4.pas');
-
-
-
-      //process field TComponent no registered in the components list
-//      ctx:=TRttiContext.Create;
-//      try
-//        if LFieldsComponents.ContainsKey(LForm.ClassName) then
-//        begin
-//          for s in LFieldsComponents.Items[LForm.ClassName] do
-//          begin
-//            LField:=ctx.GetType(LForm.ClassInfo).GetField(s);
-//            if (LField.GetValue(LForm).AsObject<>nil) then
-//             RunWrapper(TComponent(LField.GetValue(LForm).AsObject), AColorMap, Invalidate);
-//          end;
-//        end
-//        else
-//        begin
-//
-//          LStrings:= TStringList.Create;
-//          LFieldsComponents.Add(LForm.ClassName, LStrings);
-//          for LField in ctx.GetType(LForm.ClassInfo).GetFields() do
-//             if LField.FieldType.IsInstance and (LField.GetValue(LForm).AsObject<>nil) and (LField.GetValue(LForm).AsObject is TComponent) and (TRegisteredWrappers.Wrappers.ContainsKey(LField.GetValue(LForm).AsObject.ClassName)) then
-//             begin
-//               found:=false;
-//               for Index := 0 to LForm.ComponentCount - 1 do
-//                 if SameText(LForm.Components[Index].Name, LField.Name) then
-//                 begin
-//                   found:=True;
-//                   break;
-//                 end;
-//
-//               if not found then
-//                 LStrings.Add(LField.Name);
-//             end;
-//
-//          for s in LStrings do
-//            RunWrapper(TComponent(TRttiUtils.GetRttiFieldValue(LForm, s).AsObject), AColorMap, Invalidate);
-//
-////           if LStrings.Count>0 then
-////            ShowMessage(LStrings.Text);
-//        end;
-//      finally
-//        ctx.Free;
-//      end;
-
-
-      {
-      if SameText(LForm.ClassName, 'TToolForm') then
-        TRttiUtils.DumpObject(TRttiUtils.GetRttiFieldValue(LForm, 'FCategoriesPopup').AsObject,'C:\Delphi\google-code\DITE\delphi-ide-theme-editor\IDE PlugIn\Galileo\TCategoriesPopup.pas');
-      }
 
       if Invalidate then
         LForm.Invalidate;
     end
     else
+    if AComponent Is TControl then
+    begin
+      LParentForm:= GetParentForm(TControl(AComponent));
+      if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
+       exit;
+    end;
+
     if AComponent is TActionManager then
     begin
       LActionManager:=TActionManager(AComponent);
@@ -438,9 +384,6 @@ begin
       Color := AColorMap.Color;
       Font.Color:=AColorMap.FontColor;
     end;
-
-    //if SameText('TXTabControl', AComponent.ClassName) then
-     //TRttiUtils.DumpObject(AComponent, 'C:\Delphi\google-code\DITE\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas');
 
 
     RunWrapper(AComponent, AColorMap, Invalidate, Restore);
