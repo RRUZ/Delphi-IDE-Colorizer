@@ -509,7 +509,7 @@ var
         oldColor := ColorToRGB(TColorizerLocalSettings.ColorMap.DisabledFontColor);
     end;
 
-    oldColor := SetTextColor(DC, oldColor);
+    oldColor := SetTextColor(DC, ColorToRGB(oldColor));
     pOldFont := SelectObject(DC, AFont);
     OldMode := SetBkMode(DC, Transparent);
 

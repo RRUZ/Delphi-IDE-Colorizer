@@ -685,7 +685,7 @@ begin
       sColor := FontColor;
     if not OverrideFont then
       sColor := FontColor;
-    SetTextColor(DC, sColor);
+    SetTextColor(DC, ColorToRGB(sColor));
     DrawFlags := TTextFormatFlags(Flags);
     Result := Windows.DrawText(DC, S, -1, R, DrawFlags);
   finally
@@ -708,7 +708,7 @@ begin
       sColor := FontColor;
     if not OverrideFont then
       sColor := FontColor;
-    SetTextColor(DC, sColor);
+    SetTextColor(DC, ColorToRGB(sColor));
     DrawRect := R;
     DrawFlags := DT_END_ELLIPSIS or DT_WORDBREAK or DT_EDITCONTROL or DT_CENTER;
     if DrawFlags <> 0 then
