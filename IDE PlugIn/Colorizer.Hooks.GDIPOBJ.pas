@@ -105,7 +105,7 @@ function Detour_TGPGraphics_DrawPath(Self : TGPGraphics; pen: TGPPen; path: TGPG
 var
  PenColor, LGPColor: TGPColor;
 begin
-  if HookGDIPGradienttabs and (pen<>nil) then
+  if HookGDIPGradienttabs and (pen<>nil) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
   begin
     pen.GetColor(PenColor);
     LGPColor := ColorRefToARGB(ColorToRGB({$IFDEF DELPHIXE6_UP}TColorizerLocalSettings.ColorMap.SelectedColor{$ELSE}TColorizerLocalSettings.ColorMap.FrameTopLeftOuter  {$ENDIF}));
@@ -123,7 +123,7 @@ var
  color1, color2: TGPColor;
  LActive  : Boolean;
 begin
-  if HookGDIPGradienttabs and (brush is TGPLinearGradientBrush)  then
+  if HookGDIPGradienttabs and (brush is TGPLinearGradientBrush) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled  then
   begin
       TGPLinearGradientBrush(brush).GetLinearColors(color1, color2);
 

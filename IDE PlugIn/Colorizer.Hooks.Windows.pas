@@ -176,7 +176,7 @@ begin
  OrgColor:=0;
  RestoreColor:=False;
 
-  if (uFormat=2084) and HookVTPaintNormalText then
+  if (uFormat=2084) and HookVTPaintNormalText and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
   begin
    LFontColor :=ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor);
    RestoreColor:=True;
@@ -193,7 +193,7 @@ end;
 {.$IFDEF DELPHIXE6_UP}
 function Detour_WinApi_DrawTextEx(DC: HDC; lpchText: LPCWSTR; cchText: Integer; var p4: TRect;  dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; stdcall;
 begin
- if (dwDTFormat AND DT_CALCRECT = 0) and (HookDrawActiveTab or HookDrawInActiveTab) then
+ if (dwDTFormat AND DT_CALCRECT = 0) and (HookDrawActiveTab or HookDrawInActiveTab) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
  begin
      if HookDrawActiveTab then
      begin
