@@ -11,7 +11,6 @@ uses
   Colorizer.OptionsDlg in 'Colorizer.OptionsDlg.pas' {FrameColorizer: TFrame},
   Colorizer.SettingsForm in 'Colorizer.SettingsForm.pas' {FormIDEColorizerSettings},
   uDelphiVersions in '..\Units\uDelphiVersions.pas',
-  uSupportedIDEs in '..\Units\uSupportedIDEs.pas',
   uMisc in '..\Units\uMisc.pas',
   uRegistry in '..\Units\uRegistry.pas',
   uRttiHelper in 'uRttiHelper.pas',

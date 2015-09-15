@@ -26,11 +26,10 @@ interface
 uses
   Generics.Defaults,
   Generics.Collections,
-  uSupportedIDEs,
-  Graphics,
-  SysUtils,
-  Classes,
-  ComCtrls;
+  Vcl.Graphics,
+  System.SysUtils,
+  System.Classes,
+  Vcl.ComCtrls;
 
 {$DEFINE DELPHI_OLDER_VERSIONS_SUPPORT}
 
@@ -66,13 +65,11 @@ type
     FName: string;
     FPath: string;
     FIcon: TIcon;
-    FIDEType: TSupportedIDEs;
   public
     property Version : TDelphiVersions read FVersion;
     property Path    : string read FPath write FPath;
     property Name    : string read FName write FName;
     property Icon    : TIcon read FIcon write FIcon;
-    property IDEType : TSupportedIDEs read FIDEType write FIDEType;
     constructor Create;
     destructor Destroy; override;
   end;
@@ -345,7 +342,6 @@ begin
       Data.Name    :=LData.Name;
       if Data.Icon=nil then Data.Icon:=TIcon.Create;
       Data.Icon.Assign(LData.Icon);
-      Data.IDEType :=LData.IDEType;
       break;
     end;
   finally
@@ -386,7 +382,6 @@ begin
       VersionData.FPath:=Filename;
       VersionData.FVersion:=DelphiComp;
       VersionData.FName   :=DelphiVersionsNames[DelphiComp];
-      VersionData.FIDEType:=TSupportedIDEs.DelphiIDE;
       VersionData.Icon     :=TIcon.Create;
       ExtractIconFile(VersionData.FIcon, Filename, SHGFI_SMALLICON);
       AList.Add(VersionData);
