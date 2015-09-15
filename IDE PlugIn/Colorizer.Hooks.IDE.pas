@@ -47,6 +47,7 @@ const
 {$IFDEF DELPHIXE6} sVclIDEModule =  'vclide200.bpl';{$ENDIF}
 {$IFDEF DELPHIXE7} sVclIDEModule =  'vclide210.bpl';{$ENDIF}
 {$IFDEF DELPHIXE8} sVclIDEModule =  'vclide220.bpl';{$ENDIF}
+{$IFDEF DELPHIX_SEATTLE} sVclIDEModule =  'vclide230.bpl';{$ENDIF}
 
 {$IFDEF DELPHIXE}  sCoreIDEModule =  'coreide150.bpl';{$ENDIF}
 {$IFDEF DELPHIXE2} sCoreIDEModule =  'coreide160.bpl';{$ENDIF}
@@ -56,6 +57,7 @@ const
 {$IFDEF DELPHIXE6} sCoreIDEModule =  'coreide200.bpl';{$ENDIF}
 {$IFDEF DELPHIXE7} sCoreIDEModule =  'coreide210.bpl';{$ENDIF}
 {$IFDEF DELPHIXE8} sCoreIDEModule =  'coreide220.bpl';{$ENDIF}
+{$IFDEF DELPHIX_SEATTLE}sCoreIDEModule =  'coreide230.bpl';{$ENDIF}
 
 {$IFDEF DELPHIXE6} sModernThemeModule =  'ModernTheme200.bpl';{$ENDIF}
 
@@ -64,6 +66,9 @@ const
 
 {$IFDEF DELPHIXE8} sModernThemeModule =  'ModernTheme220.bpl';{$ENDIF}
 {$IFDEF DELPHIXE8} sdesignideModule   =  'designide220.bpl';{$ENDIF}
+
+{$IFDEF DELPHIX_SEATTLE} sModernThemeModule =  'ModernTheme230.bpl';{$ENDIF}
+{$IFDEF DELPHIX_SEATTLE} sdesignideModule   =  'designide230.bpl';{$ENDIF}
 
 procedure InstallHooksIDE;
 Procedure RemoveHooksIDE;

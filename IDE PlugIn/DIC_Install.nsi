@@ -1,5 +1,3 @@
-
-
 !include "Sections.nsh"
 !include "MUI.nsh"
 !include "LogicLib.nsh"
@@ -21,7 +19,7 @@ RequestExecutionLevel admin
 !endif
 
 !ifndef VER_MINOR
-  !define VER_MINOR "7.9.4"
+  !define VER_MINOR "8.1.6"
 !endif
 
 !ifndef IDE_VERSION_DXE
@@ -32,6 +30,7 @@ RequestExecutionLevel admin
 !ifndef IDE_VERSION_DXE6
 !ifndef IDE_VERSION_DXE7
 !ifndef IDE_VERSION_DXE8
+!ifndef IDE_VERSION_DXSeattle
 
   !define FULL_VERSION    "1"  
   ;!define IDE_VERSION_DXE  "1"  
@@ -42,7 +41,9 @@ RequestExecutionLevel admin
   !define IDE_VERSION_DXE6 "1"
   !define IDE_VERSION_DXE7 "1"
   !define IDE_VERSION_DXE8 "1"
+  !define IDE_VERSION_DXSeattle "1"
   
+!endif
 !endif
 !endif
 !endif
@@ -87,6 +88,10 @@ RequestExecutionLevel admin
     !define IDE_SHORT_NAME "DXE8"
     !define IDE_LONG_NAME "RAD Studio XE8 / Appmethod 1.16"
   !endif  
+  !ifdef IDE_VERSION_DXSeattle
+    !define IDE_SHORT_NAME "DXSeattle"
+    !define IDE_LONG_NAME "RAD Studio 10 Seattle"
+  !endif    
 !endif
 
 !ifdef IDE_VERSION
@@ -134,6 +139,7 @@ FunctionEnd
 
 !insertmacro MUI_PAGE_WELCOME
 ;!insertmacro MUI_PAGE_LICENSE $(SLICENSEFILE)
+!insertmacro MUI_PAGE_LICENSE "License.txt"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -273,6 +279,13 @@ FileLoop:
   FileClose $0
 !endif
 
+!ifdef IDE_VERSION_DXSeattle
+  IfFileExists "$INSTDIR\XE8\DelphiIDEColorizer_DXSeattle.dll" 0 +4
+  FileOpen $0 "$INSTDIR\XE8\DelphiIDEColorizer_DXSeattle.dll" a
+  IfErrors FileInUse
+  FileClose $0
+!endif
+
 !endif
 
   Goto InitOk
@@ -293,11 +306,11 @@ InitOk:
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "DisplayIcon" "$\"$INSTDIR\uninst.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "DisplayName" "${APPNAMEDIR}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "DisplayVersion" "${VERSION_STRING}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "HelpLink" "http://code.google.com/p/delphi-ide-theme-editor/"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "HelpLink" "https://github.com/RRUZ/delphi-ide-colorizer"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "Publisher" "The Road To Delphi"  
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "Contact" "theroadtodelphi@gmail.com"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "URLInfoAbout" "http://code.google.com/p/delphi-ide-theme-editor/"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "URLUpdateInfo" "http://code.google.com/p/delphi-ide-theme-editor/"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "URLInfoAbout" "https://github.com/RRUZ/delphi-ide-colorizer"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "URLUpdateInfo" "https://github.com/RRUZ/delphi-ide-colorizer"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "UninstallString" "$\"$INSTDIR\uninst.exe$\""
   WriteRegDWORD HKCU "Software\The Road To Delphi\DIC\Option" "CurrentLangID" $LANGUAGE
   WriteUninstaller "$INSTDIR\uninst.exe"
@@ -507,6 +520,33 @@ Section "RAD Studio XE8" SecDXE8
 SectionEnd
 !endif
 
+
+!ifdef IDE_VERSION_DXSeattle
+Section "RAD Studio 10 Seattle" SecDXSeattle
+  SectionIn 1 2
+  SetOutPath $INSTDIR\DXSeattle
+  File "Updater.exe"
+  File "libeay32.dll"
+  File "ssleay32.dll"
+  File "DownloadInfo.xml"  
+  File "HookedWindows.dat"
+  File "HookedScrollBars.dat"  
+  File "WinAPIClasses.dat"  
+  SetOverwrite off
+  File "Init\Settings.ini"
+  SetOverwrite on  
+  File "DelphiIDEColorizer_DXSeattle.dll"
+  ;just for AppMethod
+  SetOutPath $INSTDIR\DXSeattle\Styles
+  File "Styles\*.vsf"      
+  SetOutPath $INSTDIR\DXSeattle\Themes
+  File "Themes\*.idetheme" 
+  SetOutPath $INSTDIR\DXSeattle\Images\dock_images
+  File "Images\dock_images\*.png"    
+  WriteRegStr HKCU "Software\Embarcadero\BDS\17.0\Experts" "DelphiIDEColorizer_DXSeattle" "$INSTDIR\DXSeattle\DelphiIDEColorizer_DXSeattle.dll"
+SectionEnd
+!endif
+
 !define SF_SELBOLD    9
 
 Function .onInit
@@ -544,28 +584,31 @@ FunctionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 !ifdef IDE_VERSION_DXE
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE} "Delphi IDE Colorizer for Delphi XE"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE} "Delphi IDE Colorizer for RAD Studio XE"
 !endif
 !ifdef IDE_VERSION_DXE2
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE2} "Delphi IDE Colorizer for Delphi XE2"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE2} "Delphi IDE Colorizer for RAD Studio XE2"
 !endif
 !ifdef IDE_VERSION_DXE3
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE3} "Delphi IDE Colorizer for Delphi XE3"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE3} "Delphi IDE Colorizer for RAD Studio XE3"
 !endif
 !ifdef IDE_VERSION_DXE4
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE4} "Delphi IDE Colorizer for Delphi XE4"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE4} "Delphi IDE Colorizer for RAD Studio XE4"
 !endif
 !ifdef IDE_VERSION_DXE5
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE5} "Delphi IDE Colorizer for Delphi XE5"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE5} "Delphi IDE Colorizer for RAD Studio XE5"
 !endif
 !ifdef IDE_VERSION_DXE6
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE6} "Delphi IDE Colorizer for Delphi XE6"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE6} "Delphi IDE Colorizer for RAD Studio XE6"
 !endif
 !ifdef IDE_VERSION_DXE7
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE7} "Delphi IDE Colorizer for Delphi XE7"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE7} "Delphi IDE Colorizer for RAD Studio XE7"
 !endif	
 !ifdef IDE_VERSION_DXE8
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE8} "Delphi IDE Colorizer for Delphi XE8"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXE8} "Delphi IDE Colorizer for RAD Studio XE8"
+!endif	
+!ifdef IDE_VERSION_DXSeattle
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXSeattle} "Delphi IDE Colorizer for RAD Studio 10 Seattle"
 !endif	
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -597,55 +640,107 @@ Function SetCheckBoxes
 !ifdef IDE_VERSION_DXE8
   !insertmacro SET_COMPILER_CHECKBOX HKCU "Software\Embarcadero\BDS\16.0" "App" ${SecDXE8}
 !endif
+!ifdef IDE_VERSION_DXSeattle
+  !insertmacro SET_COMPILER_CHECKBOX HKCU "Software\Embarcadero\BDS\17.0" "App" ${SecDXSeattle}
+!endif
 FunctionEnd
 
 
 Section "Uninstall"
   Delete "$INSTDIR\*.*"
-  Delete "$INSTDIR\XE\*.exe" 
-  Delete "$INSTDIR\XE\*.xml"   
-  Delete "$INSTDIR\XE\*.dll"
-  Delete "$INSTDIR\XE\*.dat"
   Delete "$INSTDIR\XE2\*.exe" 
   Delete "$INSTDIR\XE2\*.xml"     
   Delete "$INSTDIR\XE2\*.dll"
   Delete "$INSTDIR\XE2\*.dat"  
+  Delete "$INSTDIR\XE2\*.xml"    
+  Delete "$INSTDIR\XE2\*.exe"   
   Delete "$INSTDIR\XE3\*.exe" 
   Delete "$INSTDIR\XE3\*.xml"     
   Delete "$INSTDIR\XE3\*.dll"
   Delete "$INSTDIR\XE3\*.dat"
+  Delete "$INSTDIR\XE3\*.xml"    
+  Delete "$INSTDIR\XE3\*.exe"   
   Delete "$INSTDIR\XE4\*.exe" 
   Delete "$INSTDIR\XE4\*.xml"     
   Delete "$INSTDIR\XE4\*.dll"
   Delete "$INSTDIR\XE4\*.dat"
+  Delete "$INSTDIR\XE4\*.xml"    
+  Delete "$INSTDIR\XE4\*.exe"   
   Delete "$INSTDIR\XE5\*.exe" 
   Delete "$INSTDIR\XE5\*.xml"     
   Delete "$INSTDIR\XE5\*.dll"
   Delete "$INSTDIR\XE5\*.dat"
+  Delete "$INSTDIR\XE5\*.xml"    
+  Delete "$INSTDIR\XE5\*.exe"   
   Delete "$INSTDIR\XE6\*.exe" 
   Delete "$INSTDIR\XE6\*.xml"     
   Delete "$INSTDIR\XE6\*.dll"
   Delete "$INSTDIR\XE6\*.dat"
+  Delete "$INSTDIR\XE6\*.xml"    
+  Delete "$INSTDIR\XE6\*.exe"   
   Delete "$INSTDIR\XE7\*.dll"
   Delete "$INSTDIR\XE7\*.dat"
+  Delete "$INSTDIR\XE7\*.xml"    
+  Delete "$INSTDIR\XE7\*.exe"   
   Delete "$INSTDIR\XE8\*.dll"
   Delete "$INSTDIR\XE8\*.dat"  
-  Delete "$INSTDIR\XE\Images\dock_images\*.*"  
-  Delete "$INSTDIR\XE\Themes\*.*"  
+  Delete "$INSTDIR\XE8\*.xml"    
+  Delete "$INSTDIR\XE8\*.exe"      
+  Delete "$INSTDIR\DXSeattle\*.dll"
+  Delete "$INSTDIR\DXSeattle\*.dat" 
+  Delete "$INSTDIR\DXSeattle\*.xml"    
+  Delete "$INSTDIR\DXSeattle\*.exe"   
   Delete "$INSTDIR\XE2\Images\dock_images\*.*"  
-  Delete "$INSTDIR\XE2\Themes\*.*"
+  Delete "$INSTDIR\XE2\Themes\*.*"    
+  RMDir  "$INSTDIR\XE2\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE2\Images"
+  RMDir  "$INSTDIR\XE2\Styles"
+  RMDir  "$INSTDIR\XE2\Themes"
   Delete "$INSTDIR\XE3\Images\dock_images\*.*"  
   Delete "$INSTDIR\XE3\Themes\*.*"
+  RMDir  "$INSTDIR\XE3\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE3\Images"
+  RMDir  "$INSTDIR\XE3\Styles"
+  RMDir  "$INSTDIR\XE3\Themes"  
   Delete "$INSTDIR\XE4\Images\dock_images\*.*"  
   Delete "$INSTDIR\XE4\Themes\*.*"
+  RMDir  "$INSTDIR\XE4\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE4\Images"
+  RMDir  "$INSTDIR\XE4\Styles"
+  RMDir  "$INSTDIR\XE4\Themes"  
   Delete "$INSTDIR\XE5\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE5\Themes\*.*"
+  RMDir  "$INSTDIR\XE5\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE5\Images"
+  RMDir  "$INSTDIR\XE5\Styles"
+  RMDir  "$INSTDIR\XE5\Themes"  
   Delete "$INSTDIR\XE6\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE6\Themes\*.*"
+  RMDir  "$INSTDIR\XE6\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE6\Images"
+  RMDir  "$INSTDIR\XE6\Styles"
+  RMDir  "$INSTDIR\XE6\Themes"  
   Delete "$INSTDIR\XE7\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE7\Themes\*.*"
+  RMDir  "$INSTDIR\XE7\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE7\Images"
+  RMDir  "$INSTDIR\XE7\Styles"
+  RMDir  "$INSTDIR\XE7\Themes"  
   Delete "$INSTDIR\XE8\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE8\Themes\*.*"  
+  Delete "$INSTDIR\XE8\Styles\*.*"    
+  RMDir  "$INSTDIR\XE8\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE8\Images"
+  RMDir  "$INSTDIR\XE8\Styles"
+  RMDir  "$INSTDIR\XE8\Themes"
+  Delete "$INSTDIR\DXSeattle\Images\dock_images\*.*"    
+  Delete "$INSTDIR\DXSeattle\Themes\*.*"    
+  Delete "$INSTDIR\DXSeattle\Styles\*.*"     
+  RMDir  "$INSTDIR\DXSeattle\Images\dock_images\"    
+  RMDir  "$INSTDIR\DXSeattle\Images"
+  RMDir  "$INSTDIR\DXSeattle\Styles"
+  RMDir  "$INSTDIR\DXSeattle\Themes"
+  
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC"
 
 !ifdef IDE_VERSION_DXE
@@ -671,6 +766,9 @@ Section "Uninstall"
 !endif
 !ifdef IDE_VERSION_DXE8
   DeleteRegValue HKCU "Software\Embarcadero\BDS\16.0\Experts" "DelphiIDEColorizer_XE8"
+!endif
+!ifdef IDE_VERSION_DXSeattle
+  DeleteRegValue HKCU "Software\Embarcadero\BDS\17.0\Experts" "DelphiIDEColorizer_DXSeattle"
 !endif
   ;MessageBox MB_YESNO|MB_ICONQUESTION "$(SQUERYDELETE)" IDNO NoDelete
   DeleteRegKey HKCU "Software\The Road To Delphi\DIC"

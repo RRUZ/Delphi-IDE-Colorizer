@@ -154,8 +154,10 @@
   DELPHIXE6           Alias for DELPHI20
   DELPHI21            Defined when compiling with Delphi XE7 for Win32 (Codename CARPATHIA)
   DELPHIXE7           Alias for DELPHI21
-  DELPHI22            Defined when compiling with Delphi XE8 for Win32 (Codename ???)
+  DELPHI22            Defined when compiling with Delphi XE8 for Win32 (Codename ELBRUS)
   DELPHIXE8           Alias for DELPHI22
+  DELPHI23            Defined when compiling with Delphi 10 for Win32 (Codename AITANA)
+  DELPHIX_SEATTLE     Alias for DELPHI23
   DELPHI1_UP          Defined when compiling with Delphi 1 or higher
   DELPHI2_UP          Defined when compiling with Delphi 2 or higher
   DELPHI3_UP          Defined when compiling with Delphi 3 or higher
@@ -190,6 +192,8 @@
   DELPHIXE7_UP        Alias for DELPHI21_UP
   DELPHI22_UP         Defined when compiling with Delphi XE8 for Win32 or higher
   DELPHIXE8_UP        Alias for DELPHI22_UP
+  DELPHI23_UP         Defined when compiling with Delphi 10 for Win32 or higher
+  DELPHIX_SEATTLE_UP  Alias for DELPHI23_UP
 
 
 - Kylix Versions
@@ -230,6 +234,10 @@
   DELPHICOMPILER17     Defined when compiling with Delphi Personality of BDS 10.0
   DELPHICOMPILER18     Defined when compiling with Delphi Personality of BDS 11.0
   DELPHICOMPILER19     Defined when compiling with Delphi Personality of BDS 12.0
+  DELPHICOMPILER20     Defined when compiling with Delphi Personality of BDS 14.0
+  DELPHICOMPILER21     Defined when compiling with Delphi Personality of BDS 15.0
+  DELPHICOMPILER22     Defined when compiling with Delphi Personality of BDS 16.0
+  DELPHICOMPILER23     Defined when compiling with Delphi Personality of BDS 17.0
   DELPHICOMPILER1_UP   Defined when compiling with Delphi 1 or higher
   DELPHICOMPILER2_UP   Defined when compiling with Delphi 2 or higher
   DELPHICOMPILER3_UP   Defined when compiling with Delphi 3 or higher
@@ -251,6 +259,7 @@
   DELPHICOMPILER20_UP  Defined when compiling with Delphi XE6 for Win32 or higher
   DELPHICOMPILER21_UP  Defined when compiling with Delphi XE7 for Win32 or higher
   DELPHICOMPILER22_UP  Defined when compiling with Delphi XE8 for Win32 or higher
+  DELPHICOMPILER23_UP  Defined when compiling with Delphi 10 for Win32 or higher
 
 
 - C++Builder Versions
@@ -276,7 +285,9 @@
   BCB18        Defined when compiling with C++Builder Personality of RAD Studio XE4 (also known as C++Builder XE4) (Codename QUINTESSENCE)
   BCB19        Defined when compiling with C++Builder Personality of RAD Studio XE5 (also known as C++Builder XE5) (Codename ZEPHYR)
   BCB20        Defined when compiling with C++Builder Personality of RAD Studio XE6 (also known as C++Builder XE6) (Codename PROTEUS)
-  BCB21        Defined when compiling with C++Builder Personality of RAD Studio XE7 (also known as C++Builder XE7) (Codename ???)
+  BCB21        Defined when compiling with C++Builder Personality of RAD Studio XE7 (also known as C++Builder XE7) (Codename CARPATHIA)
+  BCB22        Defined when compiling with C++Builder Personality of RAD Studio XE8 (also known as C++Builder XE8) (Codename ELBRUS)
+  BCB23        Defined when compiling with C++Builder Personality of RAD Studio 10 Seattle (also known as C++Builder 10 Seattle) (Codename AITANA)
   BCB1_UP      Defined when compiling with C++Builder 1 or higher
   BCB3_UP      Defined when compiling with C++Builder 3 or higher
   BCB4_UP      Defined when compiling with C++Builder 4 or higher
@@ -294,6 +305,7 @@
   BCB20_UP     Defined when compiling with C++Builder Personality of RAD Studio XE6 or higher
   BCB21_UP     Defined when compiling with C++Builder Personality of RAD Studio XE7 or higher
   BCB22_UP     Defined when compiling with C++Builder Personality of RAD Studio XE8 or higher
+  BCB23_UP     Defined when compiling with C++Builder Personality of RAD Studio 10 or higher
 
 
 - RAD Studio / Borland Developer Studio Versions
@@ -320,7 +332,9 @@
   BDS11        Defined when compiling with BDS 11.0 (Embarcadero RAD Studio XE4) (Codename QUINTESSENCE)
   BDS12        Defined when compiling with BDS 12.0 (Embarcadero RAD Studio XE5) (Codename ZEPHYR)
   BDS14        Defined when compiling with BDS 14.0 (Embarcadero RAD Studio XE6) (Codename PROTEUS)
-  BDS15        Defined when compiling with BDS 15.0 (Embarcadero RAD Studio XE7) (Codename ???)
+  BDS15        Defined when compiling with BDS 15.0 (Embarcadero RAD Studio XE7) (Codename CARPATHIA)
+  BDS16        Defined when compiling with BDS 16.0 (Embarcadero RAD Studio XE8) (Codename ELBRUS)
+  BDS17        Defined when compiling with BDS 17.0 (Embarcadero RAD Studio 10) (Codename AITANA)
   BDS2_UP      Defined when compiling with BDS 2.0 or higher
   BDS3_UP      Defined when compiling with BDS 3.0 or higher
   BDS4_UP      Defined when compiling with BDS 4.0 or higher
@@ -335,6 +349,7 @@
   BDS14_UP     Defined when compiling with BDS 14.0 or higher
   BDS15_UP     Defined when compiling with BDS 15.0 or higher
   BDS16_UP     Defined when compiling with BDS 16.0 or higher
+  BDS17_UP     Defined when compiling with BDS 17.0 or higher
 
 - Compiler Versions
 
@@ -368,6 +383,7 @@
   COMPILER20     Defined when compiling with Delphi or C++Builder Personalities of BDS 14.0
   COMPILER21     Defined when compiling with Delphi or C++Builder Personalities of BDS 15.0
   COMPILER22     Defined when compiling with Delphi or C++Builder Personalities of BDS 16.0
+  COMPILER23     Defined when compiling with Delphi or C++Builder Personalities of BDS 17.0
   COMPILER1_UP   Defined when compiling with Delphi 1 or higher
   COMPILER2_UP   Defined when compiling with Delphi 2 or C++Builder 1 or higher
   COMPILER3_UP   Defined when compiling with Delphi 3 or higher
@@ -390,6 +406,7 @@
   COMPILER20_UP  Defined when compiling with Delphi or C++Builder Personalities of BDS 14.0 or higher
   COMPILER21_UP  Defined when compiling with Delphi or C++Builder Personalities of BDS 15.0 or higher
   COMPILER22_UP  Defined when compiling with Delphi or C++Builder Personalities of BDS 16.0 or higher
+  COMPILER23_UP  Defined when compiling with Delphi or C++Builder Personalities of BDS 17.0 or higher
 
 
 - RTL Versions
@@ -429,6 +446,7 @@
   RTL270_UP     Defined when compiling with Delphi or C++Builder Personalities of BDS 14.0 or higher
   RTL280_UP     Defined when compiling with Delphi or C++Builder Personalities of BDS 15.0 or higher
   RTL290_UP     Defined when compiling with Delphi or C++Builder Personalities of BDS 16.0 or higher
+  RTL300_UP     Defined when compiling with Delphi or C++Builder Personalities of BDS 17.0 or higher
 
 
 - CLR Versions
@@ -934,18 +952,33 @@
       {$UNDEF UNKNOWN_COMPILER_VERSION}
     {$ENDIF VER290}
 
+    {$IFDEF VER300} // RAD Studio 10
+      {$DEFINE BDS}
+      {$DEFINE BDS17}
+      {$DEFINE COMPILER23}
+      {$IFDEF BCB}
+        {$DEFINE BCB23}
+      {$ELSE}
+        {$DEFINE DELPHI23}
+        {$DEFINE DELPHIX_SEATTLE} // synonym to DELPHI23
+        {$DEFINE DELPHICOMPILER23}
+      {$ENDIF BCB}
+      {$DEFINE RTL300_UP}
+      {$UNDEF UNKNOWN_COMPILER_VERSION}
+    {$ENDIF VER290}
+
     {$IFDEF UNKNOWN_COMPILER_VERSION} // adjust for newer version (always use latest version)
       {$DEFINE BDS}
-      {$DEFINE BDS16}
-      {$DEFINE COMPILER22}
+      {$DEFINE BDS17}
+      {$DEFINE COMPILER23}
       {$IFDEF BCB}
-        {$DEFINE BCB22}
+        {$DEFINE BCB23}
       {$ELSE}
-        {$DEFINE DELPHI22}
-        {$DEFINE DELPHIXE8} // synonym to DELPHI22
-        {$DEFINE DELPHICOMPILER22}
+        {$DEFINE DELPHI23}
+        {$DEFINE DELPHIX_SEATTLE} // synonym to DELPHI23
+        {$DEFINE DELPHICOMPILER23}
       {$ENDIF BCB}
-      {$DEFINE RTL290_UP}
+      {$DEFINE RTL300_UP}
       {$UNDEF UNKNOWN_COMPILER_VERSION}
     {$ENDIF}
 
@@ -965,6 +998,7 @@
 { DELPHIX_UP from DELPHIX mappings                                             }
 {------------------------------------------------------------------------------}
 
+{$IFDEF DELPHI23} {$DEFINE DELPHI23_UP} {$ENDIF}
 {$IFDEF DELPHI22} {$DEFINE DELPHI22_UP} {$ENDIF}
 {$IFDEF DELPHI21} {$DEFINE DELPHI21_UP} {$ENDIF}
 {$IFDEF DELPHI20} {$DEFINE DELPHI20_UP} {$ENDIF}
@@ -990,6 +1024,11 @@
 {------------------------------------------------------------------------------}
 { DELPHIX_UP from DELPHIX_UP mappings                                          }
 {------------------------------------------------------------------------------}
+
+{$IFDEF DELPHI23_UP}
+  {$DEFINE DELPHIX_SEATTLE_UP} // synonym to DELPHI23_UP
+  {$DEFINE DELPHI22_UP}
+{$ENDIF}
 
 {$IFDEF DELPHI22_UP}
   {$DEFINE DELPHIXE8_UP} // synonym to DELPHI22_UP
@@ -1068,6 +1107,7 @@
 { BCBX_UP from BCBX mappings                                                   }
 {------------------------------------------------------------------------------}
 
+{$IFDEF BCB23} {$DEFINE BCB23_UP} {$ENDIF}
 {$IFDEF BCB22} {$DEFINE BCB22_UP} {$ENDIF}
 {$IFDEF BCB21} {$DEFINE BCB21_UP} {$ENDIF}
 {$IFDEF BCB20} {$DEFINE BCB20_UP} {$ENDIF}
@@ -1090,6 +1130,7 @@
 { BCBX_UP from BCBX_UP mappings                                                }
 {------------------------------------------------------------------------------}
 
+{$IFDEF BCB23_UP} {$DEFINE BCB22_UP} {$ENDIF}
 {$IFDEF BCB22_UP} {$DEFINE BCB21_UP} {$ENDIF}
 {$IFDEF BCB21_UP} {$DEFINE BCB20_UP} {$ENDIF}
 {$IFDEF BCB20_UP} {$DEFINE BCB19_UP} {$ENDIF}
@@ -1111,6 +1152,7 @@
 { BDSX_UP from BDSX mappings                                                   }
 {------------------------------------------------------------------------------}
 
+{$IFDEF BDS17} {$DEFINE BDS17_UP} {$ENDIF}
 {$IFDEF BDS16} {$DEFINE BDS16_UP} {$ENDIF}
 {$IFDEF BDS15} {$DEFINE BDS15_UP} {$ENDIF}
 {$IFDEF BDS14} {$DEFINE BDS14_UP} {$ENDIF}
@@ -1130,6 +1172,7 @@
 { BDSX_UP from BDSX_UP mappings                                                }
 {------------------------------------------------------------------------------}
 
+{$IFDEF BDS17_UP} {$DEFINE BDS16_UP} {$ENDIF}
 {$IFDEF BDS16_UP} {$DEFINE BDS15_UP} {$ENDIF}
 {$IFDEF BDS15_UP} {$DEFINE BDS14_UP} {$ENDIF}
 {$IFDEF BDS14_UP} {$DEFINE BDS12_UP} {$ENDIF}
@@ -1148,6 +1191,7 @@
 { DELPHICOMPILERX_UP from DELPHICOMPILERX mappings                             }
 {------------------------------------------------------------------------------}
 
+{$IFDEF DELPHICOMPILER23} {$DEFINE DELPHICOMPILER23_UP} {$ENDIF}
 {$IFDEF DELPHICOMPILER22} {$DEFINE DELPHICOMPILER22_UP} {$ENDIF}
 {$IFDEF DELPHICOMPILER21} {$DEFINE DELPHICOMPILER21_UP} {$ENDIF}
 {$IFDEF DELPHICOMPILER20} {$DEFINE DELPHICOMPILER20_UP} {$ENDIF}
@@ -1174,6 +1218,7 @@
 { DELPHICOMPILERX_UP from DELPHICOMPILERX_UP mappings                          }
 {------------------------------------------------------------------------------}
 
+{$IFDEF DELPHICOMPILER23_UP} {$DEFINE DELPHICOMPILER22_UP} {$ENDIF}
 {$IFDEF DELPHICOMPILER22_UP} {$DEFINE DELPHICOMPILER21_UP} {$ENDIF}
 {$IFDEF DELPHICOMPILER21_UP} {$DEFINE DELPHICOMPILER20_UP} {$ENDIF}
 {$IFDEF DELPHICOMPILER20_UP} {$DEFINE DELPHICOMPILER19_UP} {$ENDIF}
@@ -1200,6 +1245,7 @@
 { COMPILERX_UP from COMPILERX mappings                                         }
 {------------------------------------------------------------------------------}
 
+{$IFDEF COMPILER23} {$DEFINE COMPILER23_UP} {$ENDIF}
 {$IFDEF COMPILER22} {$DEFINE COMPILER22_UP} {$ENDIF}
 {$IFDEF COMPILER21} {$DEFINE COMPILER21_UP} {$ENDIF}
 {$IFDEF COMPILER20} {$DEFINE COMPILER20_UP} {$ENDIF}
@@ -1227,6 +1273,7 @@
 { COMPILERX_UP from COMPILERX_UP mappings                                      }
 {------------------------------------------------------------------------------}
 
+{$IFDEF COMPILER23_UP} {$DEFINE COMPILER22_UP} {$ENDIF}
 {$IFDEF COMPILER22_UP} {$DEFINE COMPILER21_UP} {$ENDIF}
 {$IFDEF COMPILER21_UP} {$DEFINE COMPILER20_UP} {$ENDIF}
 {$IFDEF COMPILER20_UP} {$DEFINE COMPILER19_UP} {$ENDIF}
@@ -1253,6 +1300,7 @@
 { RTLX_UP from RTLX_UP mappings                                                }
 {------------------------------------------------------------------------------}
 
+{$IFDEF RTL300_UP} {$DEFINE RTL290_UP} {$ENDIF}
 {$IFDEF RTL290_UP} {$DEFINE RTL280_UP} {$ENDIF}
 {$IFDEF RTL280_UP} {$DEFINE RTL270_UP} {$ENDIF}
 {$IFDEF RTL270_UP} {$DEFINE RTL260_UP} {$ENDIF}
