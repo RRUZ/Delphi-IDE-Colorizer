@@ -314,17 +314,17 @@ InitOk:
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC" "UninstallString" "$\"$INSTDIR\uninst.exe$\""
   WriteRegDWORD HKCU "Software\The Road To Delphi\DIC\Option" "CurrentLangID" $LANGUAGE
   WriteUninstaller "$INSTDIR\uninst.exe"
+  SetOutPath $INSTDIR\Updater
+  File "..\Updater\Updater.exe"
+  File "..\Updater\libeay32.dll"
+  File "..\Updater\ssleay32.dll"
+  File "..\Updater\DownloadInfo.xml"  
 SectionEnd
 
 
 !ifdef IDE_VERSION_DXE
 Section "RAD Studio XE" SecDXE
   SectionIn 1 2
-  SetOutPath $INSTDIR\XE
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"
   File "WinAPIClasses.dat"
@@ -345,10 +345,6 @@ SectionEnd
 Section "RAD Studio XE2" SecDXE2
   SectionIn 1 2
   SetOutPath $INSTDIR\XE2
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"  
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -370,10 +366,6 @@ SectionEnd
 Section "RAD Studio XE3" SecDXE3
   SectionIn 1 2
   SetOutPath $INSTDIR\XE3
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -395,10 +387,6 @@ SectionEnd
 Section "RAD Studio XE4" SecDXE4
   SectionIn 1 2
   SetOutPath $INSTDIR\XE4
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"  
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -420,10 +408,6 @@ SectionEnd
 Section "RAD Studio XE5" SecDXE5
   SectionIn 1 2
   SetOutPath $INSTDIR\XE5
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"  
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -445,10 +429,6 @@ SectionEnd
 Section "RAD Studio XE6" SecDXE6
   SectionIn 1 2
   SetOutPath $INSTDIR\XE6
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"  
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -472,10 +452,6 @@ SectionEnd
 Section "RAD Studio XE7" SecDXE7
   SectionIn 1 2
   SetOutPath $INSTDIR\XE7
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"  
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -498,10 +474,6 @@ SectionEnd
 Section "RAD Studio XE8" SecDXE8
   SectionIn 1 2
   SetOutPath $INSTDIR\XE8
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"  
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -525,10 +497,6 @@ SectionEnd
 Section "RAD Studio 10 Seattle" SecDXSeattle
   SectionIn 1 2
   SetOutPath $INSTDIR\DXSeattle
-  File "Updater.exe"
-  File "libeay32.dll"
-  File "ssleay32.dll"
-  File "DownloadInfo.xml"  
   File "HookedWindows.dat"
   File "HookedScrollBars.dat"  
   File "WinAPIClasses.dat"  
@@ -690,56 +658,73 @@ Section "Uninstall"
   Delete "$INSTDIR\DXSeattle\*.dat" 
   Delete "$INSTDIR\DXSeattle\*.xml"    
   Delete "$INSTDIR\DXSeattle\*.exe"   
+  
   Delete "$INSTDIR\XE2\Images\dock_images\*.*"  
   Delete "$INSTDIR\XE2\Themes\*.*"    
+  Delete "$INSTDIR\XE2\Styles\*.*"     
   RMDir  "$INSTDIR\XE2\Images\dock_images\"    
   RMDir  "$INSTDIR\XE2\Images"
   RMDir  "$INSTDIR\XE2\Styles"
   RMDir  "$INSTDIR\XE2\Themes"
+  
   Delete "$INSTDIR\XE3\Images\dock_images\*.*"  
   Delete "$INSTDIR\XE3\Themes\*.*"
+  Delete "$INSTDIR\XE3\Styles\*.*"     
   RMDir  "$INSTDIR\XE3\Images\dock_images\"    
   RMDir  "$INSTDIR\XE3\Images"
   RMDir  "$INSTDIR\XE3\Styles"
   RMDir  "$INSTDIR\XE3\Themes"  
+  
   Delete "$INSTDIR\XE4\Images\dock_images\*.*"  
   Delete "$INSTDIR\XE4\Themes\*.*"
+  Delete "$INSTDIR\XE4\Styles\*.*"     
   RMDir  "$INSTDIR\XE4\Images\dock_images\"    
   RMDir  "$INSTDIR\XE4\Images"
   RMDir  "$INSTDIR\XE4\Styles"
   RMDir  "$INSTDIR\XE4\Themes"  
+  
   Delete "$INSTDIR\XE5\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE5\Themes\*.*"
+  Delete "$INSTDIR\XE5\Styles\*.*"     
   RMDir  "$INSTDIR\XE5\Images\dock_images\"    
   RMDir  "$INSTDIR\XE5\Images"
   RMDir  "$INSTDIR\XE5\Styles"
   RMDir  "$INSTDIR\XE5\Themes"  
+  
   Delete "$INSTDIR\XE6\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE6\Themes\*.*"
+  Delete "$INSTDIR\XE6\Styles\*.*"     
   RMDir  "$INSTDIR\XE6\Images\dock_images\"    
   RMDir  "$INSTDIR\XE6\Images"
   RMDir  "$INSTDIR\XE6\Styles"
   RMDir  "$INSTDIR\XE6\Themes"  
+  
   Delete "$INSTDIR\XE7\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE7\Themes\*.*"
-  RMDir  "$INSTDIR\XE7\Images\dock_images\"    
+  Delete "$INSTDIR\XE7\Styles\*.*"     
+  RMDir  "$INSTDIR\XE7\Images\dock_images"    
   RMDir  "$INSTDIR\XE7\Images"
   RMDir  "$INSTDIR\XE7\Styles"
   RMDir  "$INSTDIR\XE7\Themes"  
+  
   Delete "$INSTDIR\XE8\Images\dock_images\*.*"    
   Delete "$INSTDIR\XE8\Themes\*.*"  
   Delete "$INSTDIR\XE8\Styles\*.*"    
-  RMDir  "$INSTDIR\XE8\Images\dock_images\"    
+  RMDir  "$INSTDIR\XE8\Images\dock_images"    
   RMDir  "$INSTDIR\XE8\Images"
   RMDir  "$INSTDIR\XE8\Styles"
   RMDir  "$INSTDIR\XE8\Themes"
+  
   Delete "$INSTDIR\DXSeattle\Images\dock_images\*.*"    
   Delete "$INSTDIR\DXSeattle\Themes\*.*"    
   Delete "$INSTDIR\DXSeattle\Styles\*.*"     
-  RMDir  "$INSTDIR\DXSeattle\Images\dock_images\"    
+  RMDir  "$INSTDIR\DXSeattle\Images\dock_images"    
   RMDir  "$INSTDIR\DXSeattle\Images"
   RMDir  "$INSTDIR\DXSeattle\Styles"
   RMDir  "$INSTDIR\DXSeattle\Themes"
+  
+  Delete "$INSTDIR\Updater\*.*"     
+  RMDir  "$INSTDIR\Updater"    
   
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DIC"
 

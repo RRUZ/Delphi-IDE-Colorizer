@@ -67,7 +67,7 @@ uses
   ShlObj,
   PsAPI,
   tlhelp32,
-  ComObj,
+  System.Win.ComObj,
   CommCtrl,
   StrUtils,
   ShellAPI,
@@ -77,7 +77,7 @@ uses
   System.UITypes,
  {$ENDIF}
   SHFolder,
-  Registry,
+  System.Win.Registry,
   SysUtils;
 
 Const
@@ -131,13 +131,14 @@ end;
 
 procedure CheckForUpdates(Silent : Boolean);
 var
-  LBinaryPath : string;
+  LBinaryPath, LUpdaterPath : string;
 begin
   LBinaryPath:=GetModuleLocation();
+  LUpdaterPath := ExtractFilePath(ExcludeTrailingPathDelimiter(ExtractFilePath(LBinaryPath)))+'Updater\Updater.exe';
   if Silent then
-   ShellExecute(0, 'open', PChar(ExtractFilePath(LBinaryPath)+'Updater.exe'), PChar(Format('"%s" -Silent', [GetModuleLocation])), '', SW_SHOWNORMAL)
+   ShellExecute(0, 'open', PChar(LUpdaterPath), PChar(Format('"%s" -Silent', [GetModuleLocation])), '', SW_SHOWNORMAL)
   else
-   ShellExecute(0, 'open', PChar(ExtractFilePath(LBinaryPath)+'Updater.exe'), PChar(Format('"%s"', [GetModuleLocation])), '', SW_SHOWNORMAL);
+   ShellExecute(0, 'open', PChar(LUpdaterPath), PChar(Format('"%s"', [GetModuleLocation])), '', SW_SHOWNORMAL);
 end;
 
 
