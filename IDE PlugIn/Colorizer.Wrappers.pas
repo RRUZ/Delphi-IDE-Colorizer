@@ -178,7 +178,18 @@ type
     procedure SetProperties(AComponent : TComponent; AColorMap:TColorizerColorMap); override;
    end;
 
+   TWrapperButtonedEdit = class(TWrapperSimpleEditControl)
+   protected
+    procedure SetProperties(AComponent : TComponent; AColorMap:TColorizerColorMap); override;
+   end;
+
+
    TWrapperPanel = class(TBaseWrapper)
+   protected
+    procedure SetProperties(AComponent : TComponent; AColorMap:TColorizerColorMap); override;
+   end;
+
+   TWrapperNavToolbarDropdown = class(TWrapperPanel)
    protected
     procedure SetProperties(AComponent : TComponent; AColorMap:TColorizerColorMap); override;
    end;
@@ -1475,6 +1486,25 @@ begin
   TRttiUtils.SetRttiPropertyValue(AComponent,'Font.Color', AColorMap.FontColor);
 end;
 
+{ TWrapperNavToolbarDropdown }
+
+procedure TWrapperNavToolbarDropdown.SetProperties(AComponent: TComponent;
+  AColorMap: TColorizerColorMap);
+begin
+  inherited;
+  TRttiUtils.SetRttiPropertyValue(AComponent,'Ctl3D', False);
+  TRttiUtils.SetRttiPropertyValue(AComponent,'BevelOuter', TValue.From(TBevelCut.bvNone));
+end;
+
+{ TWrapperButtonedEdit }
+
+procedure TWrapperButtonedEdit.SetProperties(AComponent: TComponent;
+  AColorMap: TColorizerColorMap);
+begin
+  inherited;
+  TRttiUtils.SetRttiPropertyValue(AComponent,'Ctl3D', False);
+end;
+
 initialization
   TRegisteredWrappers.Wrappers:=TDictionary<string, TBaseWrapperClass>.Create;
   TRegisteredWrappers.WrappersInstances:=TObjectDictionary<string, TBaseWrapper>.Create([doOwnsValues]);
@@ -1518,10 +1548,10 @@ initialization
   RegisterColorizerWrapper('TRadioButton',  TWrapperRadioButton);
 
   RegisterColorizerWrapper('TEdit',  TWrapperSimpleEditControl);
-  RegisterColorizerWrapper('TButtonedEdit',  TWrapperSimpleEditControl);
   RegisterColorizerWrapper('TRichEdit',  TWrapperSimpleEditControl);
   RegisterColorizerWrapper('TMemo',  TWrapperSimpleEditControl);
   //RegisterColorizerWrapper('TRichEditEx',  TWrapperSimpleEditControl); //MMX
+  RegisterColorizerWrapper('TButtonedEdit',  TWrapperButtonedEdit);
 
   //RegisterColorizerWrapper('TPopupListBox',  TWrapperSimpleControl); not used
 
@@ -1529,7 +1559,8 @@ initialization
 
   //RegisterColorizerWrapper('TSliderPanel',  TWrapperSimpleEditControl);
   //RegisterColorizerWrapper('TFlowPanel',  TWrapperPanel);
-  RegisterColorizerWrapper('TCastaliaNavToolbarDropdown',  TWrapperPanel);
+  RegisterColorizerWrapper('TCastaliaNavToolbarDropdown',  TWrapperNavToolbarDropdown);
+  RegisterColorizerWrapper('TNavToolbarDropdown',  TWrapperNavToolbarDropdown);
 
 
   RegisterColorizerWrapper('TInspListBox',  TWrapperInspListBox);
@@ -1545,6 +1576,9 @@ initialization
   RegisterColorizerWrapper('TGXToolBar',  TWrapperToolBar);//gexperts toolbar
   RegisterColorizerWrapper('TMenuBar',  TWrapperToolBar);//gexperts TMenuBar(TToolBar)
   RegisterColorizerWrapper('TCastaliaNavToolbar',  TWrapperToolBar);
+  RegisterColorizerWrapper('TEditorNavigationToolbar',  TWrapperToolBar);
+
+
 
   //RegisterColorizerWrapper('TTBXToolbar',  TWrapperTTBXToolbar);//MMX toolbar
 

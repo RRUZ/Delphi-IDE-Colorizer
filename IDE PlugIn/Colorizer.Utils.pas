@@ -26,24 +26,24 @@ interface
 
 uses
  {$IFDEF DELPHIXE2_UP}
- VCL.Themes,
- VCL.Styles,
+ Vcl.Themes,
+ Vcl.Styles,
  Colorizer.Vcl.Styles,
  {$ENDIF}
- Classes,
+ System.Classes,
  {$IFDEF DELPHI2009_UP}
  Generics.Collections,
  {$ENDIF}
- ActnMan,
- ComCtrls,
- StdCtrls,
+ Vcl.ActnMan,
+ Vcl.ComCtrls,
+ Vcl.StdCtrls,
  uDelphiVersions,
  uDelphiIDEHighlight,
- ActnColorMaps,
- StrUtils,
- Windows,
- PngImage,
- Graphics,
+ Vcl.ActnColorMaps,
+ System.StrUtils,
+ WinAPi.Windows,
+ Vcl.Imaging.PngImage,
+ Vcl.Graphics,
  Colorizer.Settings,
  Colorizer.XPStyleActnCtrls;
 
@@ -109,23 +109,23 @@ implementation
 
 uses
  {$IFDEF DELPHIXE_UP}
- PlatformDefaultStyleActnCtrls,
+ Vcl.PlatformDefaultStyleActnCtrls,
  {$ELSE}
- XPStyleActnCtrls,
+ Vcl.XPStyleActnCtrls,
  {$ENDIF}
  {$IFDEF DELPHI2010_UP}
- Rtti,
- TypInfo,
+ System.Rtti,
+ System.TypInfo,
  {$ENDIF}
- Types,
- IOUtils,
- Forms,
- SysUtils,
- Controls,
- GraphUtil,
+ System.Types,
+ System.IOUtils,
+ Vcl.Forms,
+ System.SysUtils,
+ Vcl.Controls,
+ Vcl.GraphUtil,
  Colorizer.StoreColorMap,
  Colorizer.Wrappers,
- Dialogs,
+ Vcl.Dialogs,
  uMisc,
  uRttiHelper;
 
@@ -142,14 +142,14 @@ var
  LFiles  : TStringDynArray;
 begin
   sPath:=TColorizerLocalSettings.VCLStylesPath;
-  if SysUtils.DirectoryExists(sPath)  then
+  if DirectoryExists(sPath)  then
     LFiles := TDirectory.GetFiles(sPath, '*.vsf');
 
   //Appmethod doesn't include VCL Styles files, so we need read the styles from the installation folder of the plugin
-  if not SysUtils.DirectoryExists(sPath) or (Length(LFiles)=0)  then
+  if not DirectoryExists(sPath) or (Length(LFiles)=0)  then
   begin
     sPath:=ExtractFilePath(GetModuleLocation())+'Styles\';
-    if SysUtils.DirectoryExists(sPath)  then
+    if DirectoryExists(sPath)  then
       LFiles := TDirectory.GetFiles(sPath, '*.vsf');
   end;
 
@@ -330,8 +330,8 @@ begin
 //    end;
 
 
-//    if SameText(AComponent.ClassName, 'TCastaliaNavToolbar') then
-//     TRttiUtils.DumpObject(AComponent, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas')
+//    if SameText(AComponent.ClassName, 'TComToolBarFrame') then
+//     TRttiUtils.DumpObject(AComponent, 'C:\Dephi\github\Delphi-IDE-Colorizer\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas');
 //    else
 //    if SameText(AComponent.ClassName, 'TCastaliaNavToolbarDropdown') then
 //     TRttiUtils.DumpObject(AComponent, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas');
@@ -347,7 +347,6 @@ begin
 //       //csOwnerDrawVariable combobox
 //    end;
 //
-
 
     if (AComponent is TForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(AComponent.ClassName)>=0) then
     begin

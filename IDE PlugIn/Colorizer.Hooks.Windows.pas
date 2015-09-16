@@ -66,7 +66,7 @@ var
   Trampoline_GetSysColor                   : function (nIndex: Integer): DWORD; stdcall = nil;
   Trampoline_DrawFrameControl              : function (DC: HDC; Rect: PRect; uType, uState: UINT): BOOL; stdcall = nil;
   Trampoline_DrawEdge                      : function (hdc: HDC; var qrc: TRect; edge: UINT; grfFlags: UINT): BOOL; stdcall = nil;
-  TrampolineFillRect                       : function(hDC: hDC; const lprc: TRect; hbr: HBRUSH): Integer; stdcall;
+  Trampoline_FillRect                       : function(hDC: hDC; const lprc: TRect; hbr: HBRUSH): Integer; stdcall;
 
 var
   VCLStylesBrush: TObjectDictionary<string, TListStyleBrush>;
@@ -227,6 +227,14 @@ begin
 
  if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
  begin
+ {$IFDEF DELPHIX_SEATTLE_UP}
+  if HookNavSymbolSearchFormDrawItem then
+  begin
+     SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor));
+
+  end
+  else
+  {$ENDIF}
   if DrawNamePair then
   begin
     LBgColor:=GetBkColor(DC);
@@ -417,11 +425,11 @@ end;
 function InterceptFillRect(hDC: hDC; const lprc: TRect; hbr: HBRUSH): Integer; stdcall;
 begin
    if not (Assigned(TColorizerLocalSettings.Settings) and (TColorizerLocalSettings.Settings.Enabled) and Assigned(TColorizerLocalSettings.ColorMap)) then
-    Exit(TrampolineFillRect(hDC, lprc, hbr))
+    Exit(Trampoline_FillRect(hDC, lprc, hbr))
   else if (hbr > 0) and (hbr < COLOR_ENDCOLORS + 1) then
-    Exit(TrampolineFillRect(hDC, lprc, GetSysColorBrush(hbr - 1)))
+    Exit(Trampoline_FillRect(hDC, lprc, GetSysColorBrush(hbr - 1)))
   else
-    Exit(TrampolineFillRect(hDC, lprc, hbr));
+    Exit(Trampoline_FillRect(hDC, lprc, hbr));
 end;
 
 procedure InstallHooksWinAPI();
@@ -447,7 +455,7 @@ begin
   InterceptRemove(@Trampoline_ExtTextOutW);
   InterceptRemove(@Trampoline_GetSysColor);
   InterceptRemove(@TrampolineGetSysColorBrush);
-  InterceptRemove(@TrampolineFillRect);
+  InterceptRemove(@Trampoline_FillRect);
   InterceptRemove(@Trampoline_DrawEdge);
   InterceptRemove(@Trampoline_DrawFrameControl);
 end;

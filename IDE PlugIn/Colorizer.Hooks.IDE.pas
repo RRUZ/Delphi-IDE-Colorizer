@@ -37,6 +37,9 @@ var
   {.$ENDIF}
   HookVTPaintNormalText      : Boolean     = false;
   HookPropListBox_DrawPropItem : Boolean   = false;
+  {$IFDEF DELPHIX_SEATTLE}
+  HookNavSymbolSearchFormDrawItem : Boolean = False;
+  {$ENDIF}
 
 const
 {$IFDEF DELPHIXE}  sVclIDEModule =  'vclide150.bpl';{$ENDIF}
@@ -206,6 +209,12 @@ var
  Propbox::TCustomPropListBox::DrawPropItem(int, Propbox::TPropItem *, Vcl::Graphics::TCanvas *, System::Types::TRect&, bool, bool)
  }
  Trampoline_TCustomPropListBox_DrawPropItem : procedure (Self:  TObject; Index : Integer; PropItem : TObject; Canvas  : TCanvas; var ARect : TRect;  Bool1, Bool2 : Boolean);
+
+ {$IFDEF DELPHIX_SEATTLE}
+ Trampoline_TNavSymbolSearchForm_ResultsListDrawItem : procedure(Self:  TObject; Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState) ;
+ Trampoline_NavToolbarDropdown_Paint : procedure(Self:  TObject);
+ {$ENDIF}
+
 
 procedure Detour_TCustomPropListBox_DrawPropItem (Self:  TObject; Index : Integer; PropItem : TObject; Canvas  : TCanvas; var ARect : TRect;  Bool1, Bool2 : Boolean);
 begin
@@ -1036,6 +1045,25 @@ begin
      DrawNCBorder(TWinControlClass(Self), True);
 end;
 
+{$IFDEF DELPHIX_SEATTLE_UP}
+procedure Detour_TNavSymbolSearchForm_ResultsListDrawItem(Self:  TObject; Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+begin
+   HookNavSymbolSearchFormDrawItem:=True;
+   Trampoline_TNavSymbolSearchForm_ResultsListDrawItem(Self, Control, Index, Rect, State);
+   HookNavSymbolSearchFormDrawItem:=False;
+end;
+
+//Fix border color of TNavToolbarDropdown
+procedure Detour_NavToolbarDropdown_Paint(Self:  TObject);
+begin
+  EnableStockHook := True;
+  Trampoline_NavToolbarDropdown_Paint(Self);
+  EnableStockHook := False;
+end;
+{$ENDIF}
+
+
+
 
 const
 {$IFDEF DELPHIXE}
@@ -1080,6 +1108,13 @@ const
  sPopupSearchForm_PaintItemNode     = '@Popupsrchfrm@TPopupSearchForm@PaintItemNode$qqrp28Idevirtualtrees@TVirtualNodep20Vcl@Graphics@TCanvasr18System@Types@TRectp29Ideinsightmgr@TIDEInsightItemo';
  sBaseVirtualTreeOriginalWMNCPaint = '@Idevirtualtrees@TBaseVirtualTree@OriginalWMNCPaint$qqrp5HDC__';
 
+{$IFDEF DELPHIX_SEATTLE_UP}
+ sNavSymbolSearchFormResultsListDrawItem = '@Navsymbolsearchfrm@TNavSymbolSearchForm@ResultsListDrawItem$qqrp24Vcl@Controls@TWinControlirx18System@Types@TRect60System@%Set$32Winapi@Windows@Winapi_Windows__1t1$i0$t1$i12$%';
+ sNavToolbarDropdownPaint                = '@Editornavbar@TNavToolbarDropdown@Paint$qqrv';
+{$ENDIF}
+
+
+
 procedure InstallHooksIDE;
 var
 {$IFDEF DELPHIXE6_UP}
@@ -1111,6 +1146,12 @@ begin
    Trampoline_TPopupSearchForm_DrawTreeDrawNode  := InterceptCreate(sCoreIDEModule, sPopupSearchForm_DrawTreeDrawNode, @Detour_TPopupSearchForm_DrawTreeDrawNode);
    Trampoline_TPopupSearchForm_PaintCategoryNode := InterceptCreate(sCoreIDEModule, sPopupSearchForm_PaintCategoryNode, @Detour_TPopupSearchForm_PaintCategoryNode);
    Trampoline_TPopupSearchForm_PaintItemNode     := InterceptCreate(sCoreIDEModule, sPopupSearchForm_PaintItemNode, @Detour_TPopupSearchForm_PaintItemNode);
+
+{$IFDEF DELPHIX_SEATTLE_UP}
+   Trampoline_TNavSymbolSearchForm_ResultsListDrawItem := InterceptCreate(sCoreIDEModule, sNavSymbolSearchFormResultsListDrawItem, @Detour_TNavSymbolSearchForm_ResultsListDrawItem);
+   Trampoline_NavToolbarDropdown_Paint                 := InterceptCreate(sCoreIDEModule, sNavToolbarDropdownPaint, @Detour_NavToolbarDropdown_Paint);
+{$ENDIF}
+
   end;
 
   VclIDEModule := LoadLibrary(sVclIDEModule);
@@ -1181,7 +1222,7 @@ begin
     InterceptRemove(@Trampoline_TCustomVirtualStringTree_PaintNormalText);
     InterceptRemove(@Trampoline_TVirtualTreeHintWindow_AnimationCallback);
     InterceptRemove(@Trampoline_TCustomPropListBox_DrawPropItem);
-  InterceptRemove(@Trampoline_TBaseVirtualTreeOriginal_WMNCPaint);
+    InterceptRemove(@Trampoline_TBaseVirtualTreeOriginal_WMNCPaint);
 
     InterceptRemove(@Trampoline_TListButton_Paint);
     InterceptRemove(@Trampoline_Gradientdrawer_GetOutlineColor);
@@ -1193,6 +1234,11 @@ begin
     InterceptRemove(@Trampoline_TBaseVirtual_GetHintWindowClass);
     InterceptRemove(@Trampoline_ProjectTree2PaintText);
     InterceptRemove(@Trampoline_TDockCaptionDrawer_DrawDockCaption);
+
+    {$IFDEF DELPHIX_SEATTLE_UP}
+    InterceptRemove(@Trampoline_TNavSymbolSearchForm_ResultsListDrawItem);
+    InterceptRemove(@Trampoline_NavToolbarDropdown_Paint);
+    {$ENDIF}
 
 
     {$IFDEF DELPHIXE6_UP}

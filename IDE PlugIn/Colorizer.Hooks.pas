@@ -1742,7 +1742,7 @@ begin
     LParentForm:= GetParentForm(Self);
     if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
     begin
-      //AddLog('CustomPanelPaint Ignored', LParentForm.ClassName);
+      //AddLog2('CustomPanelPaint Ignored', LParentForm.ClassName);
       Trampoline_TCustomPanel_Paint(Self);
       exit;
     end;
@@ -2708,6 +2708,7 @@ end;
 
 procedure  Detour_TCanvas_Rectangle(Self: TCanvas; X1, Y1, X2, Y2: Integer);
 begin
+  //Self.Pen.Color:=clRed;
   Trampoline_TCanvas_Rectangle(Self, X1, Y1, X2, Y2);
 end;
 
@@ -2781,13 +2782,12 @@ begin
       if SameText(sCaller, sBaseVirtualTreePaintTreeSignature) then
          Self.Brush.Color:= TColorizerLocalSettings.ColorMap.WindowColor
    end;
+
    Trampoline_TCanvas_FillRect(Self, Rect);
   finally
    Self.Brush.Color:=OrgBrush;
   end;
 end;
-
-
 
 //Hook for paint the header of the TVirtualStringTree component
 function Detour_TUxThemeStyle_DrawElement(Self : TUxThemeStyle;DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect:PRect = nil): Boolean;
