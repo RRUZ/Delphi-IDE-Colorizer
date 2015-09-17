@@ -129,15 +129,14 @@ var
 implementation
 
 uses
-  IOUtils,
-  TimeSpan,
   IdURI,
   IdSSLOpenSSL,
   IdHTTP,
-  ShellAPI,
-  //System.UITypes,
-  System.Win.ComObj,
-  uMisc;
+  System.IOUtils,
+  System.TimeSpan,
+  Winapi.ShellAPI,
+  System.UITypes,
+  System.Win.ComObj;
 
 {$R *.dfm}
 
@@ -147,6 +146,15 @@ const
   sXPathInstallerFileName  = '/versioninfo/@installerfilename';
   sXPathApplicationName    = '/downloadinfo/@ApplicationName';
   sXPathRemoteURL          = '/downloadinfo/@url';
+
+function GetFileVersionStr(const FileName: string): string;
+var
+  FSO  : OleVariant;
+begin
+  FSO    := CreateOleObject('Scripting.FileSystemObject');
+  Result := FSO.GetFileVersion(FileName);
+end;
+
 
 function LHttpGet(const Url : string) : string;
 var
@@ -230,7 +238,7 @@ begin
   try
     PbGeneral.Style:=pbstNormal;
     AddLog('Getting Application information');
-    FTempInstallerFileName:=IncludeTrailingPathDelimiter(GetTempDirectory)+InstallerFileName;
+    FTempInstallerFileName:=IncludeTrailingPathDelimiter(TPath.GetTempPath())+InstallerFileName;
     DeleteFile(TempInstallerFileName);
 
     if PbGeneral.Position=0 then
@@ -273,6 +281,8 @@ begin
    end;
 
     ReadInfoUpdater();
+    Caption :=Format('Updater %s',[FApplicationName]);
+
     ReadLocalInfo();
     AddLog(Format('Current Version %s',[LocalVersion]));
 
@@ -316,12 +326,12 @@ end;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
-  FSilent   := (ParamCount>1) and (SameText(ParamStr(2),'-Silent'));
+  FSilent   :=  {$IFDEF DEBUG} False; {$ELSE} (ParamCount>1) and (SameText(ParamStr(2),'-Silent'));{$ENDIF}
   FRemoteVersion:='';
   FErrorUpdate  :=False;
   FCheckExternal:=False;
   PbGeneral.Position := 0;
-  EditOutPut.Text := GetTempDirectory;
+  EditOutPut.Text := TPath.GetTempPath();
   FSegments := StrToInt(EditSegments.Text);
   FStopwatch := TStopwatch.Create;
 end;
@@ -356,15 +366,14 @@ end;
 function TFrmMain.GetUpdateAvailable: Boolean;
 begin
  Result:=False;
- //if DebugHook<>0 then exit;
  try
    if RemoteVersion='' then
      ReadRemoteInfo;
-
-   if DebugHook<>0 then
-     Result:=True
-   else
+   {$IFDEF DEBUG}
+     Result:=True;
+   {$ELSE}
      Result:=(FRemoteVersion>FLocalVersion);
+   {$ENDIF}
  except on E : Exception do
    begin
     FErrorUpdate:=True;
@@ -480,9 +489,14 @@ begin
 end;
 
 procedure TFrmMain.ReadLocalInfo;
+{$IFNDEF DEBUG}
 var
   LBinaryFile : string;
+{$ENDIF}
 begin
+   {$IFDEF DEBUG}
+   FLocalVersion:='0.0.0.0';
+   {$ELSE}
    LBinaryFile:=ParamStr(1);
    if not FileExists(LBinaryFile) then
     begin
@@ -491,7 +505,8 @@ begin
     end;
 
    AddLog(Format('Reading version info from %s', [LBinaryFile]));
-   FLocalVersion:=GetFileVersion(LBinaryFile);
+   FLocalVersion:=GetFileVersionStr(LBinaryFile);
+   {$ENDIF}
 end;
 
 procedure TFrmMain.ReadRemoteInfo;

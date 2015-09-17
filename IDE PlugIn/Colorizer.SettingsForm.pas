@@ -274,8 +274,6 @@ type
     procedure LoadThemes;
     //procedure LoadProperties(lType: TRttiType);
     procedure LoadSettings;
-    function  GetIDEThemesFolder : String;
-    function  GetSettingsFolder : String;
     procedure GenerateIDEThemes(const Path : string);
 {$IFDEF DELPHIXE2_UP}
     procedure DrawSeletedVCLStyle;
@@ -468,9 +466,9 @@ begin
 //     FSettings.VirtualStringTreeFontSize:=  StrToInt(cbVirtualStringTreeFontSize.Text);
     FSettings.VirtualStringTreeFontDefault:= CheckboxVirtualStringTreeFontDefault.Checked;
 
-    WriteSettings(FSettings, GetSettingsFolder);
+    WriteSettings(FSettings, TSettings.GetSettingsFolder);
 
-    ImagesPath:=ExtractFilePath(GetModuleLocation)+'images\dock_images';
+    ImagesPath:=TSettings.GetDockImagesFolder;
     s:=IncludeTrailingPathDelimiter(ImagesPath)+FSettings.DockImages+'.png';
     if FileExists(s) then
       TColorizerLocalSettings.DockImages.LoadFromFile(s);
@@ -682,7 +680,7 @@ begin
      exit;
    end;
 
-   FileName:=IncludeTrailingPathDelimiter(GetIDEThemesFolder)+ThemeName+'.idetheme';
+   FileName:=IncludeTrailingPathDelimiter(TSettings.GetIDEThemesFolder)+ThemeName+'.idetheme';
    if FileExists(FileName) then
       if Application.MessageBox(PChar(Format('The theme %s already exists, Do you want overwritte the theme ?',[ThemeName])), 'Comfirmation',
         MB_YESNO + MB_ICONQUESTION) = idNo then
@@ -788,7 +786,7 @@ var
  sThemeName, sFileName : string;
 begin
   sThemeName:=cbThemeName.Text;
-  sFileName:=IncludeTrailingPathDelimiter(GetIDEThemesFolder)+sThemeName+'.idetheme';
+  sFileName:=IncludeTrailingPathDelimiter(TSettings.GetIDEThemesFolder)+sThemeName+'.idetheme';
   if FileExists(sFileName) and (MessageDlg(Format('Do you want delete the %s theme?', [sThemeName]),  mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
   begin
     DeleteFile(sFileName);
@@ -847,7 +845,7 @@ procedure TFormIDEColorizerSettings.cbThemeNameChange(Sender: TObject);
 Var
   FileName : string;
 begin
-  FileName:=IncludeTrailingPathDelimiter(GetIDEThemesFolder)+cbThemeName.Text+'.idetheme';
+  FileName:=IncludeTrailingPathDelimiter(TSettings.GetIDEThemesFolder)+cbThemeName.Text+'.idetheme';
   if FileExists(FileName)  then
   begin
     LoadColorMapFromXmlFile(ColorizerColorMap, FileName);
@@ -1117,16 +1115,6 @@ begin
 //   end;
 end;
 
-function TFormIDEColorizerSettings.GetIDEThemesFolder: String;
-begin
-  Result:=IncludeTrailingPathDelimiter(GetSettingsFolder)+'Themes';
-end;
-
-function TFormIDEColorizerSettings.GetSettingsFolder: String;
-begin
-  Result:=ExtractFilePath(GetModuleLocation());
-end;
-
 procedure TFormIDEColorizerSettings.ImageTwitterClick(Sender: TObject);
 begin
   ShellExecute(0, 'open', 'https://twitter.com/RRUZ', '', '', SW_SHOWNORMAL);
@@ -1223,7 +1211,7 @@ var
   LBitMap   : TBitmap;
   LPngImage : TPngImage;
 begin
-  ImagesPath:=ExtractFilePath(GetModuleLocation)+'images\dock_images';
+  ImagesPath:=TSettings.GetDockImagesFolder;
 
   for s in TDirectory.GetFiles(ImagesPath, '*.png') do
   begin
@@ -1249,7 +1237,7 @@ end;
 
 procedure TFormIDEColorizerSettings.LoadSettings;
 begin
-  ReadSettings(FSettings, GetSettingsFolder);
+  ReadSettings(FSettings, TSettings.GetSettingsFolder);
 
   CheckBoxUpdates.Checked  := FSettings.CheckUpdates;
   CheckBoxHookSystemColors.Checked  := FSettings.HookSystemColors;
@@ -1331,16 +1319,16 @@ var
  Files : TStringDynArray;
 begin
   cbThemeName.Items.Clear;
-  Files:=TDirectory.GetFiles(GetIDEThemesFolder,'*.idetheme');
+  Files:=TDirectory.GetFiles(TSettings.GetIDEThemesFolder, '*.idetheme');
   if Length(Files)=0 then
   begin
-    GenerateIDEThemes(GetIDEThemesFolder);
-    Files:=TDirectory.GetFiles(GetIDEThemesFolder,'*.idetheme');
+    GenerateIDEThemes(TSettings.GetIDEThemesFolder);
+    Files:=TDirectory.GetFiles(TSettings.GetIDEThemesFolder, '*.idetheme');
   end;
 
   for sValue in Files do
   begin
-    FileName:=ChangeFileExt(ExtractFileName(sValue),'');
+    FileName:=ChangeFileExt(ExtractFileName(sValue), '');
     cbThemeName.Items.Add(FileName);
   end;
 end;

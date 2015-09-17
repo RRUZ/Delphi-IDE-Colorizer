@@ -62,8 +62,9 @@
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <Icon_MainIcon>Updater.ico</Icon_MainIcon>
-        <Manifest_File>None</Manifest_File>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
+        <DCC_ExeOutput>.\</DCC_ExeOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -84,7 +85,6 @@
             <Form>FrmMain</Form>
         </DCCReference>
         <DCCReference Include="uHttpDownload.pas"/>
-        <DCCReference Include="..\Units\uMisc.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -514,7 +514,7 @@ begin
 
     TColorizerLocalSettings.ColorMap:=TColorizerColorMap.Create(nil);
     LoadSettings(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.Settings);
-    ImagesPath:=ExtractFilePath(GetModuleLocation)+'images\dock_images';
+    ImagesPath:=TSettings.GetDockImagesFolder;
     s:=IncludeTrailingPathDelimiter(ImagesPath)+TColorizerLocalSettings.Settings.DockImages+'.png';
     if FileExists(s) then
       TColorizerLocalSettings.DockImages.LoadFromFile(s);

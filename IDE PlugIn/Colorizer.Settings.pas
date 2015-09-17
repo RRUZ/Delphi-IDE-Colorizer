@@ -47,6 +47,8 @@ type
     property  DefaultNodeHeight : integer  read FDefaultNodeHeight write FDefaultNodeHeight;
     property  UseDefaultFont :  Boolean read FUseDefaultFont write FUseDefaultFont;
     constructor Create(const ADefaultFontName: string; ADefaultSize, ADefaultNodeHeight  : integer);
+
+
   end;
 
   TFontSettingsDict = TObjectDictionary<string, TComponentFontSettings>;
@@ -173,6 +175,10 @@ type
     property VirtualStringTreeFontSettingsDict : TFontSettingsDict read FVirtualStringTreeFontSettingsDict write FVirtualStringTreeFontSettingsDict;
     constructor Create;
     destructor Destroy; override;
+
+    class function GetIDEThemesFolder: String;
+    class function GetDockImagesFolder: String;
+    class function GetSettingsFolder: String;
   end;
 
   procedure ReadSettings(Settings: TSettings;Const Path:String);
@@ -377,8 +383,24 @@ end;
 
 function TSettings.GetThemeFileName: string;
 begin
- Result:=IncludeTrailingPathDelimiter(ExtractFilePath(GetModuleLocation()))+'Themes\'+FThemeName+'.idetheme';
+ Result:=IncludeTrailingPathDelimiter(GetIDEThemesFolder)+FThemeName+'.idetheme';
 end;
+
+class function TSettings.GetDockImagesFolder: String;
+begin
+  Result:=ExtractFilePath(ExcludeTrailingPathDelimiter(GetSettingsFolder()))+'dock_images';
+end;
+
+class function TSettings.GetIDEThemesFolder: String;
+begin
+  Result:=ExtractFilePath(ExcludeTrailingPathDelimiter(GetSettingsFolder()))+'Themes';
+end;
+
+class function TSettings.GetSettingsFolder: String;
+begin
+  Result:=ExtractFilePath(GetModuleLocation());
+end;
+
 
 { TComponentFontSettings }
 

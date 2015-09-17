@@ -319,6 +319,14 @@ InitOk:
   File "..\Updater\libeay32.dll"
   File "..\Updater\ssleay32.dll"
   File "..\Updater\DownloadInfo.xml"  
+  
+  SetOutPath $INSTDIR\Styles
+  File "..\Styles\*.vsf"      
+  SetOutPath $INSTDIR\Themes
+  File "..\Themes\*.idetheme"   
+  SetOutPath $INSTDIR\dock_images
+  File "..\dock_images\*.png"  
+  
 SectionEnd
 
 
@@ -351,13 +359,7 @@ Section "RAD Studio XE2" SecDXE2
   SetOverwrite off
   File "Init\Settings.ini"  
   SetOverwrite on 
-  File "DelphiIDEColorizer_XE2.dll"
-  ;SetOutPath $INSTDIR\XE2\Styles
-  ;File "Styles\*.vsf"    
-  SetOutPath $INSTDIR\XE2\Themes
-  File "Themes\*.idetheme"  
-  SetOutPath $INSTDIR\XE2\Images\dock_images
-  File "Images\dock_images\*.png"  
+  File "DelphiIDEColorizer_XE2.dll"  
   WriteRegStr HKCU "Software\Embarcadero\BDS\9.0\Experts" "DelphiIDEColorizer_XE2" "$INSTDIR\XE2\DelphiIDEColorizer_XE2.dll"
 SectionEnd
 !endif
@@ -372,13 +374,7 @@ Section "RAD Studio XE3" SecDXE3
   SetOverwrite off
   File "Init\Settings.ini"
   SetOverwrite on
-  File "DelphiIDEColorizer_XE3.dll"
-  ;SetOutPath $INSTDIR\XE3\Styles
-  ;File "Styles\*.vsf"      
-  SetOutPath $INSTDIR\XE3\Themes
-  File "Themes\*.idetheme" 
-  SetOutPath $INSTDIR\XE3\Images\dock_images
-  File "Images\dock_images\*.png"    
+  File "DelphiIDEColorizer_XE3.dll"  
   WriteRegStr HKCU "Software\Embarcadero\BDS\10.0\Experts" "DelphiIDEColorizer_XE3" "$INSTDIR\XE3\DelphiIDEColorizer_XE3.dll"
 SectionEnd
 !endif
@@ -393,13 +389,7 @@ Section "RAD Studio XE4" SecDXE4
   SetOverwrite off
   File "Init\Settings.ini"
   SetOverwrite on
-  File "DelphiIDEColorizer_XE4.dll"
-  ;SetOutPath $INSTDIR\XE4\Styles
-  ;File "Styles\*.vsf"      
-  SetOutPath $INSTDIR\XE4\Themes
-  File "Themes\*.idetheme" 
-  SetOutPath $INSTDIR\XE4\Images\dock_images
-  File "Images\dock_images\*.png"    
+  File "DelphiIDEColorizer_XE4.dll"   
   WriteRegStr HKCU "Software\Embarcadero\BDS\11.0\Experts" "DelphiIDEColorizer_XE4" "$INSTDIR\XE4\DelphiIDEColorizer_XE4.dll"
 SectionEnd
 !endif
@@ -414,13 +404,7 @@ Section "RAD Studio XE5" SecDXE5
   SetOverwrite off
   File "Init\Settings.ini"
   SetOverwrite on
-  File "DelphiIDEColorizer_XE5.dll"
-  ;SetOutPath $INSTDIR\XE5\Styles
-  ;File "Styles\*.vsf"      
-  SetOutPath $INSTDIR\XE5\Themes
-  File "Themes\*.idetheme" 
-  SetOutPath $INSTDIR\XE5\Images\dock_images
-  File "Images\dock_images\*.png"    
+  File "DelphiIDEColorizer_XE5.dll"   
   WriteRegStr HKCU "Software\Embarcadero\BDS\12.0\Experts" "DelphiIDEColorizer_XE5" "$INSTDIR\XE5\DelphiIDEColorizer_XE5.dll"
 SectionEnd
 !endif
@@ -435,14 +419,7 @@ Section "RAD Studio XE6" SecDXE6
   SetOverwrite off
   File "Init\Settings.ini"
   SetOverwrite on  
-  File "DelphiIDEColorizer_XE6.dll"
-  ;just for AppMethod
-  SetOutPath $INSTDIR\XE6\Styles
-  File "Styles\*.vsf"      
-  SetOutPath $INSTDIR\XE6\Themes
-  File "Themes\*.idetheme" 
-  SetOutPath $INSTDIR\XE6\Images\dock_images
-  File "Images\dock_images\*.png"    
+  File "DelphiIDEColorizer_XE6.dll"   
   WriteRegStr HKCU "Software\Embarcadero\BDS\14.0\Experts" "DelphiIDEColorizer_XE6" "$INSTDIR\XE6\DelphiIDEColorizer_XE6.dll"
 SectionEnd
 !endif
@@ -458,14 +435,7 @@ Section "RAD Studio XE7" SecDXE7
   SetOverwrite off
   File "Init\Settings.ini"
   SetOverwrite on  
-  File "DelphiIDEColorizer_XE7.dll"
-  ;just for AppMethod
-  SetOutPath $INSTDIR\XE7\Styles
-  File "Styles\*.vsf"      
-  SetOutPath $INSTDIR\XE7\Themes
-  File "Themes\*.idetheme" 
-  SetOutPath $INSTDIR\XE7\Images\dock_images
-  File "Images\dock_images\*.png"    
+  File "DelphiIDEColorizer_XE7.dll"  
   WriteRegStr HKCU "Software\Embarcadero\BDS\15.0\Experts" "DelphiIDEColorizer_XE7" "$INSTDIR\XE7\DelphiIDEColorizer_XE7.dll"
 SectionEnd
 !endif
@@ -480,14 +450,7 @@ Section "RAD Studio XE8" SecDXE8
   SetOverwrite off
   File "Init\Settings.ini"
   SetOverwrite on  
-  File "DelphiIDEColorizer_XE8.dll"
-  ;just for AppMethod
-  SetOutPath $INSTDIR\XE8\Styles
-  File "Styles\*.vsf"      
-  SetOutPath $INSTDIR\XE8\Themes
-  File "Themes\*.idetheme" 
-  SetOutPath $INSTDIR\XE8\Images\dock_images
-  File "Images\dock_images\*.png"    
+  File "DelphiIDEColorizer_XE8.dll"   
   WriteRegStr HKCU "Software\Embarcadero\BDS\16.0\Experts" "DelphiIDEColorizer_XE8" "$INSTDIR\XE8\DelphiIDEColorizer_XE8.dll"
 SectionEnd
 !endif
@@ -503,14 +466,7 @@ Section "RAD Studio 10 Seattle" SecDXSeattle
   SetOverwrite off
   File "Init\Settings.ini"
   SetOverwrite on  
-  File "DelphiIDEColorizer_DXSeattle.dll"
-  ;just for AppMethod
-  SetOutPath $INSTDIR\DXSeattle\Styles
-  File "Styles\*.vsf"      
-  SetOutPath $INSTDIR\DXSeattle\Themes
-  File "Themes\*.idetheme" 
-  SetOutPath $INSTDIR\DXSeattle\Images\dock_images
-  File "Images\dock_images\*.png"    
+  File "DelphiIDEColorizer_DXSeattle.dll" 
   WriteRegStr HKCU "Software\Embarcadero\BDS\17.0\Experts" "DelphiIDEColorizer_DXSeattle" "$INSTDIR\DXSeattle\DelphiIDEColorizer_DXSeattle.dll"
 SectionEnd
 !endif
@@ -520,7 +476,7 @@ SectionEnd
 Function .onInit
 
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Auric.vsf "Styles\Auric.vsf"
+  File /oname=$PLUGINSDIR\Auric.vsf "..\Styles\Auric.vsf"
   NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Auric.vsf
   
   ;!insertmacro MUI_LANGDLL_DISPLAY
@@ -659,70 +615,12 @@ Section "Uninstall"
   Delete "$INSTDIR\DXSeattle\*.xml"    
   Delete "$INSTDIR\DXSeattle\*.exe"   
   
-  Delete "$INSTDIR\XE2\Images\dock_images\*.*"  
-  Delete "$INSTDIR\XE2\Themes\*.*"    
-  Delete "$INSTDIR\XE2\Styles\*.*"     
-  RMDir  "$INSTDIR\XE2\Images\dock_images\"    
-  RMDir  "$INSTDIR\XE2\Images"
-  RMDir  "$INSTDIR\XE2\Styles"
-  RMDir  "$INSTDIR\XE2\Themes"
-  
-  Delete "$INSTDIR\XE3\Images\dock_images\*.*"  
-  Delete "$INSTDIR\XE3\Themes\*.*"
-  Delete "$INSTDIR\XE3\Styles\*.*"     
-  RMDir  "$INSTDIR\XE3\Images\dock_images\"    
-  RMDir  "$INSTDIR\XE3\Images"
-  RMDir  "$INSTDIR\XE3\Styles"
-  RMDir  "$INSTDIR\XE3\Themes"  
-  
-  Delete "$INSTDIR\XE4\Images\dock_images\*.*"  
-  Delete "$INSTDIR\XE4\Themes\*.*"
-  Delete "$INSTDIR\XE4\Styles\*.*"     
-  RMDir  "$INSTDIR\XE4\Images\dock_images\"    
-  RMDir  "$INSTDIR\XE4\Images"
-  RMDir  "$INSTDIR\XE4\Styles"
-  RMDir  "$INSTDIR\XE4\Themes"  
-  
-  Delete "$INSTDIR\XE5\Images\dock_images\*.*"    
-  Delete "$INSTDIR\XE5\Themes\*.*"
-  Delete "$INSTDIR\XE5\Styles\*.*"     
-  RMDir  "$INSTDIR\XE5\Images\dock_images\"    
-  RMDir  "$INSTDIR\XE5\Images"
-  RMDir  "$INSTDIR\XE5\Styles"
-  RMDir  "$INSTDIR\XE5\Themes"  
-  
-  Delete "$INSTDIR\XE6\Images\dock_images\*.*"    
-  Delete "$INSTDIR\XE6\Themes\*.*"
-  Delete "$INSTDIR\XE6\Styles\*.*"     
-  RMDir  "$INSTDIR\XE6\Images\dock_images\"    
-  RMDir  "$INSTDIR\XE6\Images"
-  RMDir  "$INSTDIR\XE6\Styles"
-  RMDir  "$INSTDIR\XE6\Themes"  
-  
-  Delete "$INSTDIR\XE7\Images\dock_images\*.*"    
-  Delete "$INSTDIR\XE7\Themes\*.*"
-  Delete "$INSTDIR\XE7\Styles\*.*"     
-  RMDir  "$INSTDIR\XE7\Images\dock_images"    
-  RMDir  "$INSTDIR\XE7\Images"
-  RMDir  "$INSTDIR\XE7\Styles"
-  RMDir  "$INSTDIR\XE7\Themes"  
-  
-  Delete "$INSTDIR\XE8\Images\dock_images\*.*"    
-  Delete "$INSTDIR\XE8\Themes\*.*"  
-  Delete "$INSTDIR\XE8\Styles\*.*"    
-  RMDir  "$INSTDIR\XE8\Images\dock_images"    
-  RMDir  "$INSTDIR\XE8\Images"
-  RMDir  "$INSTDIR\XE8\Styles"
-  RMDir  "$INSTDIR\XE8\Themes"
-  
-  Delete "$INSTDIR\DXSeattle\Images\dock_images\*.*"    
-  Delete "$INSTDIR\DXSeattle\Themes\*.*"    
-  Delete "$INSTDIR\DXSeattle\Styles\*.*"     
-  RMDir  "$INSTDIR\DXSeattle\Images\dock_images"    
-  RMDir  "$INSTDIR\DXSeattle\Images"
-  RMDir  "$INSTDIR\DXSeattle\Styles"
-  RMDir  "$INSTDIR\DXSeattle\Themes"
-  
+  Delete "$INSTDIR\dock_images\*.*"        
+  RMDir  "$INSTDIR\dock_images"    
+  Delete "$INSTDIR\Themes\*.*"    
+  Delete "$INSTDIR\Styles\*.*"     
+  RMDir  "$INSTDIR\Styles"
+  RMDir  "$INSTDIR\Themes"
   Delete "$INSTDIR\Updater\*.*"     
   RMDir  "$INSTDIR\Updater"    
   
@@ -764,7 +662,7 @@ SectionEnd
 
 Function un.onInit
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Auric.vsf "Styles\Auric.vsf"
+  File /oname=$PLUGINSDIR\Auric.vsf "..\Styles\Auric.vsf"
   NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Auric.vsf
 FunctionEnd
 

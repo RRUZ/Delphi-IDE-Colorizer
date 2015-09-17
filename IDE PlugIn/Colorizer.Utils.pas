@@ -148,7 +148,7 @@ begin
   //Appmethod doesn't include VCL Styles files, so we need read the styles from the installation folder of the plugin
   if not DirectoryExists(sPath) or (Length(LFiles)=0)  then
   begin
-    sPath:=ExtractFilePath(GetModuleLocation())+'Styles\';
+    sPath:= ExtractFilePath(ExcludeTrailingPathDelimiter(TSettings.GetSettingsFolder()))+'Styles\';
     if DirectoryExists(sPath)  then
       LFiles := TDirectory.GetFiles(sPath, '*.vsf');
   end;
