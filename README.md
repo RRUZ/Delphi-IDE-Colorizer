@@ -9,7 +9,7 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
   * Support for VCL Styles.
   * Transparent menus.
   * Allow to change the icons, set the colors, and gradient direction of the title bar of the docked windows.
-  * Set the colors, and gradient direction of the toolbars.
+  * Set the colors, and gradient direction of the IDE toolbars.
   * Improve the drawing of the disabled icons used in menus and toolbars
   * Compatible with <a href='http://www.cnpack.org/index.php?lang=en'>CnWizards</a> and <a href='http://www.gexperts.org'>GExperts</a>
   * Replace the icons used in the gutter and the debugger.
