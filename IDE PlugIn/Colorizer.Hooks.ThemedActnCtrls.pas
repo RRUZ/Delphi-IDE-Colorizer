@@ -118,6 +118,7 @@ begin
     LFlags := TTextFormatFlags(Flags);
     LColorRef := SetTextColor(DC, Vcl.Graphics.ColorToRGB(Options.TextColor));
     try
+      SetBkMode(DC, TRANSPARENT);
       Windows.DrawText(DC, PChar(S), Length(S), R, LFlags);
     finally
       SetTextColor(DC, LColorRef);
