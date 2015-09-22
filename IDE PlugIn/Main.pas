@@ -120,9 +120,8 @@ Const
   sMenuItemName           = 'DelphiIDEClrItem';
   sActionItemIdeColorizer = 'DelphiIDEClrAction';
   sColorizerPluginDescription=
-  'Delphi IDE Colorizer'+sLineBreak+
-  'https://code.google.com/p/delphi-ide-theme-editor'+sLineBreak+
-  'Version %s'+sLineBreak+
+  'Delphi IDE Colorizer %s'+sLineBreak+
+  'https://github.com/RRUZ/Delphi-IDE-Colorizer'+sLineBreak+
   'Copyright: 2011-2015 Rodrigo Ruz V.'+sLineBreak+
   'http://theroadtodelphi.wordpress.com/'+sLineBreak+
   'All rights reserved.'+sLineBreak+
