@@ -20,5 +20,7 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
 
 **Note** : If you want customize the syntax highlighting of the RAD Studio IDE try the [Delphi IDE Theme Editor](https://github.com/RRUZ/delphi-ide-theme-editor) project
 
+Before to download and use the plugin is highly recommendable which you read the [wiki of the project](https://github.com/RRUZ/Delphi-IDE-Colorizer/wiki).
+
 [![](https://dl.dropboxusercontent.com/u/12733424/github/buttons/DownloadSite1.png)](https://goo.gl/qtOSmK)
 [![](https://dl.dropboxusercontent.com/u/12733424/github/buttons/DownloadSite2.png)](https://goo.gl/jUqmqe)
