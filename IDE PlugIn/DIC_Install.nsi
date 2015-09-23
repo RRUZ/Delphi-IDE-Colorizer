@@ -19,7 +19,7 @@ RequestExecutionLevel admin
 !endif
 
 !ifndef VER_MINOR
-  !define VER_MINOR "8.1.6"
+  !define VER_MINOR "8.2.1"
 !endif
 
 !ifndef IDE_VERSION_DXE
@@ -90,7 +90,7 @@ RequestExecutionLevel admin
   !endif  
   !ifdef IDE_VERSION_DXSeattle
     !define IDE_SHORT_NAME "DXSeattle"
-    !define IDE_LONG_NAME "RAD Studio 10 Seattle"
+    !define IDE_LONG_NAME "RAD Studio 10 Seattle / Appmethod 1.17"
   !endif    
 !endif
 

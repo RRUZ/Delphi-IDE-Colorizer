@@ -350,6 +350,7 @@ begin
 
     if (AComponent is TForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(AComponent.ClassName)>=0) then
     begin
+
       LForm:=TForm(AComponent);
       LForm.Color := AColorMap.Color;
       LForm.Font.Color:=AColorMap.FontColor;

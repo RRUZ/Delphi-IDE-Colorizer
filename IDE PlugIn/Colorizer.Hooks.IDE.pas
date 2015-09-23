@@ -233,18 +233,21 @@ begin
   Result:=Trampoline_coreide_TLogColors_GetColor(Self, Index);
   if (Result<>nil) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and Assigned(TColorizerLocalSettings.ColorMap) then
   begin
+
+
+    //TODO Add option (param) to use IDE event logs colors.
      case Index of
        litLogBreakEval,
        litBreakpointMessage,
        litSourceBreakpoint : begin
-                               TRttiUtils.SetRttiPropertyValue(Result, 'BackgroundColor', TColorizerLocalSettings.ColorMap.WindowColor);
-                               TRttiUtils.SetRttiPropertyValue(Result, 'ForegroundColor', TColorizerLocalSettings.ColorMap.HotFontColor);
+//                               TRttiUtils.SetRttiPropertyValue(Result, 'BackgroundColor', TColorizerLocalSettings.ColorMap.WindowColor);
+//                               TRttiUtils.SetRttiPropertyValue(Result, 'ForegroundColor', TColorizerLocalSettings.ColorMap.HighlightColor);
                              end;
 
        else
        begin
            TRttiUtils.SetRttiPropertyValue(Result, 'BackgroundColor', TColorizerLocalSettings.ColorMap.WindowColor);
-           TRttiUtils.SetRttiPropertyValue(Result, 'ForegroundColor', TColorizerLocalSettings.ColorMap.FontColor);
+           TRttiUtils.SetRttiPropertyValue(Result, 'ForegroundColor', TColorizerLocalSettings.ColorMap.HighlightColor);
        end;
      end;
 

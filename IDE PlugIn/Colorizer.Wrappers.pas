@@ -752,6 +752,8 @@ begin
     TRttiUtils.SetRttiPropertyValue(AComponent,'HighlightFontColor', AColorMap.SelectedFontColor);
     TRttiUtils.SetRttiPropertyValue(AComponent,'Font.Color', AColorMap.FontColor);
 
+    //TRttiUtils.SetRttiPropertyValue(AComponent,'Ctl3D', False);
+
     //AddLog2('TWrapperInspListBox '+AComponent.Name);
     //TWinControl(AComponent).;
 end;
