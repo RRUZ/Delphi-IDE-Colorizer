@@ -2,6 +2,7 @@
 !include "MUI.nsh"
 !include "LogicLib.nsh"
 !include "WordFunc.nsh"
+!addplugindir "Installer" 
 
 
 SetOverwrite on
@@ -135,7 +136,7 @@ FunctionEnd
 
 ;!define MUI_HEADERIMAGE
 ;!define MUI_HEADERIMAGE_BITMAP "logoinstall.bmp"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "wizard_intaller.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "Installer\wizard_intaller.bmp"
 
 !insertmacro MUI_PAGE_WELCOME
 ;!insertmacro MUI_PAGE_LICENSE $(SLICENSEFILE)
@@ -476,8 +477,8 @@ SectionEnd
 Function .onInit
 
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Auric.vsf "..\Styles\Auric.vsf"
-  NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Auric.vsf
+  File /oname=$PLUGINSDIR\Style.vsf "Installer\Glossy.vsf"
+  NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Style.vsf
   
   ;!insertmacro MUI_LANGDLL_DISPLAY
   Call InitVersion
@@ -662,8 +663,8 @@ SectionEnd
 
 Function un.onInit
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Auric.vsf "..\Styles\Auric.vsf"
-  NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Auric.vsf
+  File /oname=$PLUGINSDIR\Style.vsf "Installer\Glossy.vsf"
+  NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Style.vsf
 FunctionEnd
 
 
