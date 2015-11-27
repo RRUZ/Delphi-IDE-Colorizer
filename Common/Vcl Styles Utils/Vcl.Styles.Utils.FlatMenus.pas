@@ -1331,7 +1331,7 @@ function TColorizerPopupStyleHook.TSysPopupItem.GetItemText: String;
 var
   Buffer: PChar;
   StrSize: integer;
-  info: MENUITEMINFO;
+  pMenuItemInfo: MENUITEMINFO;
 begin
 
   if VCLItem <> nil then
@@ -1347,37 +1347,41 @@ begin
 
   Result := '';
 
-  FillChar(info, sizeof(MENUITEMINFO), Char(0));
-  info.cbSize := sizeof(MENUITEMINFO);
-  info.fMask := MIIM_STRING or MIIM_FTYPE;
-  info.dwTypeData := nil;
-  GetMenuItemInfo(FMenu, FIndex, True, info);
-  if not(info.fType and MFT_OWNERDRAW = MFT_OWNERDRAW) then
+  FillChar(pMenuItemInfo, SizeOf(MENUITEMINFO), Char(0));
+  pMenuItemInfo.cbSize := SizeOf(MENUITEMINFO);
+  pMenuItemInfo.fMask := MIIM_STRING or MIIM_FTYPE;
+  pMenuItemInfo.dwTypeData := nil;
+  if GetMenuItemInfo(FMenu, FIndex, True, pMenuItemInfo) then
   begin
-    { The Size needed for the Buffer . }
-    StrSize := info.cch * 2 + 2;
-    GetMem(Buffer, StrSize);
-    try
-      info.dwTypeData := Buffer;
-      { inc cch to get the last char . }
-      inc(info.cch);
-      GetMenuItemInfo(FMenu, FIndex, True, info);
-      Result := String(Buffer);
-    finally
-      FreeMem(Buffer, StrSize);
+     //Fix for shell menus on W10
+    if (VCLMenuItems=nil) or (not (pMenuItemInfo.fType and MFT_OWNERDRAW = MFT_OWNERDRAW)) then
+    begin
+      { The Size needed for the Buffer . }
+      StrSize := pMenuItemInfo.cch * 2 + 2;
+      GetMem(Buffer, StrSize);
+      try
+        pMenuItemInfo.dwTypeData := Buffer;
+        { inc cch to get the last char . }
+        inc(pMenuItemInfo.cch);
+        if GetMenuItemInfo(FMenu, FIndex, True, pMenuItemInfo) then
+          Result := String(Buffer);
+      finally
+        // OutputDebugString(PChar('StrSize '+IntToStr(StrSize)));
+        FreeMem(Buffer, StrSize);
+      end;
+      Exit;
+    end
+    else
+    begin
+      { if the item is owner draw then we need another way to get
+        the item text since , when setting an item to ownerdraw windows
+        will destroy the dwTypeData that hold the text . }
+      FillChar(pMenuItemInfo, sizeof(MENUITEMINFO), Char(0));
+      pMenuItemInfo.cbSize := sizeof(MENUITEMINFO);
+      pMenuItemInfo.fMask := MIIM_DATA;
+      if GetMenuItemInfo(FMenu, FIndex, True, pMenuItemInfo) then
+        Result := String(PChar(pMenuItemInfo.dwItemData));
     end;
-    Exit;
-  end
-  else
-  begin
-    { if the item is owner draw then we need another way to get
-      the item text since , when setting an item to ownerdraw windows
-      will destroy the dwTypeData that hold the text . }
-    FillChar(info, sizeof(MENUITEMINFO), Char(0));
-    info.cbSize := sizeof(MENUITEMINFO);
-    info.fMask := MIIM_DATA;
-    GetMenuItemInfo(FMenu, FIndex, True, info);
-    Result := String(PChar(info.dwItemData));
   end;
 end;
 
