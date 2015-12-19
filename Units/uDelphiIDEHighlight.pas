@@ -302,6 +302,7 @@ uses
   Windows,
   Registry,
   uMisc,
+  //Colorizer.Utils,
   uRegistry;
 
 
@@ -867,19 +868,19 @@ end;
 
 function  GetDelphiIDEFontName(DelphiVersion:TDelphiVersions):string;
 begin
- if not RegReadStr(Format('%s\Editor\Options',[DelphiRegPaths[DelphiVersion]]),'Editor Font', Result, HKEY_CURRENT_USER) then
+ if not RegReadStr(Format('%s\Editor\Options',[DelphiRegPaths[DelphiVersion]]), 'Editor Font', Result, HKEY_CURRENT_USER) then
   Result:='';
 end;
 
 function  GetDelphiIDEFontSize(DelphiVersion:TDelphiVersions):Integer;
 begin
- if not RegReadInt(Format('%s\Editor\Options',[DelphiRegPaths[DelphiVersion]]),'Font Size', Result, HKEY_CURRENT_USER) then
+ if not RegReadInt(Format('%s\Editor\Options',[DelphiRegPaths[DelphiVersion]]), 'Font Size', Result, HKEY_CURRENT_USER) then
   Result:=0;
 end;
 
 function  GetDelphiIDEThemeName(DelphiVersion:TDelphiVersions):string;
 begin
- if not RegReadStr(Format('%s\Editor\DITE',[DelphiRegPaths[DelphiVersion]]),'ThemeName', Result, HKEY_CURRENT_USER) then
+ if not RegReadStr(Format('%s\Editor\DITE',[DelphiRegPaths[DelphiVersion]]), 'ThemeName', Result, HKEY_CURRENT_USER) then
   Result:='';
 end;
 
@@ -923,24 +924,24 @@ begin
   sKey:= DelphiRegPaths[FVersion]+'\ModernTheme';
   if RegKeyExists(sKey, HKEY_CURRENT_USER) then
   begin
-    if not RegReadStr(sKey,'FontName', FFontName, HKEY_CURRENT_USER) then
+    if not RegReadStr(sKey, 'FontName', FFontName, HKEY_CURRENT_USER) then
      FFontName:='Segoe UI';
 
-    if RegReadStr(sKey,'MainToolBarColor', s, HKEY_CURRENT_USER) then
+    if RegReadStr(sKey, 'MainToolBarColor', s, HKEY_CURRENT_USER) and (s<>'') then
       MainToolBarColor:=s
     else
       MainToolBarColor:='clGradientActiveCaption';
 
-    if not RegReadInt(sKey,'FontSize', FFontSize, HKEY_CURRENT_USER) then
+    if not RegReadInt(sKey, 'FontSize', FFontSize, HKEY_CURRENT_USER) then
      FFontSize:=10;
   end;
 end;
 
 procedure TModernTheme.LoadDefaults;
 begin
-  FFontSize:=$0000000a;//10;
-  FFontName:='Segoe UI';
-  MainToolBarColor:='clGradientActiveCaption';
+  FFontSize := $0000000a;//10;
+  FFontName := 'Segoe UI';
+  MainToolBarColor := 'clGradientActiveCaption';
 end;
 
 procedure TModernTheme.RestoreData;
