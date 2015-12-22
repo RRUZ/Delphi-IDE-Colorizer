@@ -66,3 +66,10 @@ TGalleryBrowseDlg
 TXToolDockForm
 TNavSymbolSearchForm
 TWizardForm
+TSaveDesktopForm
+TDesktopRuntimeForm
+TWindowListDlg
+TProjectResourcesDlg
+TDlgProjectPageOptions
+TWatchEditDlg
+TInstallWizardDialog
