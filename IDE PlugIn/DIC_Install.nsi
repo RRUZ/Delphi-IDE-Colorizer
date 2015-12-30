@@ -477,7 +477,7 @@ SectionEnd
 Function .onInit
 
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Style.vsf "Installer\Glossy.vsf"
+  File /oname=$PLUGINSDIR\Style.vsf "Installer\Glow.vsf"
   NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Style.vsf
   
   ;!insertmacro MUI_LANGDLL_DISPLAY
@@ -663,7 +663,7 @@ SectionEnd
 
 Function un.onInit
   InitPluginsDir
-  File /oname=$PLUGINSDIR\Style.vsf "Installer\Glossy.vsf"
+  File /oname=$PLUGINSDIR\Style.vsf "Installer\Glow.vsf"
   NSISVCLStyles::LoadVCLStyle $PLUGINSDIR\Style.vsf
 FunctionEnd
 
