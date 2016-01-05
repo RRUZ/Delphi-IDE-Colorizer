@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.HookForms.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2015 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -188,6 +188,12 @@ begin
     if Self is TTreeView then
     begin
       HookedControls.Add(Self, TColorizerTreeViewStyleHook.Create(Self));
+      LHook:=HookedControls[Self];
+    end
+    else
+    if Self is TCustomTabControl then
+    begin
+      HookedControls.Add(Self, TColorizerTabControlStyleHook.Create(Self));
       LHook:=HookedControls[Self];
     end
 //    else

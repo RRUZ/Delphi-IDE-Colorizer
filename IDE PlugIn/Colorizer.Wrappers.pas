@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.Wrappers.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2015 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -335,6 +335,11 @@ type
     procedure SetProperties(AComponent : TComponent; AColorMap:TColorizerColorMap); override;
    end;
 
+
+   TWrapperFileHistoryFrame= class(TBaseWrapper)
+   protected
+    procedure SetProperties(AComponent : TComponent; AColorMap:TColorizerColorMap); override;
+   end;
 
 procedure RegisterColorizerWrapper(const ComponentClass : string; ClassWrapper : TBaseWrapperClass);
 var
@@ -1507,6 +1512,15 @@ begin
   TRttiUtils.SetRttiPropertyValue(AComponent,'Ctl3D', False);
 end;
 
+{ TWrapperFileHistoryFrame }
+
+procedure TWrapperFileHistoryFrame.SetProperties(AComponent: TComponent;
+  AColorMap: TColorizerColorMap);
+begin
+  inherited;
+  TFrame(AComponent).Color := AColorMap.Color;
+end;
+
 initialization
   TRegisteredWrappers.Wrappers:=TDictionary<string, TBaseWrapperClass>.Create;
   TRegisteredWrappers.WrappersInstances:=TObjectDictionary<string, TBaseWrapper>.Create([doOwnsValues]);
@@ -1617,6 +1631,7 @@ initialization
 
 
   RegisterColorizerWrapper('TListButton',  TWrapperListButton);
+  RegisterColorizerWrapper('TFileHistoryFrame',  TWrapperFileHistoryFrame);
 
 finalization
   TRegisteredWrappers.Wrappers.Free;

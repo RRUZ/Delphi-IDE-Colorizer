@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.SettingsForm.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2015 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -960,7 +960,7 @@ begin
   sVersion:=uMisc.GetFileVersion(GetModuleLocation);
 
   LabelVersion.Caption :='Delphi IDE Colorizer '+sVersion;
-  LabelVersion2.Caption:='Copyright: 2011-2015 Rodrigo Ruz V. All rights reserved.';
+  LabelVersion2.Caption:='Copyright: 2011-2016 Rodrigo Ruz V. All rights reserved.';
   LabelVersion3.Caption:='blog http://theroadtodelphi.wordpress.com/';
   LinkLabel1.Caption   :='<a href="https://github.com/RRUZ/Delphi-IDE-Colorizer">site https://github.com/RRUZ/Delphi-IDE-Colorizer</a>';
 
