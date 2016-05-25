@@ -80,6 +80,21 @@ var
   Trampoline_TXPStylePopupMenu_NCPaint       : procedure(Self : TXPStylePopupMenuClass;DC: HDC) = nil;
 
 type
+
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomButton class has the same structure'}
+  TThemedMenuItemAccess = class(TCustomMenuItem)
+  private
+    FCheckRect: TRect;
+    FGutterRect: TRect;
+    FPaintRect: TRect;
+    FSubMenuGlyphRect: TRect;
+    FSeparatorHeight: Integer;
+    DoDrawMenuCheck: procedure of object;
+    DoDrawText: procedure (DC: HDC; const Text: string; var Rect: TRect; Flags: Longint) of object;
+  end;
+  {$endif}
+
   TThemedMenuItemHelper =  class helper for TThemedMenuItem
   private
     function GetPaintRectHelper: TRect;
@@ -102,6 +117,14 @@ type
     function  DoDrawTextAddress: Pointer;
     function  DoDrawMenuCheckAddress : Pointer;
   end;
+
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomMenuButton class has the same structure'}
+  TThemedMenuButtonAccess = class(TCustomMenuButton)
+  private
+    DoDrawText: procedure (const Text: string; var Rect: TRect; Flags: Longint) of object;
+  end;
+  {$endif COMPILERVERSION}
 
   TThemedMenuButtonHelper =  class helper for TThemedMenuButton
   public
@@ -437,8 +460,16 @@ function TThemedMenuItemHelper.DoDrawMenuCheckAddress: Pointer;
 var
   MethodAddr: procedure of object;
 begin
-  MethodAddr := Self.DoDrawMenuCheck;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    MethodAddr := TThemedMenuItemAccess(Self).DoDrawMenuCheck;
+    {$else}
+    MethodAddr := Self.DoDrawMenuCheck;
+    {$endif}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 
@@ -446,65 +477,117 @@ function TThemedMenuItemHelper.DoDrawTextAddress: Pointer;
 var
   MethodAddr: procedure(DC: HDC; const Text: string; var Rect: TRect; Flags: Longint) of object;
 begin
-  MethodAddr := Self.DoDrawText;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    MethodAddr := TThemedMenuItemAccess(Self).DoDrawText;
+    {$else}
+    MethodAddr := Self.DoDrawText;
+    {$endif}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 
 procedure TThemedMenuItemHelper.DoDrawTextHelper(DC: HDC; const Text: string;
   var Rect: TRect; Flags: Integer);
 begin
- Self.DoDrawText(DC, Text, Rect, Flags);
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TThemedMenuItemAccess(Self).DoDrawText(DC, Text, Rect, Flags);
+  {$else}
+  Self.DoDrawText(DC, Text, Rect, Flags);
+  {$endif}
 end;
 
 function TThemedMenuItemHelper.GetCheckRectHelper: TRect;
 begin
- Result:= Self.FCheckRect;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result:= TThemedMenuItemAccess(Self).FCheckRect;
+  {$else}
+  Result:= Self.FCheckRect;
+  {$endif}
 end;
 
 function TThemedMenuItemHelper.GetGutterRectHelper: TRect;
 begin
- Result:=Self.FGutterRect;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result:= TThemedMenuItemAccess(Self).FGutterRect;
+  {$else}
+  Result:= Self.FGutterRect;
+  {$endif}
 end;
 
 function TThemedMenuItemHelper.GetPaintRectHelper: TRect;
 begin
- Result:=Self.FPaintRect;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result:= TThemedMenuItemAccess(Self).FPaintRect;
+  {$else}
+  Result:= Self.FPaintRect;
+  {$endif}
 end;
 
 function TThemedMenuItemHelper.GetSeparatorHeightHelper: Integer;
 begin
- Result:= Self.FSeparatorHeight;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result:= TThemedMenuItemAccess(Self).FSeparatorHeight;
+  {$else}
+  Result:= Self.FSeparatorHeight;
+  {$endif}
 end;
 
 function TThemedMenuItemHelper.GetSubMenuGlyphRectHelper: TRect;
 begin
- Result:=Self.FSubMenuGlyphRect;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result:= TThemedMenuItemAccess(Self).FSubMenuGlyphRect;
+  {$else}
+  Result:= Self.FSubMenuGlyphRect;
+  {$endif}
 end;
 
 procedure TThemedMenuItemHelper.SetCheckRectHelper(const Value: TRect);
 begin
- Self.FCheckRect:= Value;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TThemedMenuItemAccess(Self).FCheckRect:= Value;
+  {$else}
+  Self.FCheckRect:= Value;
+  {$endif}
 end;
 
 procedure TThemedMenuItemHelper.SetGutterRectHelper(const Value: TRect);
 begin
- Self.FGutterRect:=Value;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TThemedMenuItemAccess(Self).FGutterRect:=Value;
+  {$else}
+  Self.FGutterRect:=Value;
+  {$endif}
 end;
 
 procedure TThemedMenuItemHelper.SetPaintRectHelper(const Value: TRect);
 begin
- Self.FPaintRect:=Value;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TThemedMenuItemAccess(Self).FPaintRect:=Value;
+  {$else}
+  Self.FPaintRect:=Value;
+  {$endif}
 end;
 
 procedure TThemedMenuItemHelper.SetSeparatorHeightHelper(const Value: Integer);
 begin
- Self.FSeparatorHeight:=Value;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TThemedMenuItemAccess(Self).FSeparatorHeight:=Value;
+  {$else}
+  Self.FSeparatorHeight:=Value;
+  {$endif}
 end;
 
 procedure TThemedMenuItemHelper.SetSubMenuGlyphRectHelper(const Value: TRect);
 begin
- Self.FSubMenuGlyphRect:=Value;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TThemedMenuItemAccess(Self).FSubMenuGlyphRect:=Value;
+  {$else}
+  Self.FSubMenuGlyphRect:=Value;
+  {$endif}
 end;
 
 { TThemedMenuButtonHelper }
@@ -513,8 +596,16 @@ function TThemedMenuButtonHelper.DoDrawTextAddress: Pointer;
 var
   MethodAddr: procedure(const Text: string; var Rect: TRect; Flags: Integer) of object;
 begin
-  MethodAddr := Self.DoDrawText;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    MethodAddr := TThemedMenuButtonAccess(Self).DoDrawText;
+    {$else}
+    MethodAddr := Self.DoDrawText;
+    {$endif}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 procedure InstallThemedActnCtrlsHooks;

@@ -95,6 +95,11 @@ uses
   System.Rtti,
   System.Types,
   uMisc,
+  {$IF COMPILERVERSION >= 31}
+  System.Win.TaskbarCore,
+  System.UITypes,
+  VCL.Menus,
+  {$endif COMPILERVERSION}
   DDetours;
 
 type
@@ -183,9 +188,81 @@ var
   FGutterBkColor : TColor = clNone;
 type
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomButton class has the same structure'}
+  TBitBtnAcess = class(TCustomButton)
+  private
+    Create: TProc;
+    Destroy: TProc;
+  private
+    FCanvas: TCanvas;
+    FGlyph: TObject;
+    FStyle: TButtonStyle;
+    FKind: TBitBtnKind;
+    FLayout: TButtonLayout;
+    FSpacing: Integer;
+    FMargin: Integer;
+    IsFocused: Boolean;
+    FModifiedGlyph: Boolean;
+    FMouseInControl: Boolean;
+    DrawItem: procedure(const DrawItemStruct: TDrawItemStruct) of object;
+  end;
+  {$endif}
+
   TBitBtnHelper = class helper for TBitBtn
     function  DrawItemAddress: Pointer;
   end;
+
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TWinControl class has the same structure'}
+  TCustomStatusBarAccess = class(TWinControl)
+  private
+    FPanels: TStatusPanels;
+    FCanvas: TCanvas;
+    FSimpleText: string;
+    FSimplePanel: Boolean;
+    FSizeGrip, FSizeGripValid: Boolean;
+    FUseSystemFont: Boolean;
+    FAutoHint: Boolean;
+    FOnDrawPanel: TCustomDrawPanelEvent;
+    FOnHint: TNotifyEvent;
+    FOnCreatePanelClass: TSBCreatePanelClassEvent;
+    FUpdatedPanels: Boolean;
+//    class constructor Create;
+//    class destructor Destroy;
+//    procedure DoRightToLeftAlignment(var Str: string; AAlignment: TAlignment;
+//      ARTLAlignment: Boolean);
+//    procedure SetPanels(Value: TStatusPanels);
+//    procedure SetSimplePanel(Value: Boolean);
+//    procedure UpdateSimpleText;
+//    procedure SetSimpleText(const Value: string);
+//    procedure SetSizeGrip(Value: Boolean);
+//    procedure SyncToSystemFont;
+//    procedure UpdatePanel(Index: Integer; Repaint: Boolean);
+//    procedure UpdatePanels(UpdateRects, UpdateText: Boolean);
+    Create: TProc;
+    Destroy: TProc;
+    DoRightToLeftAlignment: TProc;
+    SetPanels: TProc;
+    SetSimplePanel: TProc;
+    UpdateSimpleText: TProc;
+    SetSimpleText: TProc;
+    SetSizeGrip: TProc;
+    SyncToSystemFont: TProc;
+    UpdatePanel: TProc;
+    UpdatePanels: TProc<Boolean,Boolean>;
+    CMBiDiModeChanged: TProc;
+    CMColorChanged: TProc;
+    CMParentFontChanged: TProc;
+    CMSysColorChange: TProc;
+    CMWinIniChange: TProc;
+    CMSysFontChanged: TProc;
+    CNDrawItem: TProc;
+    WMEraseBkGnd: TProc;
+    WMGetTextLength: TProc;
+    WMPaint: procedure(var Message: TWMPaint) of object;
+  end;
+  {$endif}
 
   TCustomStatusBarHelper = class helper for TCustomStatusBar
   private
@@ -197,10 +274,199 @@ type
     property  CanvasRW : TCanvas read GetCanvasRW Write SetCanvasRW;
    end;
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TScrollingWinControl class has the same structure'}
+  TCustomFormAccess = class(TScrollingWinControl)
+  private
+    FTaskbarHandler: TTaskbarHandler;
+    FActiveControl: TWinControl;
+    FFocusedControl: TWinControl;
+    FBorderIcons: System.UITypes.TBorderIcons;
+    FBorderStyle: TFormBorderStyle;
+    FWindowState: TWindowState;
+    FShowAction: TShowAction;
+    FKeyPreview: Boolean;
+    FActive: Boolean;
+    FFormStyle: TFormStyle;
+    FPosition: TPosition;
+    FDefaultMonitor: TDefaultMonitor;
+    FTileMode: TTileMode;
+    FDropTarget: Boolean;
+    FPrintScale: TPrintScale;
+    FCanvas: TControlCanvas;
+    FHelpFile: string;
+    FIcon: TIcon;
+    FInCMParentBiDiModeChanged: Boolean;
+    FMenu: TMainMenu;
+    FModalResult: TModalResult;
+    FDesigner: IDesignerHook;
+    FWindowMenu: TMenuItem;
+    FPixelsPerInch: Integer;
+    FScaled: Boolean;
+    FObjectMenuItem: TMenuItem;
+    FOleForm: IOleForm;
+    FClientWidth: Integer;
+    FClientHeight: Integer;
+    FTextHeight: Integer;
+    FDefClientProc: TFarProc;
+    FActiveOleControl: TWinControl;
+    FSavedBorderStyle: TFormBorderStyle;
+    FOnActivate: TNotifyEvent;
+    FOnAfterMonitorDpiChanged: TMonitorDpiChangedEvent;
+    FOnBeforeMonitorDpiChanged: TMonitorDpiChangedEvent;
+    FOnClose: TCloseEvent;
+    FOnCloseQuery: TCloseQueryEvent;
+    FOnDeactivate: TNotifyEvent;
+    FOnHelp: THelpEvent;
+    FOnHide: TNotifyEvent;
+    FOnPaint: TNotifyEvent;
+    FOnShortCut: TShortCutEvent;
+    FOnShow: TNotifyEvent;
+    FOnCreate: TNotifyEvent;
+    FOnDestroy: TNotifyEvent;
+    FAlphaBlend: Boolean;
+    FAlphaBlendValue: Byte;
+    FPopupChildren: TList;
+    FPopupMode: TPopupMode;
+    FPopupParent: TCustomForm;
+    FRecreateChildren: TList;
+    FPopupWnds: TPopupWndArray;
+    FInternalPopupParent: TCustomForm;
+    FInternalPopupParentWnd: HWND;
+    FScreenSnap: Boolean;
+    FSnapBuffer: Integer;
+    FTransparentColor: Boolean;
+    FTransparentColorValue: TColor;
+    FCreatingMainForm: Boolean;
+    FGlassFrame: TGlassFrame;
+    FRefreshGlassFrame: Boolean;
+    FOldCreateOrder: Boolean;
+    FClientHandle: HWND;
+    FClientInstance: TFarProc;
+    Create: TProc;
+    Destroy: TProc;
+    RefreshMDIMenu: TProc;
+    GetCanvas: TFunc<TCanvas>;
+    GetIconHandle: TFunc<HICON>;
+    GetLeft: TFunc<Integer>;
+    GetMonitor: TFunc<TMonitor>;
+    GetPixelsPerInch: TFunc<Integer>;
+    GetPopupChildren: TFunc<TList>;
+    GetRecreateChildren: TFunc<TList>;
+    GetScaled: TFunc<Boolean>;
+    GetTextHeight: TFunc<Integer>;
+    GetTop: TFunc<Integer>;
+    IconChanged: TProc;
+    IsAutoScrollStored: TFunc<Boolean>;
+    IsClientSizeStored: TFunc<Boolean>;
+    IsForm: TFunc<Boolean>;
+    IsFormSizeStored: TFunc<Boolean>;
+    IsIconStored: TFunc<Boolean>;
+    MergeMenu: TProc;
+    ReadIgnoreFontProperty: TProc;
+    ReadTextHeight: TProc;
+    SetActive: TProc;
+    SetActiveControl: TProc;
+    SetBorderIcons: TProc;
+    SetBorderStyle: TProc;
+    SetClientHeight: TProc;
+    SetClientWidth: TProc;
+    SetDesigner: TProc;
+    SetFormStyle: TProc;
+    SetTaskbarHandler: TProc;
+    SetIcon: TProc;
+    SetLeft: TProc;
+    SetMenu: TProc;
+    SetPixelsPerInch: TProc;
+    SetPosition: TProc;
+    SetPopupMode: TProc;
+    SetScaled: TProc;
+    SetTop: TProc;
+    SetVisible: procedure(Value: Boolean) of object;
+  end;
+  {$endif COMPILERVERSION}
+
   TCustomFormHelper = class helper for TCustomForm
   public
     function  SetVisibleAddress: Pointer;
    end;
+
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomControl class has the same structure'}
+  TTabSetAccess = class(TCustomControl)
+  private
+    FStartMargin: Integer;
+    FEndMargin: Integer;
+    FTabs: TStrings;
+    FTabIndex: Integer;
+    FFirstIndex: Integer;
+    FVisibleTabs: Integer;
+    FSelectedColor: TColor;
+    FUnselectedColor: TColor;
+    FBackgroundColor: TColor;
+    FDitherBackground: Boolean;
+    FAutoScroll: Boolean;
+    FStyle: TTabStyle;
+    FOwnerDrawHeight: Integer;
+    FOnMeasureTab: TMeasureTabEvent;
+    FOnDrawTab: TDrawTabEvent;
+    FOnChange: TTabChangeEvent;
+
+    FEdgeImageList: TImageList;
+    FMemBitmap: TBitmap;   { used for off-screen drawing }
+    FBrushBitmap: TBitmap; { used for background pattern }
+    FTabPositions: TList;
+
+    FSortedTabPositions: TList;
+    FTabHeight: Integer;
+    FScroller: TScroller;
+    FDoFix: Boolean;
+    FSoftTop: Boolean;
+    FImages: TCustomImageList;
+    FImageChangeLink: TChangeLink;
+    FOnGetImageIndex: TTabGetImageEvent;
+    FShrinkToFit: Boolean;
+    FEdgeWidth: Integer;
+    FTabPosition: TTabPosition;
+    SetSelectedColor: TProc;
+    SetUnselectedColor: TProc;
+    SetBackgroundColor: TProc;
+    SetDitherBackground: TProc;
+    SetAutoScroll: TProc;
+    SetStartMargin: TProc;
+    SetEndMargin: TProc;
+    SetFirstIndex: TProc;
+    SetTabList: TProc;
+    SetTabStyle: TProc;
+    SetTabHeight: TProc;
+    WMSize: TProc;
+    WMEraseBkgnd: TProc;
+    WMGetDlgCode: TProc;
+    CMDialogChar: TProc;
+    CMSysColorChange: TProc;
+    CMFontChanged: TProc;
+    CMStyleChanged: TProc;
+    PaintEdge: TProc;
+    CreateBrushPattern: TProc;
+    CalcTabPositions: TFunc<Integer>;
+    CreateScroller: TProc;
+    InitBitmaps: TProc;
+    DoneBitmaps: TProc;
+    CreateEdgeParts: TProc;
+    FixTabPos: TProc;
+    ScrollClick: TProc;
+    SetSoftTop: TProc;
+    SetImages: TProc;
+    ScrollerSize: TFunc<Integer>;
+    SetShrinkToFit: TProc;
+    SetTabPosition: TProc;
+    SetFontOrientation: TProc;
+    DrawLine: TProc;
+    ImageListChange: TProc;
+    DoDefaultPainting: TProc;
+    DoModernPainting: procedure of object;
+  end;
+  {$endif}
 
   TTabSetHelper = class helper for TTabSet
   public
@@ -211,11 +477,217 @@ type
   end;
 
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomMultiSelectListControl class has the same structure'}
+  TCustomListViewAccess = class(TCustomMultiSelectListControl)
+  private
+    FCanvas: TCanvas;
+    FBorderStyle: TBorderStyle;
+    FViewStyle: TViewStyle;
+    FReadOnly: Boolean;
+    FLargeImages: TCustomImageList;
+    FSaveSelectedIndex: Integer;
+    FSmallImages: TCustomImageList;
+    FStateImages: TCustomImageList;
+    FGroupHeaderImages: TCustomImageList;
+    FDragImage: TDragImageList;
+    FMultiSelect: Boolean;
+    FSortType: TSortType;
+    FColumnClick: Boolean;
+    FShowColumnHeaders: Boolean;
+    FListItems: TListItems;
+    FClicked: Boolean;
+    FRClicked: Boolean;
+    FIconOptions: TIconOptions;
+    FHideSelection: Boolean;
+    FListColumns: TListColumns;
+    FMemStream: TMemoryStream;
+    FOwnerData: Boolean;
+    FOwnerDraw: Boolean;
+    FColStream: TMemoryStream;
+    FCheckStream: TMemoryStream;
+    FDefEditProc: TWindowProcPtr;
+    FDefHeaderProc: TWindowProcPtr;
+    FEditHandle: HWND;
+    FHeaderHandle: HWND;
+    FAllocBy: Integer;
+    FDragIndex: Integer;
+    FLastDropTarget: TListItem;
+    FCheckboxes: Boolean;
+    FFlatScrollBars: Boolean;
+    FFullDrag: Boolean;
+    FGridLines: Boolean;
+    FHotTrack: Boolean;
+    FHotTrackStyles: TListHotTrackStyles;
+    FRowSelect: Boolean;
+    FHoverTime: Integer;
+    FLargeChangeLink: TChangeLink;
+    FSmallChangeLink: TChangeLink;
+    FHeaderChangeLink: TChangeLink;
+    FStateChangeLink: TChangeLink;
+    FSavedSort: TSortType;
+    FReading: Boolean;
+    FCanvasChanged: Boolean;
+    FTempItem: TListItem;
+    FWorkAreas: TWorkAreas;
+    FShowWorkAreas: Boolean;
+    FUpdatingColumnOrder: Boolean;
+    FOurFont: Integer;
+    FStockFont: Integer;
+    FInBufferedPrintClient: Boolean;
+    FOwnerDataCount: Integer;
+    FPanPoint: TPoint;
+    FOnAdvancedCustomDraw: TLVAdvancedCustomDrawEvent;
+    FOnAdvancedCustomDrawItem: TLVAdvancedCustomDrawItemEvent;
+    FOnAdvancedCustomDrawSubItem: TLVAdvancedCustomDrawSubItemEvent;
+    FOnChange: TLVChangeEvent;
+    FOnChanging: TLVChangingEvent;
+    FOnColumnClick: TLVColumnClickEvent;
+    FOnColumnDragged: TNotifyEvent;
+    FOnColumnRightClick: TLVColumnRClickEvent;
+    FOnCompare: TLVCompareEvent;
+    FOnCustomDraw: TLVCustomDrawEvent;
+    FOnCustomDrawItem: TLVCustomDrawItemEvent;
+    FOnCustomDrawSubItem: TLVCustomDrawSubItemEvent;
+    FOnData: TLVOwnerDataEvent;
+    FOnDataFind: TLVOwnerDataFindEvent;
+    FOnDataHint: TLVOwnerDataHintEvent;
+    FOnDataStateChange: TLVOwnerDataStateChangeEvent;
+    FOnDeletion: TLVDeletedEvent;
+    FOnDrawItem: TLVDrawItemEvent;
+    FOnEdited: TLVEditedEvent;
+    FOnEditing: TLVEditingEvent;
+    FOnGetImageIndex: TLVNotifyEvent;
+    FOnGetSubItemImage: TLVSubItemImageEvent;
+    FOnInfoTip: TLVInfoTipEvent;
+    FOnInsert: TLVDeletedEvent;
+    FOnSelectItem: TLVSelectItemEvent;
+    FOnItemChecked: TLVCheckedItemEvent;
+    FOnCreateItemClass: TLVCreateItemClassEvent;
+    FListGroups: TListGroups;
+    FGroupView: Boolean;
+    FEditInstance: Pointer;
+    FHeaderInstance: Pointer;
+    FSavedIndents: array of Integer;
+    FDeletingAllItems: Boolean;
+    Create: TProc;
+    Destroy: TProc;
+    SaveIndents: TProc;
+    RestoreIndents: TProc;
+    AreItemsStored: TFunc<Boolean>;
+    CanvasChanged: TProc;
+    CMColorChanged: TProc;
+    CMCtl3DChanged: TProc;
+    CMDrag: TProc;
+    CMExit: TProc;
+    CMFontChanged: TProc;
+    CNNotify: TProc;
+    DoAutoSize: TProc;
+    DoDragOver: TProc;
+    DrawWorkAreas: TProc;
+    EditWndProc: TProc;
+    GetBoundingRect: TFunc<TRect>;
+    GetColumnFromIndex: TFunc<TListColumn>;
+    GetColumnFromTag: TFunc<TListColumn>;
+    GetDropTarget: TFunc<TListItem>;
+    GetFocused: TFunc<TListItem>;
+    GetImageIndex: TProc;
+    GetSubItemImage: TProc;
+    GetItem: TFunc<TListItem>;
+    GetSelected: TFunc<TListItem>;
+    GetTopItem: TFunc<TListItem>;
+    GetViewOrigin: TFunc<TPoint>;
+    GetVisibleRowCount: TFunc<Integer>;
+    GetHoverTime: TFunc<Integer>;
+    HeaderWndProc: procedure (var Message: TMessage) of object;
+  end;
+  {$endif}
+
   TCustomListViewHelper = class helper for TCustomListView
   public
     function  HeaderWndProcAddress: Pointer;
     function  GetHeaderHandle: HWND;
    end;
+
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomControl class has the same structure'}
+  TCategoryButtonsAccess = class(TCustomControl)
+  private
+    FButtonFlow: TCatButtonFlow;
+    FCollapsedHeight: Integer;
+    FDownButton: TButtonItem;
+    FDragButton: TButtonItem;
+    FHotButton: TButtonItem;
+    FDragCategory: TButtonCategory;
+    FDragStartPos: TPoint;
+    FDragStarted: Boolean;
+    FDragImageList: TDragImageList;
+    FGradientDirection: TGradientDirection;
+    FBackGradientDirection: TGradientDirection;
+    FGutterSize: Integer;
+    FScrollSize: Integer;
+    FSideBufferSize: Integer;
+    FImageChangeLink: TChangeLink;
+    FImages: TCustomImageList;
+    FInsertLeft,
+    FInsertTop,
+    FInsertRight,
+    FInsertBottom: TBaseItem;
+    FIgnoreUpdate: Boolean;
+    FScrollBarMax: Integer;
+    FScrollBarPos: Integer;
+    FPageAmount: Integer;
+    FButtonCategories: TButtonCategories;
+    FButtonOptions: TCatButtonOptions;
+    FButtonWidth, FButtonHeight: Integer;
+    FBorderStyle: TBorderStyle;
+    FSelectedItem: TBaseItem;
+    FFocusedItem: TBaseItem;
+    FMouseInControl: Boolean;
+    FScrollBarShown: Boolean;
+    FBackgroundGradientColor: TColor;
+    FHotButtonColor: TColor;
+    FSelectedButtonColor: TColor;
+    FRegularButtonColor: TColor;
+    FInplaceEdit: TCustomEdit;
+    FPanPoint: TPoint;
+
+    FOnButtonClicked: TCatButtonEvent;
+    FOnCategoryClicked: TCatButtonCategoryEvent;
+    FOnCopyButton: TCatButtonCopyEvent;
+    FOnSelectedButtonChange: TCatButtonEvent;
+    FOnSelectedCategoryChange: TCatButtonCategoryEvent;
+    FOnHotButton: TCatButtonEvent;
+    FOnGetHint: TCatButtonGetHint;
+    FOnDrawIcon: TCatButtonDrawIconEvent;
+    FOnDrawText: TCatButtonDrawEvent;
+    FOnDrawButton: TCatButtonDrawEvent;
+    FOnBeforeDrawButton: TCatButtonDrawEvent;
+    FOnAfterDrawButton: TCatButtonDrawEvent;
+    FOnReorderButton: TCatButtonReorderEvent;
+    FOnEditing: TCatButtonEditingEvent;
+    FOnEdited: TCatButtonEditedEvent;
+    FOnCancelEdit: TCatButtonCancelEditEvent;
+    FOnReorderCategory: TCategoryReorderEvent;
+    FOnCategoryCollapase: TCategoryCollapseEvent;
+
+    class var Create: TProc;
+    class var Destroy: TProc;
+    AdjustCategoryBounds: procedure (const Category: TButtonCategory;
+      var CategoryBounds: TRect; IgnoreButtonFlow: Boolean = False) of object;
+    AutoScroll: TProc;
+    CalcButtonsPerRow: TFunc<Integer>;
+    CalcButtonsPerCol: TFunc<Integer>;
+    CalcBufferSizes: TProc;
+    CalcCategoryHeight: TFunc<Integer>;
+    CalcCategoryWidth: TFunc<Integer>;
+    DrawCategory: procedure (const Category: TButtonCategory;
+      const Canvas: TCanvas; StartingPos: Integer) of object;
+    GetCategoryBounds: procedure (const Category: TButtonCategory;
+      const StartingPos: Integer; var CategoryBounds, ButtonBounds: TRect) of object;
+    GetChevronBounds: function (const CategoryBounds: TRect): TRect of object;
+  end;
+  {$endif COMPILERVERSION}
 
   TCategoryButtonsHelper = class helper for TCategoryButtons
   public
@@ -232,10 +704,173 @@ type
     function  InsertLeftHelper : TBaseItem;
    end;
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomCombo class has the same structure'}
+
+  TCustomComboBoxAccess = class(TCustomCombo)
+  private
+    FAutoComplete: Boolean;
+    FAutoDropDown: Boolean;
+    FLastTime: Cardinal;
+    FFilter: String;
+    FCharCase: TEditCharCase;
+    FSorted: Boolean;
+    FStyle: TComboBoxStyle;
+    FSaveItems: TStringList;
+    FOnDrawItem: TDrawItemEvent;
+    FOnMeasureItem: TMeasureItemEvent;
+    FAutoCloseUp: Boolean;
+    FAutoCompleteDelay: Cardinal;
+    FTextHint: string;
+    Create: TProc;
+    Destroy: TProc;
+    SetCharCase: TProc;
+    SetSelText: TProc;
+    SetSorted: TProc;
+    SetTextHint: TProc;
+    WMEraseBkgnd: TProc;
+    CMParentColorChanged: TProc;
+    CNDrawItem: TProc;
+    CNMeasureItem: TProc;
+    WMLButtonDown: TProc;
+    CMEnter: TProc;
+    CMExit: TProc;
+    WMPaint: procedure(var Message: TWMPaint) of object;
+  end;
+  {$endif COMPILERVERSION}
+
   TCustomComboBoxBarHelper = class helper for TCustomComboBox
   public
     function  WMPaintAddress: Pointer;
   end;
+
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TControl class has the same structure'}
+  TWinControlAccess = class(TControl)
+  private class var
+    RM_AsyncMessage: Cardinal;
+  private
+    FAlignControlList: TList;
+    FAlignLevel: Word;
+    FBevelEdges: TBevelEdges;
+    FBevelInner: TBevelCut;
+    FBevelOuter: TBevelCut;
+    FBevelKind: TBevelKind;
+    FBevelWidth: TBevelWidth;
+    FBorderWidth: TBorderWidth;
+    FPadding: TPadding;
+    FBrush: TBrush;
+    FDockClients: TList;
+    FDockManager: IDockManager;
+    FImeMode: TImeMode;
+    FImeName: TImeName;
+    FParentWindow: HWND;
+    FTabList: TList;
+    FTipMode: TTipMode;
+    FControls: TList;
+    FWinControls: TList;
+    FTabOrder: Integer;
+    FTabStop: Boolean;
+    FTIPIntf: IUnknown;
+    FCtl3D: Boolean;
+    FShowing: Boolean;
+    FUseDockManager: Boolean;
+    FDockSite: Boolean;
+    FParentCtl3D: Boolean;
+    FParentDoubleBuffered: Boolean;
+    FPerformingShowingChanged: Boolean;
+    FOnDockDrop: TDockDropEvent;
+    FOnDockOver: TDockOverEvent;
+    FOnEnter: TNotifyEvent;
+    FOnExit: TNotifyEvent;
+    FOnGetSiteInfo: TGetSiteInfoEvent;
+    FOnKeyDown: TKeyEvent;
+    FOnKeyPress: TKeyPressEvent;
+    FOnKeyUp: TKeyEvent;
+    FOnUnDock: TUnDockEvent;
+    FOnAlignInsertBefore: TAlignInsertBeforeEvent;
+    FOnAlignPosition: TAlignPositionEvent;
+    FMouseInClient: Boolean;
+    FMouseControl: TControl;
+    FTouchControl: TControl;
+    FDefWndProc: Pointer;
+    FHandle: HWnd;
+    FObjectInstance: Pointer;
+    AlignControl: TProc;
+    CalcConstraints: TProc;
+    DoPaddingChange: TProc;
+    GetAlignDisabled: TFunc<Boolean>;
+    GetControl: TFunc<TControl>;
+    GetControlCount: TFunc<Integer>;
+    GetDockClientCount: TFunc<Integer>;
+    GetDockClients: TFunc<TControl>;
+    GetHandle: TFunc<HWND>;
+    GetParentBackground: TFunc<Boolean>;
+    GetTabOrder: TFunc<TTabOrder>;
+    GetVisibleDockClientCount: TFunc<Integer>;
+    Insert: TProc;
+    InvalidateFrame: TProc;
+    InvokeHelp: TProc;
+    IsCtl3DStored: TFunc<Boolean>;
+    IsDoubleBufferedStored: TFunc<Boolean>;
+    PrecedingWindow: TFunc<HWND>;
+    ReadDesignSize: TProc;
+    Remove: TProc;
+    RemoveFocus: TProc;
+    SetBevelCut: TProc;
+    SetBevelEdges: TProc;
+    SetBevelKind: TProc;
+    SetBevelWidth: TProc;
+    SetBorderWidth: TProc;
+    SetCtl3D: TProc;
+    SetDockSite: TProc;
+    SetDoubleBuffered: TProc;
+    SetPadding: TProc;
+    SetParentCtl3D: TProc;
+    SetParentWindow: TProc;
+    SetTabOrder: TProc;
+    SetTabStop: TProc;
+    SetUseDockManager: TProc;
+    SetZOrderPosition: TProc;
+    UpdateTabOrder: TProc;
+    UpdateShowing: TProc;
+    WriteDesignSize: TProc;
+    IsMenuKey: TFunc<Boolean>;
+    WMInputLangChange: TProc;
+    CMInputLangChange: TProc;
+    WMPaint: TProc;
+    WMCommand: TProc;
+    WMNotify: TProc;
+    WMSysColorChange: TProc;
+    WMHScroll: TProc;
+    WMVScroll: TProc;
+    WMCompareItem: TProc;
+    WMDeleteItem: TProc;
+    WMDrawItem: TProc;
+    WMMeasureItem: TProc;
+    WMEraseBkgnd: TProc;
+    WMWindowPosChanged: TProc;
+    WMWindowPosChanging: TProc;
+    WMSize: TProc;
+    WMMove: TProc;
+    WMSetCursor: TProc;
+    WMKeyDown: TProc;
+    WMSysKeyDown: TProc;
+    WMKeyUp: TProc;
+    WMSysKeyUp: TProc;
+    WMChar: TProc;
+    WMSysCommand: TProc;
+    WMCharToItem: TProc;
+    WMParentNotify: TProc;
+    WMVKeyToItem: TProc;
+    WMDestroy: TProc;
+    WMMouseActivate: TProc;
+    WMNCCalcSize: TProc;
+    WMNCDestroy: TProc;
+    WMNCHitTest: TProc;
+    WMNCPaint: procedure (var Message: TWMNCPaint) of object;
+  end;
+  {$endif COMPILERVERSION}
 
   TWinControlHelper  = class helper for TWinControl
   public
@@ -1800,8 +2435,16 @@ function TBitBtnHelper.DrawItemAddress: Pointer;
 var
   MethodAddr: procedure(const DrawItemStruct: TDrawItemStruct) of object;
 begin
-  MethodAddr := Self.DrawItem;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    MethodAddr := TBitBtnAcess(Self).DrawItem;
+    {$ELSE}
+    MethodAddr := Self.DrawItem;
+    {$ENDIF COMPILERVERSION}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 { TCustomStatusBarHelper }
@@ -1809,25 +2452,45 @@ end;
 procedure TCustomStatusBarHelper.DoUpdatePanels(UpdateRects,
   UpdateText: Boolean);
 begin
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TCustomStatusBarAccess(Self).UpdatePanels(UpdateRects, UpdateText);
+  {$ELSE}
   Self.UpdatePanels(UpdateRects, UpdateText);
+  {$ENDIF COMPILERVERSION}
 end;
 
 function TCustomStatusBarHelper.GetCanvasRW: TCanvas;
 begin
- Result:= Self.FCanvas;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result := TCustomStatusBarAccess(Self).FCanvas;
+  {$ELSE}
+  Result := Self.FCanvas;
+  {$ENDIF COMPILERVERSION}
 end;
 
 procedure TCustomStatusBarHelper.SetCanvasRW(const Value: TCanvas);
 begin
- Self.FCanvas:= Value;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TCustomStatusBarAccess(Self).FCanvas:= Value;
+  {$ELSE}
+  Self.FCanvas:= Value;
+  {$ENDIF COMPILERVERSION}
 end;
 
 function TCustomStatusBarHelper.WMPaintAddress: Pointer;
 var
   MethodAddr: procedure(var Message: TWMPaint) of object;
 begin
-  MethodAddr := Self.WMPaint;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    MethodAddr := TCustomStatusBarAccess(Self).WMPaint;
+    {$ELSE}
+    MethodAddr := Self.WMPaint;
+    {$ENDIF COMPILERVERSION}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 { TCustomComboBoxBarHelper }
@@ -1836,16 +2499,37 @@ function TCustomComboBoxBarHelper.WMPaintAddress: Pointer;
 var
   MethodAddr: procedure(var Message: TWMPaint) of object;
 begin
-  MethodAddr := Self.WMPaint;
-  Result     := TMethod(MethodAddr).Code;
+  try
+   {$IF COMPILERVERSION >= 31}
+    MethodAddr := TCustomComboBoxAccess(Self).WMPaint;
+   {$else}
+    MethodAddr := Self.WMPaint;
+    {$endif COMPILERVERSION}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 function TWinControlHelper.WMNCPaintAddress : Pointer;
 var
   MethodAddr: procedure(var Message: TWMNCPaint) of object;
+  AMethodPtr: Pointer;
 begin
-  MethodAddr := Self.WMNCPaint;
-  Result     := TMethod(MethodAddr).Code;
+  Try
+    {$IF COMPILERVERSION >= 31}
+    AMethodPtr := Pointer(Integer(@TWinControlAccess(nil).WMNCPaint));
+//    ShowMessage(TRttiUtils.DumpTypeDefinition(TWinControl(nil), False));
+//    AMethodPtr := TWinControl.MethodAddress('WMNCPaint');
+//    AMethodPtr := TWinControlAccess(nil).MethodAddress('WMNCPaint');
+    Result := TMethod(AMethodPtr^).Code;
+    {$else}
+    MethodAddr := Self.WMNCPaint;
+    Result     := TMethod(MethodAddr).Code;
+    {$endif}
+  Except
+    Result := nil;
+  End;
 end;
 
 { TCustomFormHelper }
@@ -1854,8 +2538,16 @@ function TCustomFormHelper.SetVisibleAddress: Pointer;
 var
   MethodAddr: procedure(Value: Boolean) of object;
 begin
-  MethodAddr := Self.SetVisible;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31}
+    MethodAddr := TCustomFormAccess(Self).SetVisible;
+    {$else}
+    MethodAddr := Self.SetVisible;
+    {$endif}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 { TTabSetHelper }
@@ -1864,38 +2556,70 @@ function TTabSetHelper.DoModernPaintingAddress: Pointer;
 var
   MethodAddr: procedure of object;
 begin
-  MethodAddr := Self.DoModernPainting;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31}
+    MethodAddr := TTabSetAccess(Self).DoModernPainting;
+    {$else}
+    MethodAddr := Self.DoModernPainting;
+    {$endif}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 function TTabSetHelper.GetEdgeWidth: Integer;
 begin
- Result:=Self.FEdgeWidth;
+  {$IF COMPILERVERSION >= 31}
+  Result:=TTabSetAccess(Self).FEdgeWidth;
+  {$else}
+  Result:=Self.FEdgeWidth;
+  {$endif}
 end;
 
 function TTabSetHelper.GetMemBitmap: TBitmap;
 begin
- Result:=Self.FMemBitmap;
+  {$IF COMPILERVERSION >= 31}
+  Result:=TTabSetAccess(Self).FMemBitmap;
+  {$else}
+  Result:=Self.FMemBitmap;
+  {$endif}
 end;
 
 function TTabSetHelper.GetTabPositions: TList;
 begin
+  {$IF COMPILERVERSION >= 31}
+  Result:=TTabSetAccess(Self).FTabPositions;
+  {$else}
   Result:=Self.FTabPositions;
+  {$endif}
 end;
 
 { TCustomListViewHelper }
 
 function TCustomListViewHelper.GetHeaderHandle: HWND;
 begin
+  {$IF COMPILERVERSION >= 31}
+  Result:=TCustomListViewAccess(Self).FHeaderHandle;
+  {$else}
   Result:=Self.FHeaderHandle;
+  {$endif}
 end;
 
 function TCustomListViewHelper.HeaderWndProcAddress: Pointer;
 var
   MethodAddr: procedure(var Message: TMessage) of object;
 begin
-  MethodAddr := Self.HeaderWndProc;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31}
+    MethodAddr := TCustomListViewAccess(Self).HeaderWndProc;
+    {$else}
+    MethodAddr := Self.HeaderWndProc;
+    {$endif}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 { TCategoryButtonsHelper }
@@ -1904,60 +2628,108 @@ function TCategoryButtonsHelper.DrawCategoryAddress: Pointer;
 var
   MethodAddr: procedure(const Category: TButtonCategory; const Canvas: TCanvas; StartingPos: Integer) of object;
 begin
-  MethodAddr := Self.DrawCategory;
-  Result     := TMethod(MethodAddr).Code;
+  try
+    {$IF COMPILERVERSION >= 31}
+    MethodAddr := TCategoryButtonsAccess(Self).DrawCategory;
+    {$else}
+    MethodAddr := Self.DrawCategory;
+    {$endif}
+    Result     := TMethod(MethodAddr).Code;
+  Except
+    Result := nil;
+  end;
 end;
 
 procedure TCategoryButtonsHelper.GetCategoryBoundsHelper(
   const Category: TButtonCategory; const StartingPos: Integer;
   var CategoryBounds, ButtonBounds: TRect);
 begin
- Self.GetCategoryBounds(Category, StartingPos, CategoryBounds, ButtonBounds);
+  {$IF COMPILERVERSION >= 31}
+  TCategoryButtonsAccess(Self).GetCategoryBounds(Category, StartingPos, CategoryBounds, ButtonBounds);
+  {$else}
+  Self.GetCategoryBounds(Category, StartingPos, CategoryBounds, ButtonBounds);
+  {$endif}
 end;
 
 procedure TCategoryButtonsHelper.AdjustCategoryBoundsHelper(const Category: TButtonCategory; var CategoryBounds: TRect; IgnoreButtonFlow: Boolean = False);
 begin
- Self.AdjustCategoryBounds(Category, CategoryBounds, IgnoreButtonFlow);
+  {$IF COMPILERVERSION >= 31}
+  TCategoryButtonsAccess(Self).AdjustCategoryBounds(Category, CategoryBounds, IgnoreButtonFlow);
+  {$else}
+  Self.AdjustCategoryBounds(Category, CategoryBounds, IgnoreButtonFlow);
+  {$endif}
 end;
 
 function  TCategoryButtonsHelper.GetChevronBoundsHelper(const CategoryBounds: TRect): TRect;
 begin
- Result := Self.GetChevronBounds(CategoryBounds);
+  {$IF COMPILERVERSION >= 31}
+  Result := TCategoryButtonsAccess(Self).GetChevronBounds(CategoryBounds);
+  {$else}
+  Result := Self.GetChevronBounds(CategoryBounds);
+  {$endif}
 end;
 
 function TCategoryButtonsHelper.InsertBottomHelper: TBaseItem;
 begin
- Result:= Self.FInsertBottom;
+  {$IF COMPILERVERSION >= 31}
+  Result:= TCategoryButtonsAccess(Self).FInsertBottom;
+  {$else}
+  Result:= Self.FInsertBottom;
+  {$endif}
 end;
 
 function TCategoryButtonsHelper.InsertLeftHelper: TBaseItem;
 begin
- Result:= Self.FInsertLeft;
+  {$IF COMPILERVERSION >= 31}
+  Result:= TCategoryButtonsAccess(Self).FInsertLeft;
+  {$else}
+  Result:= Self.FInsertLeft;
+  {$endif}
 end;
 
 function TCategoryButtonsHelper.InsertRightHelper: TBaseItem;
 begin
- Result:= Self.FInsertRight;
+  {$IF COMPILERVERSION >= 31}
+  Result:= TCategoryButtonsAccess(Self).FInsertRight;
+  {$else}
+  Result:= Self.FInsertRight;
+  {$endif}
 end;
 
 function TCategoryButtonsHelper.InsertTopHelper: TBaseItem;
 begin
- Result:= Self.FInsertTop;
+  {$IF COMPILERVERSION >= 31}
+  Result:= TCategoryButtonsAccess(Self).FInsertTop;
+  {$else}
+  Result:= Self.FInsertTop;
+  {$endif}
 end;
 
 function  TCategoryButtonsHelper.FSideBufferSizeHelper : Integer;
 begin
- Result:= Self.FSideBufferSize;
+  {$IF COMPILERVERSION >= 31}
+  Result:= TCategoryButtonsAccess(Self).FSideBufferSize;
+  {$else}
+  Result:= Self.FSideBufferSize;
+  {$endif}
 end;
 
 function  TCategoryButtonsHelper.FHotButtonHelper: TButtonItem;
 begin
- Result:= Self.FHotButton;
+  {$IF COMPILERVERSION >= 31}
+  Result:= TCategoryButtonsAccess(Self).FHotButton;
+  {$else}
+  Result:= Self.FHotButton;
+  {$endif}
 end;
 
 function  TCategoryButtonsHelper.FDownButtonHelper: TButtonItem;
 begin
- Result:= Self.FDownButton;
+  {$IF COMPILERVERSION >= 31}
+  Result:= TCategoryButtonsAccess(Self).FDownButton;
+  {$else}
+  Result:= Self.FDownButton;
+  {$endif}
 end;
 
 type
@@ -3234,7 +4006,7 @@ begin
 
    {$IF CompilerVersion<37} //XE6
    InterceptRemove(@TrampolineCustomImageList_DoDraw);
-   {$IFEND}
+   {$ENDIF}
 
    InterceptRemove(@Trampoline_TCanvas_FillRect);
 

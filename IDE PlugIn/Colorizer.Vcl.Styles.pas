@@ -534,6 +534,47 @@ type
   TCustomEditClass = class(TCustomEdit);
   TCustomTabControlClass = class(TCustomTabControl);
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new TCustomStatusBar class has the same structure'}
+  TCustomStatusBarAccess = class(TCustomStatusBar)
+  private
+    FPanels: TStatusPanels;
+    FCanvas: TCanvas;
+    FSimpleText: string;
+    FSimplePanel: Boolean;
+    FSizeGrip, FSizeGripValid: Boolean;
+    FUseSystemFont: Boolean;
+    FAutoHint: Boolean;
+    FOnDrawPanel: TCustomDrawPanelEvent;
+    FOnHint: TNotifyEvent;
+    FOnCreatePanelClass: TSBCreatePanelClassEvent;
+    FUpdatedPanels: Boolean;
+//    class constructor Create;
+//    class destructor Destroy;
+//    procedure DoRightToLeftAlignment(var Str: string; AAlignment: TAlignment;
+//      ARTLAlignment: Boolean);
+//    procedure SetPanels(Value: TStatusPanels);
+//    procedure SetSimplePanel(Value: Boolean);
+//    procedure UpdateSimpleText;
+//    procedure SetSimpleText(const Value: string);
+//    procedure SetSizeGrip(Value: Boolean);
+//    procedure SyncToSystemFont;
+//    procedure UpdatePanel(Index: Integer; Repaint: Boolean);
+//    procedure UpdatePanels(UpdateRects, UpdateText: Boolean);
+    Create: TProc;
+    Destroy: TProc;
+    DoRightToLeftAlignment: TProc;
+    SetPanels: TProc;
+    SetSimplePanel: TProc;
+    UpdateSimpleText: TProc;
+    SetSimpleText: TProc;
+    SetSizeGrip: TProc;
+    SyncToSystemFont: TProc;
+    UpdatePanel: TProc;
+    UpdatePanels: TProc<Boolean,Boolean>;
+  end;
+  {$endif}
+
   TCustomStatusBarHelper = class helper for TCustomStatusBar
   private
     function GetCanvasRW: TCanvas;
@@ -548,17 +589,29 @@ type
 procedure TCustomStatusBarHelper.DoUpdatePanels(UpdateRects,
   UpdateText: Boolean);
 begin
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TCustomStatusBarAccess(Self).UpdatePanels(UpdateRects, UpdateText);
+  {$ELSE}
   Self.UpdatePanels(UpdateRects, UpdateText);
+  {$ENDIF COMPILERVERSION}
 end;
 
 function TCustomStatusBarHelper.GetCanvasRW: TCanvas;
 begin
- Result:= Self.FCanvas;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result := TCustomStatusBarAccess(Self).FCanvas;
+  {$ELSE}
+  Result := Self.FCanvas;
+  {$ENDIF COMPILERVERSION}
 end;
 
 procedure TCustomStatusBarHelper.SetCanvasRW(const Value: TCanvas);
 begin
- Self.FCanvas:= Value;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  TCustomStatusBarAccess(Self).FCanvas:= Value;
+  {$ELSE}
+  Self.FCanvas:= Value;
+  {$ENDIF COMPILERVERSION}
 end;
 
 procedure _DrawControlText(Canvas: TCanvas; const S: string; var R: TRect; Flags: Cardinal; ThemeTextColor: TColor);

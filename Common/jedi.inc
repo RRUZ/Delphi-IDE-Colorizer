@@ -965,7 +965,7 @@
       {$ENDIF BCB}
       {$DEFINE RTL300_UP}
       {$UNDEF UNKNOWN_COMPILER_VERSION}
-    {$ENDIF VER290}
+    {$ENDIF VER300}
 
     {$IFDEF UNKNOWN_COMPILER_VERSION} // adjust for newer version (always use latest version)
       {$DEFINE BDS}
