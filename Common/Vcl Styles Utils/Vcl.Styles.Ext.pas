@@ -93,6 +93,45 @@ type
     StyleClass: TCustomStyleServicesClass;
   end;
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    {$MESSAGE WARN 'Check that the new RTL still has FSections as the first member of TMemIniFile'}
+  TStyleManagerAccess = class(TObject)
+//    TStyleClassDescriptor = record
+//      Extension: string;
+//      Description: string;
+//      ResourceType: string;
+//      StyleClass: TCustomStyleServicesClass;
+//    end;
+//    TStyleServicesHandle = type Pointer;
+//
+//    TFormBorderStyle = (fbsCurrentStyle, fbsSystemStyle);
+//
+//    TSystemHook = (shMenus, shDialogs, shToolTips); // Enumeration elements will be expanded in the future
+//    TSystemHooks = set of TSystemHook;
+//
+  private type
+    TSourceInfo = record
+      Data: TStyleServicesHandle;
+      StyleClass: TCustomStyleServicesClass;
+    end;
+//
+//    TStyleDescriptorField = (dfExtension, dfDescription, dfResourceType);
+
+  private
+    class var FActiveStyle: TCustomStyleServices;
+    class var FAutoDiscoverStyleResources: Boolean;
+    class var FEngine: TCustomStyleEngine;
+    class var FEngineClass: TCustomStyleEngineClass;
+    class var FFlags: TCustomStyleServices.TStyleFlags;
+    class var FRefreshAutoDiscovery: Boolean;
+    class var FRegisteredStyles: TDictionary<string, TSourceInfo>;
+    class var FStyleClassDescriptors: TList<TStyleManager.TStyleClassDescriptor>;
+    class var FStyleEngines: TList<TCustomStyleEngineClass>;
+    class var FStyles: TList<TCustomStyleServices>;
+  end;
+  {$ENDIF COMPILERVERSION}
+
+
   {$REGION 'Documentation'}
   ///	<summary>Helper class for the TStyleManager
   ///	</summary>
@@ -331,18 +370,26 @@ end;
 }
 class function TCustomStyleEngineHelper.GetRegisteredStyleHooks: TStyleHookDictionary;
 begin
-  Result:= Self.FRegisteredStyleHooks;
+  Result:= Self.RegisteredStyleHooks;
 end;
 
 
 { TStyleManagerHelper }
 class function TStyleManagerHelper.RegisteredStyles: TDictionary<string, TSourceInfo>;
 var
-  t            : TPair<string, TStyleManager.TSourceInfo>;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  t            : TPair<string, TSourceInfo>;
+  {$ELSE}
+  t     : TPair<string, TStyleManager.TSourceInfo>;
+  {$ENDIF}
   SourceInfo   : TSourceInfo;
 begin
  Result:=TDictionary<string, TSourceInfo>.Create;
-  for t in Self.FRegisteredStyles do
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  for t in TStyleManagerAccess(Self).FRegisteredStyles do
+  {$ELSE}
+  for t in Self.RegisteredStyles do
+  {$ENDIF COMPILERVERSION}
   begin
    SourceInfo.Data:=t.Value.Data;
    SourceInfo.StyleClass:=t.Value.StyleClass;
@@ -353,7 +400,11 @@ end;
 
 class function TStyleManagerHelper.GetStyles: TList<TCustomStyleServices>;
 begin
-  Result:=Self.FStyles;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  Result := TStyleManagerAccess(Self).FStyles;
+  {$ELSE}
+  Result := Self.FStyles;
+  {$ENDIF COMPILERVERSION}
 end;
 
 class function TStyleManagerHelper.GetStyleSourceInfo(const StyleName: string): TSourceInfo;
@@ -385,7 +436,11 @@ end;
 class procedure TStyleManagerHelper.ReloadStyle(const Name: string);
 var
   LStyle: TCustomStyleServices;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  t            : TPair<string, TSourceInfo>;
+  {$ELSE}
   t     : TPair<string, TStyleManager.TSourceInfo>;
+  {$ENDIF COMPILERVERSION}
 begin
 
  if SameText(Name, ActiveStyle.Name, loUserLocale) then
@@ -398,7 +453,11 @@ begin
     Styles.Remove(LStyle);
   end;
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  for t in TStyleManagerAccess(Self).FRegisteredStyles do
+  {$ELSE}
   for t in Self.FRegisteredStyles do
+  {$ENDIF COMPILERVERSION}
     if SameText(Name, t.Key, loUserLocale) then
      if (t.Value.Data<>nil) then
      begin
@@ -412,7 +471,11 @@ end;
 class procedure TStyleManagerHelper.RemoveStyle(const Name: string);
 var
   LStyle: TCustomStyleServices;
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  t            : TPair<string, TSourceInfo>;
+  {$ELSE}
   t     : TPair<string, TStyleManager.TSourceInfo>;
+  {$ENDIF COMPILERVERSION}
 begin
  if SameText(Name, ActiveStyle.Name, loUserLocale) then
    SetStyle(SystemStyle);
@@ -424,10 +487,18 @@ begin
     Styles.Remove(LStyle);
   end;
 
-  for t in Self.FRegisteredStyles do
-    if SameText(Name, t.Key, loUserLocale) then
-     Self.FRegisteredStyles.Remove(t.Key);
 
+  {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+  for t in TStyleManagerAccess(Self).FRegisteredStyles do
+  {$ELSE}
+  for t in Self.FRegisteredStyles do
+  {$ENDIF COMPILERVERSION}
+    if SameText(Name, t.Key, loUserLocale) then
+    {$IF COMPILERVERSION >= 31} // 10.1 Berlin removed the access to private fields
+    TStyleManagerAccess(Self).FRegisteredStyles.Remove(t.Key);
+    {$ELSE}
+    Self.FRegisteredStyles.Remove(t.Key);
+    {$ENDIF COMPILERVERSION}
 end;
 
 class function TStyleManagerHelper._GetStyles: TList<TCustomStyleServices>;

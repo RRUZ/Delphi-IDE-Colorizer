@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{0E5BABE2-41DC-42A8-B318-9FD13F8D8D7B}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="..\Common\mbColorLib2.0.2\mbColorLibDXBerlin.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DelphiIDEColorizer_DXBerlin.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="mbColorLibDXBerlin">
+        <MSBuild Projects="..\Common\mbColorLib2.0.2\mbColorLibDXBerlin.dproj"/>
+    </Target>
+    <Target Name="mbColorLibDXBerlin:Clean">
+        <MSBuild Projects="..\Common\mbColorLib2.0.2\mbColorLibDXBerlin.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="mbColorLibDXBerlin:Make">
+        <MSBuild Projects="..\Common\mbColorLib2.0.2\mbColorLibDXBerlin.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DelphiIDEColorizer_DXBerlin">
+        <MSBuild Projects="DelphiIDEColorizer_DXBerlin.dproj"/>
+    </Target>
+    <Target Name="DelphiIDEColorizer_DXBerlin:Clean">
+        <MSBuild Projects="DelphiIDEColorizer_DXBerlin.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DelphiIDEColorizer_DXBerlin:Make">
+        <MSBuild Projects="DelphiIDEColorizer_DXBerlin.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="mbColorLibDXBerlin;DelphiIDEColorizer_DXBerlin"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="mbColorLibDXBerlin:Clean;DelphiIDEColorizer_DXBerlin:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="mbColorLibDXBerlin:Make;DelphiIDEColorizer_DXBerlin:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -1,0 +1,17 @@
+*.dcu
+*.local
+*.skincfg
+*.stat
+/Common/mbColorLib2.0.2/__history
+/Common/Vcl Styles Utils/__history
+/IDE PlugIn/__history
+/Units/__history
+*.identcache
+*.dsk
+*.map
+*.~dsk
+*.tvsconfig
+*.drc
+*.dll
+*.dcu
+*.~*

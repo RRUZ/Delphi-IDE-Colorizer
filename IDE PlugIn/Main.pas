@@ -148,7 +148,7 @@ uses
  Vcl.Styles,
  Vcl.Themes,
  Vcl.PlatformDefaultStyleActnCtrls,
- {$IFEND}
+ {$ENDIF}
  {$IFDEF DELPHI2009_UP}
  Generics.Collections,
  {$ENDIF}
