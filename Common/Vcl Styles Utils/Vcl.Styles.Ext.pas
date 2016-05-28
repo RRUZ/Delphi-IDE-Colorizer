@@ -2,7 +2,7 @@
 //
 // Unit Vcl.Styles.Ext
 // unit for the VCL Styles Utils
-// http://code.google.com/p/vcl-styles-utils/
+// https://github.com/RRUZ/vcl-styles-utils/
 //
 // The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License");
 // you may not use this file except in compliance with the License. You may obtain a copy of the
@@ -15,7 +15,7 @@
 // The Original Code is Vcl.Styles.Ext.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2012-2014 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2012-2016 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -23,6 +23,9 @@ unit Vcl.Styles.Ext;
 
 interface
 
+{$IF RTLVersion>=24}
+  {$LEGACYIFEND ON}
+{$IFEND}
 {$DEFINE USE_VCL_STYLESAPI}
 
 
@@ -123,12 +126,13 @@ type
    ///	<summary>Force to reload a modified vcl style
    ///	</summary>
    {$ENDREGION}
-   class procedure ReloadStyle(const Name: string);
+   class procedure ReloadStyle(const StyleName : string);
    {$REGION 'Documentation'}
    ///	<summary>remove a vcl style
    ///	</summary>
    {$ENDREGION}
-   class procedure RemoveStyle(const Name: string);
+   class procedure RemoveStyle(const StyleName : string);
+   class function  StyleLoaded(const StyleName : string) : Boolean;
    end;
 
 const
@@ -158,11 +162,11 @@ const
     (Value: Vcl.Graphics.clWindowFrame; Name: 'clWindowFrame'),
     (Value: Vcl.Graphics.clWindowText; Name: 'clWindowText'));
 
-procedure ApplyEmptyVCLStyleHook(ControlClass :TClass);
-procedure RemoveEmptyVCLStyleHook(ControlClass :TClass);
-function  IsStyleHookRegistered(ControlClass: TClass; StyleHookClass: TStyleHookClass) : Boolean;
-function  GetRegisteredStylesHooks(ControlClass: TClass) : TStyleHookList;
-procedure DrawSampleWindow(Style:TCustomStyle;Canvas:TCanvas;ARect:TRect;const ACaption : string;hIcon:HICON=0);overload;
+    procedure ApplyEmptyVCLStyleHook(ControlClass :TClass);
+    procedure RemoveEmptyVCLStyleHook(ControlClass :TClass);
+    function  IsStyleHookRegistered(ControlClass: TClass; StyleHookClass: TStyleHookClass) : Boolean;
+    function  GetRegisteredStylesHooks(ControlClass: TClass) : TStyleHookList;
+    procedure DrawSampleWindow(Style:TCustomStyle;Canvas:TCanvas;ARect:TRect;const ACaption : string;hIcon:HICON=0);overload;
 
 
 {$IFDEF USE_VCL_STYLESAPI}
@@ -329,38 +333,132 @@ begin
   end;
 end;
 }
+
 class function TCustomStyleEngineHelper.GetRegisteredStyleHooks: TStyleHookDictionary;
+{$IF (CompilerVersion >= 31)}
+const
+ Offset = SizeOf(Pointer) * 3;
+var
+  p : Pointer;
+{$IFEND}
 begin
+  {$IF (CompilerVersion <31)}
   Result:= Self.FRegisteredStyleHooks;
+  {$ELSE}
+   {
+   TCustomStyleEngine.FRegisteredStyleHooks:
+   00651030 3052AA           xor [edx-$56],dl
+   00651033 02F7             add dh,bh
+   00651035 097623           or [esi+$23],esi
+   TCustomStyleEngine.$ClassInitFlag:
+   00651038 FFFF             db $ff $ff
+   0065103A FFFF             db $ff $ff
+   TCustomStyleEngine.FRegSysStylesList:
+   0065103C D037             shl [edi],1
+    }
+  //Use the address of the Self.FRegSysStylesList property to calculate the offset of the FRegisteredStyleHooks
+   p      := Pointer(PByte(@Self.FRegSysStylesList) - Offset);
+  Result := TStyleHookDictionary(p^);
+  {$IFEND}
 end;
 
 
 { TStyleManagerHelper }
 class function TStyleManagerHelper.RegisteredStyles: TDictionary<string, TSourceInfo>;
+{$IF (CompilerVersion >= 31)}
+const
+ Offset = SizeOf(Pointer) * 3;
+{$IFEND}
 var
   t            : TPair<string, TStyleManager.TSourceInfo>;
   SourceInfo   : TSourceInfo;
+  LRegisteredStyles: TDictionary<string, TStyleManager.TSourceInfo>;
+  {$IF (CompilerVersion >= 31)}
+  p : Pointer;
+  {$IFEND}
 begin
- Result:=TDictionary<string, TSourceInfo>.Create;
-  for t in Self.FRegisteredStyles do
+  Result:=TDictionary<string, TSourceInfo>.Create;
+  {$IF (CompilerVersion < 31)}
+  LRegisteredStyles := Self.FRegisteredStyles;
+  {$ELSE}
+{
+    TStyleManager.FFlags:
+    006CD058 0100             add [eax],eax
+    006CD05A 0000             add [eax],al
+    TStyleManager.FRegisteredStyles:
+    006CD05C 7050             jo $006cd0ae
+    006CD05E B702             mov bh,$02
+    TStyleManager.FStyleClassDescriptors:
+    006CD060 A850             test al,$50
+    006CD062 B702             mov bh,$02
+    TStyleManager.FStyleEngines:
+    006CD064 1851B7           sbb [ecx-$49],dl
+    006CD067 02E0             add ah,al
+    006CD069 50               push eax
+    006CD06A B702             mov bh,$02
+    TStyleManager.FSystemStyle:
+    006CD06C 2077B0           and [edi-$50],dh
+    006CD06F 0200             add al,[eax]
+    TStyleManager.FSystemHooks:
+    006CD071 07               pop es  006CD076 FFFF             db $ff $ff
+}
+  //Use the address of the Self.Flags property to calculate the offset of the FRegisteredStyles
+  {$IFDEF CPUX64}
+  p      := Pointer(PByte(@Self.Flags) + 8);
+  {$ELSE}
+  p      := Pointer(PByte(@Self.Flags) + 4);
+  {$ENDIF CPUX64}
+  LRegisteredStyles := TDictionary<string, TStyleManager.TSourceInfo>(p^);
+  {$IFEND}
+  for t in LRegisteredStyles do
   begin
-   SourceInfo.Data:=t.Value.Data;
-   SourceInfo.StyleClass:=t.Value.StyleClass;
-   Result.Add(t.Key,SourceInfo);
+   SourceInfo.Data := t.Value.Data;
+   SourceInfo.StyleClass := t.Value.StyleClass;
+   Result.Add(t.Key, SourceInfo);
   end;
 end;
 
 
 class function TStyleManagerHelper.GetStyles: TList<TCustomStyleServices>;
+{$IF (CompilerVersion >= 31)}
+var
+  p : Pointer;
+{$IFEND}
 begin
-  Result:=Self.FStyles;
+  {$IF (CompilerVersion <31)}
+  Result := Self.FStyles;
+  {$ELSE}
+  {
+    TStyleManager.FStyles:
+    0067E06C E050             loopne $0067e0be
+    0067E06E AD               lodsd
+    0067E06F 0220             add ah,[eax]
+    0067E071 77A6             jnbe $0067e019
+    0067E073 0200             add al,[eax]
+    ....
+    ....
+    TStyleManager.FFlags:
+    0067E05C 0001             add [ecx],al
+    0067E05E 0000             add [eax],al
+    TStyleManager.FRegisteredStyles:
+    0067E060 7050             jo $0067e0b2
+    0067E062 AD               lodsd
+    0067E063 02A850AD0218     add ch,[eax+$1802ad50]
+  }
+  {$IFDEF CPUX64}
+  p      := Pointer(PByte(@Self.Flags) + 32);
+  {$ELSE}
+  p      := Pointer(PByte(@Self.Flags) + 16);
+  {$ENDIF CPUX64}
+   Result := TList<TCustomStyleServices>(p^);
+  {$IFEND}
 end;
 
 class function TStyleManagerHelper.GetStyleSourceInfo(const StyleName: string): TSourceInfo;
 Var
  LRegisteredStyles : TDictionary<string, TSourceInfo>;
 begin
-  LRegisteredStyles:=TStyleManager.RegisteredStyles;
+  LRegisteredStyles := TStyleManager.RegisteredStyles;
   try
     if LRegisteredStyles.ContainsKey(StyleName) then
       Result:=LRegisteredStyles[StyleName];
@@ -382,57 +480,72 @@ begin
 end;
 
 
-class procedure TStyleManagerHelper.ReloadStyle(const Name: string);
+class procedure TStyleManagerHelper.ReloadStyle(const StyleName : string);
 var
   LStyle: TCustomStyleServices;
-  t     : TPair<string, TStyleManager.TSourceInfo>;
+  LPair : TPair<string, TSourceInfo>;
+  LRegisteredStyles : TDictionary<string, TSourceInfo>;
 begin
 
- if SameText(Name, ActiveStyle.Name, loUserLocale) then
+ if SameText(StyleName, ActiveStyle.Name, loUserLocale) then
    SetStyle(SystemStyle);
 
  for LStyle in Styles do
-  if SameText(Name, LStyle.Name, loUserLocale) then
+  if SameText(StyleName, LStyle.Name, loUserLocale) then
   begin
     LStyle.Free;
     Styles.Remove(LStyle);
   end;
 
-  for t in Self.FRegisteredStyles do
-    if SameText(Name, t.Key, loUserLocale) then
-     if (t.Value.Data<>nil) then
-     begin
-       TStream(t.Value.Data).Position:=0;
-       break;
-     end;
+  LRegisteredStyles := Self.RegisteredStyles;
+  try
+    for LPair in LRegisteredStyles do
+      if SameText(StyleName, LPair.Key, loUserLocale) then
+       if (LPair.Value.Data<>nil) then
+       begin
+         TStream(LPair.Value.Data).Position:=0;
+         break;
+       end;
+  finally
+     LRegisteredStyles.Free;
+  end;
 
- SetStyle(Name);
+ SetStyle(StyleName);
 end;
 
-class procedure TStyleManagerHelper.RemoveStyle(const Name: string);
+class procedure TStyleManagerHelper.RemoveStyle(const StyleName: string);
 var
   LStyle: TCustomStyleServices;
-  t     : TPair<string, TStyleManager.TSourceInfo>;
+  LPair : TPair<string, TSourceInfo>;
 begin
- if SameText(Name, ActiveStyle.Name, loUserLocale) then
+ if SameText(StyleName, ActiveStyle.Name, loUserLocale) then
    SetStyle(SystemStyle);
 
  for LStyle in Styles do
-  if SameText(Name, LStyle.Name, loUserLocale) then
+  if SameText(StyleName, LStyle.Name, loUserLocale) then
   begin
     LStyle.Free;
     Styles.Remove(LStyle);
   end;
 
-  for t in Self.FRegisteredStyles do
-    if SameText(Name, t.Key, loUserLocale) then
-     Self.FRegisteredStyles.Remove(t.Key);
+  for LPair in Self.RegisteredStyles do
+    if SameText(StyleName, LPair.Key, loUserLocale) then
+    begin
+     TMemoryStream(LPair.Value.Data).Free;
+     Self.RegisteredStyles.Remove(LPair.Key);
+    end;
 
 end;
 
 class function TStyleManagerHelper._GetStyles: TList<TCustomStyleServices>;
 begin
-  Result:=TStyleManager.GetStyles;
+  Result := TStyleManager.GetStyles;
+end;
+
+class function TStyleManagerHelper.StyleLoaded(
+  const StyleName: string): Boolean;
+begin
+   Result := TStyleManager.Style[StyleName] <> nil;
 end;
 
 function  GetRegisteredStylesHooks(ControlClass: TClass) : TStyleHookList;
@@ -465,7 +578,6 @@ begin
    if IsStyleHookRegistered(ControlClass, TStyleHook) then
     TStyleManager.Engine.UnRegisterStyleHook(ControlClass, TStyleHook);
 end;
-
 
 {$IFDEF USE_VCL_STYLESAPI}
 { TVCLStyleExt }

@@ -131,7 +131,7 @@ uses
   {$IFDEF DELPHIXE2_UP}
   Vcl.Themes,
   Vcl.Styles,
-  Vcl.Styles.Ext,
+  //Vcl.Styles.Ext,
   Colorizer.Vcl.Styles,
   {$ENDIF}
   {$IFDEF DELPHI2009_UP}

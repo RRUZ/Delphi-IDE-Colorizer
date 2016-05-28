@@ -17,6 +17,9 @@ uses
   Vcl.ImgList,
   Vcl.Graphics;
 
+{$IF RTLVersion>=24}
+  {$LEGACYIFEND ON}
+{$IFEND}
 
 type
   TColorizerStyleHook = class
@@ -534,32 +537,59 @@ type
   TCustomEditClass = class(TCustomEdit);
   TCustomTabControlClass = class(TCustomTabControl);
 
+  {$IF (CompilerVersion >= 31)}
+  {$HINTS OFF}
+  {$LEGACYIFEND ON}
+
+  TCustomStatusBarShadow = class(TWinControl)
+  private
+    FPanels: TStatusPanels;
+    FCanvas: TCanvas;
+  end;
+  {$HINTS ON}
+  {$IFEND}
+
   TCustomStatusBarHelper = class helper for TCustomStatusBar
   private
     function GetCanvasRW: TCanvas;
     procedure SetCanvasRW(const Value: TCanvas);
   public
-    procedure DoUpdatePanels(UpdateRects, UpdateText: Boolean);
+    //procedure DoUpdatePanels(UpdateRects, UpdateText: Boolean);
     property  CanvasRW : TCanvas read GetCanvasRW Write SetCanvasRW;
    end;
 
 { TCustomStatusBarHelper }
 
-procedure TCustomStatusBarHelper.DoUpdatePanels(UpdateRects,
-  UpdateText: Boolean);
-begin
-  Self.UpdatePanels(UpdateRects, UpdateText);
-end;
 
 function TCustomStatusBarHelper.GetCanvasRW: TCanvas;
 begin
- Result:= Self.FCanvas;
+  {$IF (CompilerVersion < 31)}
+  Result := Self.FCanvas;
+  {$ELSE}
+  Result := TCustomStatusBarShadow(Self).FCanvas;
+  {$IFEND}
 end;
 
 procedure TCustomStatusBarHelper.SetCanvasRW(const Value: TCanvas);
 begin
- Self.FCanvas:= Value;
+  {$IF (CompilerVersion < 31)}
+  Self.FCanvas := Value;
+  {$ELSE}
+  TCustomStatusBarShadow(Self).FCanvas := Value;
+  {$IFEND}
 end;
+
+
+//procedure TCustomStatusBarHelper.DoUpdatePanels(UpdateRects,
+//  UpdateText: Boolean);
+//begin
+//  {$IF (CompilerVersion < 31)}
+//  Self.UpdatePanels(UpdateRects, UpdateText);
+//  {$ELSE}
+//  Self.UpdatePanels(UpdateRects, UpdateText);
+//  {$IFEND}
+//end;
+
 
 procedure _DrawControlText(Canvas: TCanvas; const S: string; var R: TRect; Flags: Cardinal; ThemeTextColor: TColor);
 var

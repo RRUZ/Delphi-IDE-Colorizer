@@ -138,6 +138,9 @@ var
 begin
   Result:=false;
   LHook:=nil;
+  //if not SameText(Self.ClassName, 'TAppBuilder') and not SameText(Self.ClassName, 'TEditControl') then
+  //if  SameText(Self.ClassName, 'TTokenWindow') then
+    //AddLog2('HandleColorizerStyleMessage', Self.ClassName);
 
   if HookedControls.ContainsKey(Self) then
     LHook:=HookedControls[Self]
@@ -146,7 +149,9 @@ begin
     if Self is TCustomForm then
     begin
       HookedControls.Add(Self, TColorizerFormStyleHook.Create(Self));
-      LHook:=HookedControls[Self];
+      LHook := HookedControls[Self];
+//      if not SameText(Self.ClassName, 'TTokenWindow') then
+//        AddLog2('HandleColorizerStyleMessage', Self.ClassName);
     end
     else
     if Self is TCustomCheckBox then // try with TCustomCheckbox
@@ -241,33 +246,38 @@ end;
 //end;
 {$ENDIF}
 
-procedure Detour_TWinControl_WndProc(Self : TWinControlClass;var Message: TMessage);
+procedure Detour_TWinControl_WndProc(Self : TWinControlClass; var Message: TMessage);
 var
   LWindowProc : TWndMethod;
   LParentForm : TCustomForm;
 begin
-  if not (TWinControl(Self) is TCustomForm) then
-  begin
-    LParentForm:= GetParentForm(Self);
-    LWindowProc := Self.WindowProc;
-//    if TWinControl(Self) is TCustomCheckBox then
-//       AddLog2('Detour_TWinControl_WndProc '+Self.ClassName);
+  try
+    if not (TWinControl(Self) is TCustomForm) then
+    begin
+      LParentForm:= GetParentForm(Self);
+      LWindowProc := Self.WindowProc;
+  //    if TWinControl(Self) is TCustomCheckBox then
+  //       AddLog2('Detour_TWinControl_WndProc '+Self.ClassName);
 
-    if Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)
-    and Assigned(TColorizerLocalSettings.Settings) and (TColorizerLocalSettings.Settings.Enabled) then
-      if (Self.WindowHandle <> 0) {HandleAllocated} and
-        //((sfHandleMessages) in TStyleManager.Flags) and
-         not (csDesigning in Self.ComponentState) and
-         not (csDestroying in Self.ComponentState) and
-         not (csDestroyingHandle in Self.ControlState) and
-         not (csOverrideStylePaint in Self.ControlStyle)
-         //and (Self.StyleElements <> [])
-         and HandleColorizerStyleMessage(Self, Message, LWindowProc)
-         then
-          Exit;
+      if Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)
+      and Assigned(TColorizerLocalSettings.Settings) and (TColorizerLocalSettings.Settings.Enabled) then
+        if (Self.WindowHandle <> 0) {HandleAllocated} and
+          //((sfHandleMessages) in TStyleManager.Flags) and
+           not (csDesigning in Self.ComponentState) and
+           not (csDestroying in Self.ComponentState) and
+           not (csDestroyingHandle in Self.ControlState) and
+           not (csOverrideStylePaint in Self.ControlStyle)
+           //and (Self.StyleElements <> [])
+           and HandleColorizerStyleMessage(Self, Message, LWindowProc)
+           then
+            Exit;
+    end;
+
+    Trampoline_TWincontrol_WndProc(Self, Message);
+  except
+    on E : Exception do
+     AddLog2('Detour_TWinControl_WndProc', E.Message);
   end;
-
-  Trampoline_TWincontrol_WndProc(Self, Message);
 end;
 
 procedure Detour_TCustomForm_WndProc(Self : TCustomForm;var Message: TMessage);
@@ -341,9 +351,9 @@ begin
        if (Screen<>nil) and (LHWND>0) then
        begin
           sClassName:= GetWindowClassName(wParam);
-          if sClassName<>'' then
+          if (sClassName <> '') then
           begin
-            //AddLog('Before HCBT_SETFOCUS '+ClassNameBuffer);
+            //AddLog2('Before HCBT_SETFOCUS '+sClassName);
             if (TColorizerLocalSettings.HookedWindows.IndexOf(sClassName)>=0) or  (TColorizerLocalSettings.HookedScrollBars.IndexOf(sClassName)>=0) then
             begin
               LWinControl:=FindControl(LHWND);   //use FindControl because some forms are not registered in the Screen.Forms list
@@ -355,7 +365,7 @@ begin
               if (LWinControl<>nil) and ((LParentForm<>nil) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
               begin
                 Colorizer.Utils.ProcessComponent(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.ActionBarStyle, LWinControl);
-                //AddLog2('HCBT_SETFOCUS '+ClassNameBuffer);
+                //AddLog2('HCBT_SETFOCUS '+sClassName);
               end;
             end;
           end;
@@ -375,27 +385,28 @@ begin
        end;
      end;
 }
-     HCBT_ACTIVATE:
-     begin
-       LHWND := HWND(wParam);
+      HCBT_ACTIVATE:
+        begin
+          LHWND := HWND(wParam);
 
-       if (Screen<>nil) and (LHWND>0) then
-       begin
-          sClassName:= GetWindowClassName(wParam);
-          if sClassName<>'' then
+          if (Screen <> nil) and (LHWND > 0) then
           begin
-             //AddLog2('Before HCBT_ACTIVATE '+sClassName);
-            if (TColorizerLocalSettings.HookedWindows.IndexOf(sClassName)>=0) then
-            for i := 0 to Screen.FormCount-1 do
-             if (Screen.Forms[i].Handle=LHWND) and not (csDesigning in Screen.Forms[i].ComponentState) then
-               begin
-                 Colorizer.Utils.ProcessComponent(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.ActionBarStyle, Screen.Forms[i]);
-                 //AddLog('HCBT_ACTIVATE '+ClassNameBuffer);
-                 Break;
-               end;
+            sClassName := GetWindowClassName(wParam);
+            if (sClassName <> '') then
+            begin
+              // AddLog2('Before HCBT_ACTIVATE '+sClassName);
+              if (TColorizerLocalSettings.HookedWindows.IndexOf(sClassName) >= 0) then
+                for i := 0 to Screen.FormCount - 1 do
+                  if (Screen.Forms[i].Handle = LHWND) and not(csDesigning in Screen.Forms[i].ComponentState) then
+                  begin
+                    Colorizer.Utils.ProcessComponent(TColorizerLocalSettings.ColorMap,
+                      TColorizerLocalSettings.ActionBarStyle, Screen.Forms[i]);
+                    // AddLog('HCBT_ACTIVATE '+ClassNameBuffer);
+                    Break;
+                  end;
+            end;
           end;
-       end;
-     end;
+        end;
    end;
   Result := CallNextHookEx(hhk, nCode, wParam, lParam);
 end;

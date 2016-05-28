@@ -32,12 +32,12 @@ interface
 implementation
 
 uses
-  Windows,
-  Messages,
-  Forms,
-  Menus,
+  Winapi.Windows,
+  Winapi.Messages,
+  Vcl.Forms,
+  Vcl.Menus,
   System.Classes,
-  SysUtils,
+  System.SysUtils,
   Vcl.Graphics,
   Vcl.Styles,
   Vcl.Themes,
@@ -108,6 +108,22 @@ type
     function  DoDrawTextAddress: Pointer;
   end;
 
+ {$IF RTLVersion>=24}
+   {$LEGACYIFEND ON}
+ {$IFEND}
+
+ {$IF (CompilerVersion >= 31)}
+ {$HINTS OFF}
+  TThemedMenuItemShadow = class(TCustomMenuItem)
+  private
+    FCheckRect: TRect;
+    FGutterRect: TRect;
+    FPaintRect: TRect;
+    FSubMenuGlyphRect: TRect;
+    FSeparatorHeight: Integer;
+  end;
+ {$HINTS ON}
+ {$IFEND}
 
 function DoDrawText(DC: HDC; Details: TThemedElementDetails;
   const S: string; var R: TRect; Flags: TTextFormat; Options: TStyleTextOptions): Boolean;
@@ -119,7 +135,7 @@ begin
     LColorRef := SetTextColor(DC, Vcl.Graphics.ColorToRGB(Options.TextColor));
     try
       SetBkMode(DC, TRANSPARENT);
-      Windows.DrawText(DC, PChar(S), Length(S), R, LFlags);
+      Winapi.Windows.DrawText(DC, PChar(S), Length(S), R, LFlags);
     finally
       SetTextColor(DC, LColorRef);
     end;
@@ -304,7 +320,7 @@ var
 begin
   if TColorizerLocalSettings.Settings.Enabled and TColorizerLocalSettings.Settings.UseVCLStyles and TColorizerLocalSettings.Settings.VCLStylesMenusColors then
   begin
-    Windows.GetClientRect(Self.Handle, RC);
+    Winapi.Windows.GetClientRect(Self.Handle, RC);
     GetWindowRect(Self.Handle, RW);
     MapWindowPoints(0, Self.Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
@@ -411,7 +427,7 @@ var
 begin
   if TColorizerLocalSettings.Settings.Enabled and TColorizerLocalSettings.Settings.UseVCLStyles and TColorizerLocalSettings.Settings.VCLStylesMenusColors then
   begin
-    Windows.GetClientRect(Self.Handle, RC);
+    Winapi.Windows.GetClientRect(Self.Handle, RC);
     GetWindowRect(Self.Handle, RW);
     MapWindowPoints(0, Self.Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
@@ -433,88 +449,186 @@ end;
 
 { TThemedMenuItemHelper }
 
+{$IFDEF DELPHIX_LONDON}
+const
+ sVclActnBandModule =  'vclactnband240.bpl';
+{$ENDIF}
+
+
 function TThemedMenuItemHelper.DoDrawMenuCheckAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.DoDrawMenuCheck;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclActnBandModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Themedactnctrls@TThemedMenuItem@DoDrawMenuCheck$qqrv')
+  else
+    raise Exception.CreateFmt('Package %s not found.', [sVclActnBandModule]);
+  {$IFEND}
 end;
 
 
 function TThemedMenuItemHelper.DoDrawTextAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure(DC: HDC; const Text: string; var Rect: TRect; Flags: Longint) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.DoDrawText;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclActnBandModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Themedactnctrls@TThemedMenuItem@DoDrawText$qqrp5HDC__x20System@UnicodeStringr18System@Types@TRecti')
+  else
+    raise Exception.CreateFmt('Package %s not found.', [sVclActnBandModule]);
+  {$IFEND}
 end;
 
 
-procedure TThemedMenuItemHelper.DoDrawTextHelper(DC: HDC; const Text: string;
-  var Rect: TRect; Flags: Integer);
+procedure TThemedMenuItemHelper.DoDrawTextHelper(DC: HDC; const Text: string; var Rect: TRect; Flags: Integer);
+  {$IF (CompilerVersion < 31)}
+  {$ELSE}
+  type
+  TDoDrawText = procedure(Self : TThemedMenuItem; DC: HDC; const Text: string; var Rect: TRect; Flags: Integer);
+  var
+    LDoDrawText : TDoDrawText;
+    hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
- Self.DoDrawText(DC, Text, Rect, Flags);
+  {$IF (CompilerVersion < 31)}
+    Self.DoDrawText(DC, Text, Rect, Flags);
+  {$ELSE}
+  hModule := LoadPackage(sVclActnBandModule);
+  if (hModule > 0) then
+  begin
+    @LDoDrawText := GetProcAddress(hModule, '@Vcl@Themedactnctrls@TThemedMenuItem@DoDrawText$qqrp5HDC__x20System@UnicodeStringr18System@Types@TRecti');
+    LDoDrawText(Self, DC, Text, Rect, Flags);
+  end;
+  {$IFEND}
 end;
 
 function TThemedMenuItemHelper.GetCheckRectHelper: TRect;
 begin
- Result:= Self.FCheckRect;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FCheckRect;
+ {$ELSE}
+   Result := TThemedMenuItemShadow(Self).FCheckRect;
+ {$IFEND}
 end;
 
 function TThemedMenuItemHelper.GetGutterRectHelper: TRect;
 begin
- Result:=Self.FGutterRect;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FGutterRect;
+ {$ELSE}
+   Result := TThemedMenuItemShadow(Self).FGutterRect;
+ {$IFEND}
 end;
 
 function TThemedMenuItemHelper.GetPaintRectHelper: TRect;
 begin
- Result:=Self.FPaintRect;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FPaintRect;
+ {$ELSE}
+   Result := TThemedMenuItemShadow(Self).FPaintRect;
+ {$IFEND}
 end;
 
 function TThemedMenuItemHelper.GetSeparatorHeightHelper: Integer;
 begin
- Result:= Self.FSeparatorHeight;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FSeparatorHeight;
+ {$ELSE}
+   Result := TThemedMenuItemShadow(Self).FSeparatorHeight;
+ {$IFEND}
 end;
 
 function TThemedMenuItemHelper.GetSubMenuGlyphRectHelper: TRect;
 begin
- Result:=Self.FSubMenuGlyphRect;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FSubMenuGlyphRect;
+ {$ELSE}
+   Result := TThemedMenuItemShadow(Self).FSubMenuGlyphRect;
+ {$IFEND}
 end;
 
 procedure TThemedMenuItemHelper.SetCheckRectHelper(const Value: TRect);
 begin
- Self.FCheckRect:= Value;
+ {$IF (CompilerVersion < 31)}
+   Self.FCheckRect:= Value;
+ {$ELSE}
+   TThemedMenuItemShadow(Self).FCheckRect := Value;
+ {$IFEND}
 end;
 
 procedure TThemedMenuItemHelper.SetGutterRectHelper(const Value: TRect);
 begin
- Self.FGutterRect:=Value;
+ {$IF (CompilerVersion < 31)}
+   Self.FGutterRect := Value;
+ {$ELSE}
+   TThemedMenuItemShadow(Self).FGutterRect := Value;
+ {$IFEND}
 end;
 
 procedure TThemedMenuItemHelper.SetPaintRectHelper(const Value: TRect);
 begin
- Self.FPaintRect:=Value;
+ {$IF (CompilerVersion < 31)}
+   Self.FPaintRect := Value;
+ {$ELSE}
+   TThemedMenuItemShadow(Self).FPaintRect := Value;
+ {$IFEND}
 end;
 
 procedure TThemedMenuItemHelper.SetSeparatorHeightHelper(const Value: Integer);
 begin
- Self.FSeparatorHeight:=Value;
+ {$IF (CompilerVersion < 31)}
+   Self.FSeparatorHeight := Value;
+ {$ELSE}
+   TThemedMenuItemShadow(Self).FSeparatorHeight := Value;
+ {$IFEND}
 end;
 
 procedure TThemedMenuItemHelper.SetSubMenuGlyphRectHelper(const Value: TRect);
 begin
- Self.FSubMenuGlyphRect:=Value;
+ {$IF (CompilerVersion < 31)}
+   Self.FSubMenuGlyphRect := Value;
+ {$ELSE}
+   TThemedMenuItemShadow(Self).FSubMenuGlyphRect := Value;
+ {$IFEND}
 end;
 
 { TThemedMenuButtonHelper }
 
 function TThemedMenuButtonHelper.DoDrawTextAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure(const Text: string; var Rect: TRect; Flags: Integer) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
-  MethodAddr := Self.DoDrawText;
-  Result     := TMethod(MethodAddr).Code;
+  {$IF (CompilerVersion < 31)}
+    MethodAddr := Self.DoDrawText;
+    Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclActnBandModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Themedactnctrls@TThemedMenuButton@DoDrawText$qqrx20System@UnicodeStringr18System@Types@TRecti')
+  else
+    raise Exception.CreateFmt('Package %s not found.', [sVclActnBandModule]);
+  {$IFEND}
 end;
 
 procedure InstallThemedActnCtrlsHooks;

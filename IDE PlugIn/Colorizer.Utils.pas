@@ -1,4 +1,4 @@
-//**************************************************************************************************
+// **************************************************************************************************
 //
 // Unit Colorizer.Utils
 // unit Colorizer.Utils for the Delphi IDE Colorizer
@@ -17,582 +17,624 @@
 // Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
 // All Rights Reserved.
 //
-//**************************************************************************************************
+// **************************************************************************************************
 
 unit Colorizer.Utils;
 
 interface
+
 {$I ..\Common\Jedi.inc}
 
 uses
- {$IFDEF DELPHIXE2_UP}
- Vcl.Themes,
- Vcl.Styles,
- Colorizer.Vcl.Styles,
- {$ENDIF}
- System.Classes,
- {$IFDEF DELPHI2009_UP}
- Generics.Collections,
- {$ENDIF}
- Vcl.ActnMan,
- Vcl.ComCtrls,
- Vcl.StdCtrls,
- uDelphiVersions,
- uDelphiIDEHighlight,
- Vcl.ActnColorMaps,
- System.StrUtils,
- WinAPi.Windows,
- Vcl.Imaging.PngImage,
- Vcl.Graphics,
- Colorizer.Settings,
- Colorizer.XPStyleActnCtrls;
+{$IFDEF DELPHIXE2_UP}
+  Vcl.Themes,
+  Vcl.Styles,
+  Colorizer.Vcl.Styles,
+{$ENDIF}
+  System.Classes,
+{$IFDEF DELPHI2009_UP}
+  Generics.Collections,
+{$ENDIF}
+  Vcl.ActnMan,
+  Vcl.ComCtrls,
+  Vcl.StdCtrls,
+  uDelphiVersions,
+  uDelphiIDEHighlight,
+  Vcl.ActnColorMaps,
+  System.StrUtils,
+  WinAPi.Windows,
+  Vcl.Imaging.PngImage,
+  Vcl.Graphics,
+  Colorizer.Settings,
+  Colorizer.XPStyleActnCtrls;
 
 {.$DEFINE ENABLELOG}
+procedure AddLog2(const Message: string); overload;
+procedure AddLog2(const Category, Message: string); overload;
 
-procedure AddLog2(const Message : string); overload;
-procedure AddLog2(const Category, Message : string); overload;
-
-procedure RefreshIDETheme(AColorMap:TColorizerColorMap;AStyle: TActionBarStyle;Restore : Boolean = False;Invalidate : Boolean = False); overload;
-procedure RefreshIDETheme(Invalidate : Boolean = False); overload;
+procedure RefreshIDETheme(AColorMap: TColorizerColorMap; AStyle: TActionBarStyle; Restore: Boolean = False; Invalidate: Boolean = False); overload;
+procedure RefreshIDETheme(Invalidate: Boolean = False); overload;
 procedure RestoreIDESettings();
 procedure RestoreIDESettingsFast();
 
-procedure LoadSettings(AColorMap:TColorizerColorMap; Settings : TSettings);
-procedure ProcessComponent(AColorMap:TColorizerColorMap;AStyle: TActionBarStyle;AComponent: TComponent;Restore : Boolean = False; Invalidate : Boolean = False);
-procedure GenerateColorMap(AColorMap:TColorizerColorMap;Color, FontColor:TColor);{$IF CompilerVersion >= 23}overload;{$IFEND}
+procedure LoadSettings(AColorMap: TColorizerColorMap; Settings: TSettings);
+procedure ProcessComponent(AColorMap: TColorizerColorMap; AStyle: TActionBarStyle; AComponent: TComponent; Restore: Boolean = False; Invalidate: Boolean = False);
+procedure GenerateColorMap(AColorMap: TColorizerColorMap; Color, FontColor: TColor);
+{$IF CompilerVersion >= 23}overload; {$IFEND}
 {$IFDEF DELPHIXE2_UP}
-procedure AssignColorsFromVCLStyle(AColorMap:TColorizerColorMap;Style:TCustomStyleServices);
+procedure AssignColorsFromVCLStyle(AColorMap: TColorizerColorMap; Style: TCustomStyleServices);
 procedure RegisterVClStylesFiles;
 {$ENDIF}
 
+type
+  TColorizerLocalSettings = class
+  public
+    class var FActnStyleList: TList<TActionManager>;
+    class var FColorMap: TColorizerColorMap;
+    class var FActionBarStyle: TActionBarStyle;
+    class var FHookedWindows: TStringList;
+    class var FHookedScrollBars: TStringList;
+    class var FWinAPIClasses: TStringList;
+    class var FHookedWindowsText: string;
+    class var FHookedScrollBarsText: string;
+    class var FVCLStylesPath: string;
+    class var FSettings: TSettings;
+    class var FImagesGutterChanged: Boolean;
+    class var FIDEData: TDelphiVersionData;
+    class var FDockImages: TPngImage;
+    class var FUnloading: Boolean;
+    class var FModernTheme: TModernTheme;
+  public
+    class property ActnStyleList: TList<TActionManager> read FActnStyleList write FActnStyleList;
+    class property ColorMap: TColorizerColorMap read FColorMap write FColorMap;
+    class property ActionBarStyle: TActionBarStyle read FActionBarStyle write FActionBarStyle;
+    class property HookedWindows: TStringList read FHookedWindows write FHookedWindows;
+    class property HookedScrollBars: TStringList read FHookedScrollBars write FHookedScrollBars;
+    class property WinAPIClasses: TStringList read FWinAPIClasses write FWinAPIClasses;
+    class property HookedWindowsText: string read FHookedWindowsText write FHookedWindowsText;
+    class property HookedScrollBarsText: string read FHookedScrollBarsText write FHookedScrollBarsText;
+    class property VCLStylesPath: string read FVCLStylesPath write FVCLStylesPath;
+    class property Settings: TSettings read FSettings write FSettings;
+    class property ImagesGutterChanged: Boolean read FImagesGutterChanged write FImagesGutterChanged;
+    class property IDEData: TDelphiVersionData read FIDEData write FIDEData;
+    class property ModernTheme: TModernTheme read FModernTheme write FModernTheme;
 
- type
-   TColorizerLocalSettings = class
-     public
-        class var FActnStyleList : TList<TActionManager>;
-        class var FColorMap       : TColorizerColorMap;
-        class var FActionBarStyle : TActionBarStyle;
-        class var FHookedWindows     : TStringList;
-        class var FHookedScrollBars  : TStringList;
-        class var FWinAPIClasses     : TStringList;
-        class var FHookedWindowsText    : string;
-        class var FHookedScrollBarsText  : string;
-        class var FVCLStylesPath  : string;
-        class var FSettings       : TSettings;
-        class var FImagesGutterChanged : Boolean;
-        class var FIDEData        : TDelphiVersionData;
-        class var FDockImages     : TPngImage;
-        class var FUnloading : Boolean;
-        class var FModernTheme: TModernTheme;
-     public
-        class property ActnStyleList : TList<TActionManager> read  FActnStyleList write FActnStyleList;
-        class property ColorMap       : TColorizerColorMap read  FColorMap write FColorMap;
-        class property ActionBarStyle : TActionBarStyle read  FActionBarStyle write FActionBarStyle;
-        class property HookedWindows     : TStringList read  FHookedWindows write FHookedWindows;
-        class property HookedScrollBars  : TStringList read  FHookedScrollBars write FHookedScrollBars;
-        class property WinAPIClasses     : TStringList read  FWinAPIClasses write FWinAPIClasses;
-        class property HookedWindowsText    : string read  FHookedWindowsText write FHookedWindowsText;
-        class property HookedScrollBarsText  : string read  FHookedScrollBarsText write FHookedScrollBarsText;
-        class property VCLStylesPath  : string read  FVCLStylesPath write FVCLStylesPath;
-        class property Settings       : TSettings read  FSettings write FSettings;
-        class property ImagesGutterChanged : Boolean read  FImagesGutterChanged write FImagesGutterChanged;
-        class property IDEData        : TDelphiVersionData read  FIDEData write FIDEData;
-        class property ModernTheme : TModernTheme  read FModernTheme write FModernTheme;
-
-        class property DockImages     : TPngImage read  FDockImages write FDockImages;
-        class property Unloading : Boolean read  FUnloading write FUnloading;
-    end;
+    class property DockImages: TPngImage read FDockImages write FDockImages;
+    class property Unloading: Boolean read FUnloading write FUnloading;
+  end;
 
 implementation
 
-{.$DEFINE DEBUG_MODE}
+{ .$DEFINE DEBUG_MODE }
 
 uses
- {$IFDEF DELPHIXE_UP}
- Vcl.PlatformDefaultStyleActnCtrls,
- {$ELSE}
- Vcl.XPStyleActnCtrls,
- {$ENDIF}
- {$IFDEF DELPHI2010_UP}
- System.Rtti,
- System.TypInfo,
- {$ENDIF}
- System.Types,
- System.IOUtils,
- Vcl.Forms,
- System.SysUtils,
- Vcl.Controls,
- Vcl.GraphUtil,
- Colorizer.StoreColorMap,
- Colorizer.Wrappers,
- Vcl.Dialogs,
- uMisc,
- uRttiHelper;
-
-{$IFDEF ENABLELOG}
+{$IFDEF DELPHIXE_UP}
+  Vcl.PlatformDefaultStyleActnCtrls,
+{$ELSE}
+  Vcl.XPStyleActnCtrls,
 {$ENDIF}
+{$IFDEF DELPHI2010_UP}
+  System.Rtti,
+  System.TypInfo,
+{$ENDIF}
+  System.Types,
+  System.IOUtils,
+  Vcl.Forms,
+{$IFDEF ENABLELOG}
+  System.SyncObjs,
+{$ENDIF}
+  System.SysUtils,
+  Vcl.Controls,
+  Vcl.GraphUtil,
+  Colorizer.StoreColorMap,
+  Colorizer.Wrappers,
+  Vcl.Dialogs,
+  uMisc,
+  uRttiHelper;
 
-//var
-//  LFieldsComponents : TObjectDictionary<string,TStringList>;
+
+// var
+// LFieldsComponents : TObjectDictionary<string,TStringList>;
 
 {$IFDEF DELPHIXE2_UP}
+
 procedure RegisterVClStylesFiles;
 var
- sPath, FileName : string;
- LFiles  : TStringDynArray;
+  sPath, FileName: string;
+  LFiles: TStringDynArray;
 begin
-  sPath:=TColorizerLocalSettings.VCLStylesPath;
-  if DirectoryExists(sPath)  then
+  sPath := TColorizerLocalSettings.VCLStylesPath;
+  if DirectoryExists(sPath) then
     LFiles := TDirectory.GetFiles(sPath, '*.vsf');
 
-  //Appmethod doesn't include VCL Styles files, so we need read the styles from the installation folder of the plugin
-  if not DirectoryExists(sPath) or (Length(LFiles)=0)  then
+  // Appmethod doesn't include VCL Styles files, so we need read the styles from the installation folder of the plugin
+  if not DirectoryExists(sPath) or (Length(LFiles) = 0) then
   begin
-    sPath:= ExtractFilePath(ExcludeTrailingPathDelimiter(TSettings.GetSettingsFolder()))+'Styles\';
-    if DirectoryExists(sPath)  then
+    sPath := ExtractFilePath(ExcludeTrailingPathDelimiter(TSettings.GetSettingsFolder())) + 'Styles\';
+    if DirectoryExists(sPath) then
       LFiles := TDirectory.GetFiles(sPath, '*.vsf');
   end;
 
-    if Length(LFiles)>0 then
+  if Length(LFiles) > 0 then
     for FileName in LFiles do
-     if TStyleManager.IsValidStyle(FileName) then
+      if TStyleManager.IsValidStyle(FileName) then
       begin
-         try
-           TStyleManager.LoadFromFile(FileName);
-         except
-           on EDuplicateStyleException do
-         end;
+        try
+          TStyleManager.LoadFromFile(FileName);
+        except
+          on EDuplicateStyleException do
+        end;
       end;
 end;
 {$ENDIF}
 
-
-procedure AddLog2(const Message : string);
+procedure AddLog2(const Message: string);
 begin
   AddLog2('', Message);
 end;
 
-
-procedure RefreshIDETheme(Invalidate : Boolean = False);
+procedure RefreshIDETheme(Invalidate: Boolean = False);
 begin
-   RefreshIDETheme(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.ActionBarStyle, False, Invalidate);
+  RefreshIDETheme(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.ActionBarStyle, False, Invalidate);
 end;
 
 procedure RestoreIDESettingsFast();
 var
-  i, j  : Integer;
-  LComponent : TComponent;
-  NativeColorMap : TColorizerColorMap;
+  i, j: Integer;
+  LComponent: TComponent;
+  NativeColorMap: TColorizerColorMap;
 {$IFDEF DELPHIXE_UP}
-  LThemedColorMap : TThemedColorMap;
+  LThemedColorMap: TThemedColorMap;
 {$ELSE}
   LThemedColorMap: TStandardColorMap;
 {$ENDIF}
 begin
-  NativeColorMap:=TColorizerColorMap.Create(nil);
+  NativeColorMap := TColorizerColorMap.Create(nil);
   try
 {$IFDEF DELPHIXE_UP}
-  LThemedColorMap:=TThemedColorMap.Create(nil);
+    LThemedColorMap := TThemedColorMap.Create(nil);
 {$ELSE}
-  LThemedColorMap:=TStandardColorMap.Create(nil);
+    LThemedColorMap := TStandardColorMap.Create(nil);
 {$ENDIF}
-  NativeColorMap.Assign(LThemedColorMap);
-  NativeColorMap.WindowColor:=clWindow;
-  for i := 0 to Screen.FormCount-1 do
-   if SameText(Screen.Forms[i].ClassName, 'TAppBuilder') then
-     for j := 0 to Screen.Forms[i].ComponentCount-1 do
-      begin
-       LComponent:= Screen.Forms[i].Components[j];
-       if LComponent is TToolBar then
-         RunWrapper(LComponent, NativeColorMap, False, True);
-      end;
+    NativeColorMap.Assign(LThemedColorMap);
+    NativeColorMap.WindowColor := clWindow;
+    for i := 0 to Screen.FormCount - 1 do
+      if SameText(Screen.Forms[i].ClassName, 'TAppBuilder') then
+        for j := 0 to Screen.Forms[i].ComponentCount - 1 do
+        begin
+          LComponent := Screen.Forms[i].Components[j];
+          if LComponent is TToolBar then
+            RunWrapper(LComponent, NativeColorMap, False, True);
+        end;
 
   finally
     NativeColorMap.Free;
   end;
 end;
 
-procedure RefreshIDETheme(AColorMap:TColorizerColorMap;AStyle: TActionBarStyle;Restore : Boolean = False; Invalidate : Boolean = False);
+procedure RefreshIDETheme(AColorMap: TColorizerColorMap; AStyle: TActionBarStyle; Restore: Boolean = False; Invalidate: Boolean = False);
 var
-  Index     : Integer;
+  Index: Integer;
 begin
-  for Index := 0 to Screen.FormCount-1 do
-//  if TColorizerLocalSettings.HookedWindows.IndexOf(Screen.Forms[Index].ClassName)>=0 then
- //  if not (csDesigning in Screen.Forms[Index].ComponentState) then
-   begin
-     //AddLog('RefreshIDETheme', 'Restore = '+BoolToStr(Restore, True));
-     //AddLog('RefreshIDETheme', Screen.Forms[Index].ClassName);
-     ProcessComponent(AColorMap, AStyle, Screen.Forms[Index], Restore, Invalidate);
-   end;
-//  {$IFDEF DELPHIXE2_UP}
-//  else
-//  if (TColorizerLocalSettings.Settings<>nil) and (TColorizerLocalSettings.Settings.UseVCLStyles) and (csDesigning in Screen.Forms[index].ComponentState) then
-//    ApplyEmptyVCLStyleHook(Screen.Forms[index].ClassType);
-//  {$ENDIF}
+  for Index := 0 to Screen.FormCount - 1 do
+  // if TColorizerLocalSettings.HookedWindows.IndexOf(Screen.Forms[Index].ClassName)>=0 then
+  // if not (csDesigning in Screen.Forms[Index].ComponentState) then
+  begin
+    // AddLog('RefreshIDETheme', 'Restore = '+BoolToStr(Restore, True));
+    // AddLog('RefreshIDETheme', Screen.Forms[Index].ClassName);
+    ProcessComponent(AColorMap, AStyle, Screen.Forms[Index], Restore, Invalidate);
+  end;
+  // {$IFDEF DELPHIXE2_UP}
+  // else
+  // if (TColorizerLocalSettings.Settings<>nil) and (TColorizerLocalSettings.Settings.UseVCLStyles) and (csDesigning in Screen.Forms[index].ComponentState) then
+  // ApplyEmptyVCLStyleHook(Screen.Forms[index].ClassType);
+  // {$ENDIF}
 end;
 
-
-procedure LoadSettings(AColorMap:TColorizerColorMap; Settings : TSettings);
+procedure LoadSettings(AColorMap: TColorizerColorMap; Settings: TSettings);
 begin
-  if Settings=nil then exit;
+  if Settings = nil then
+    exit;
   ReadSettings(Settings, ExtractFilePath(GetModuleLocation()));
 
   if FileExists(Settings.ThemeFileName) then
-   LoadColorMapFromXmlFile(AColorMap, Settings.ThemeFileName);
+    LoadColorMapFromXmlFile(AColorMap, Settings.ThemeFileName);
 
- {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if Settings.UseVCLStyles and Settings.VCLStylesMenusColors then
     AssignColorsFromVCLStyle(AColorMap, ColorizerStyleServices);
 {$ENDIF}
-
-//  if ActionBarStyles.IndexOf(Settings.StyleBarName)>=0 then
-//    ActionBarStyle:= TActionBarStyle(ActionBarStyles.Objects[ActionBarStyles.IndexOf(Settings.StyleBarName)]);
+  // if ActionBarStyles.IndexOf(Settings.StyleBarName)>=0 then
+  // ActionBarStyle:= TActionBarStyle(ActionBarStyles.Objects[ActionBarStyles.IndexOf(Settings.StyleBarName)]);
 end;
 
-
-procedure GenerateColorMap(AColorMap:TColorizerColorMap;Color, FontColor:TColor);
+procedure GenerateColorMap(AColorMap : TColorizerColorMap; Color, FontColor : TColor);
 begin
-  AColorMap.Color                 :=Color;
-  AColorMap.ShadowColor           :=GetShadowColor(Color);
-  AColorMap.FontColor             :=FontColor;
-  AColorMap.MenuColor             :=GetHighLightColor(Color);
-  AColorMap.WindowColor           :=AColorMap.MenuColor;
-  AColorMap.HighlightColor        :=GetHighLightColor(AColorMap.MenuColor);
-  AColorMap.HotColor              :=GetHighLightColor(AColorMap.MenuColor);
-  AColorMap.BtnSelectedColor      :=AColorMap.HotColor;
-  AColorMap.BtnSelectedFont       :=AColorMap.FontColor;
+  AColorMap.Color := Color;
+  AColorMap.ShadowColor := GetShadowColor(Color);
+  AColorMap.FontColor := FontColor;
+  AColorMap.MenuColor := GetHighLightColor(Color);
+  AColorMap.WindowColor := AColorMap.MenuColor;
+  AColorMap.HighlightColor := GetHighLightColor(AColorMap.MenuColor);
+  AColorMap.HotColor := GetHighLightColor(AColorMap.MenuColor);
+  AColorMap.BtnSelectedColor := AColorMap.HotColor;
+  AColorMap.BtnSelectedFont := AColorMap.FontColor;
 
-  AColorMap.SelectedColor         :=GetHighLightColor(Color, 50);
-  AColorMap.SelectedFontColor     :=AColorMap.FontColor;
-  AColorMap.HotFontColor          :=AColorMap.FontColor;
+  AColorMap.SelectedColor := GetHighLightColor(Color, 50);
+  AColorMap.SelectedFontColor := AColorMap.FontColor;
+  AColorMap.HotFontColor := AColorMap.FontColor;
 
-  AColorMap.BtnFrameColor         :=GetShadowColor(Color);
-  AColorMap.FrameTopLeftInner     :=GetShadowColor(Color);
-  AColorMap.FrameTopLeftOuter     :=AColorMap.FrameTopLeftInner;
-  AColorMap.FrameBottomRightInner :=AColorMap.FrameTopLeftInner;
-  AColorMap.FrameBottomRightOuter :=AColorMap.FrameTopLeftInner;
+  AColorMap.BtnFrameColor := GetShadowColor(Color);
+  AColorMap.FrameTopLeftInner := GetShadowColor(Color);
+  AColorMap.FrameTopLeftOuter := AColorMap.FrameTopLeftInner;
+  AColorMap.FrameBottomRightInner := AColorMap.FrameTopLeftInner;
+  AColorMap.FrameBottomRightOuter := AColorMap.FrameTopLeftInner;
 end;
 
 {$IFDEF DELPHIXE2_UP}
-procedure AssignColorsFromVCLStyle(AColorMap:TColorizerColorMap;Style:TCustomStyleServices);
+
+procedure AssignColorsFromVCLStyle(AColorMap : TColorizerColorMap; Style : TCustomStyleServices);
 var
-  LDetails        : TThemedElementDetails;
-  ThemeTextColor  : TColor;
+  LDetails: TThemedElementDetails;
+  ThemeTextColor: TColor;
 begin
-  AColorMap.Color                 :=Style.GetStyleColor(scPanel);
-  AColorMap.ShadowColor           :=Style.GetStyleColor(scBorder);
+  AColorMap.Color := Style.GetStyleColor(scPanel);
+  AColorMap.ShadowColor := Style.GetStyleColor(scBorder);
 
   LDetails := Style.GetElementDetails(tmMenuBarItemNormal);
   Style.GetElementColor(LDetails, ecTextColor, ThemeTextColor);
 
-  AColorMap.FontColor             :=ThemeTextColor;//Style.GetStyleFontColor(sfButtonTextNormal);
-  AColorMap.MenuColor             :=Style.GetSystemColor(clMenu);
-  AColorMap.WindowColor           :=Style.GetStyleColor(scWindow);
+  //AddLog2(Format('ThemeTextColor %x', [ThemeTextColor]));
 
-  AColorMap.HighlightColor        :=Style.GetSystemColor(clHighlight);
-  AColorMap.HotColor              :=AColorMap.HighlightColor;//Style.GetStyleColor(scButtonHot);
-  AColorMap.BtnSelectedColor      :=AColorMap.HighlightColor;//Style.GetStyleColor(scButtonHot);
-  AColorMap.SelectedColor         :=AColorMap.HighlightColor;//Style.GetStyleColor(scButtonHot);
+  AColorMap.FontColor := ThemeTextColor; // Style.GetStyleFontColor(sfButtonTextNormal);
+  AColorMap.MenuColor := Style.GetSystemColor(clMenu);
+  AColorMap.WindowColor := Style.GetStyleColor(scWindow);
 
-  AColorMap.DisabledColor         :=Style.GetStyleColor(scButtonDisabled);
-  AColorMap.DisabledFontColor     :=Style.GetStyleFontColor(sfButtonTextDisabled);
+  AColorMap.HighlightColor := Style.GetSystemColor(clHighlight);
+  AColorMap.HotColor := AColorMap.HighlightColor; // Style.GetStyleColor(scButtonHot);
+  AColorMap.BtnSelectedColor := AColorMap.HighlightColor; // Style.GetStyleColor(scButtonHot);
+  AColorMap.SelectedColor := AColorMap.HighlightColor; // Style.GetStyleColor(scButtonHot);
 
+  AColorMap.DisabledColor := Style.GetStyleColor(scButtonDisabled);
+  AColorMap.DisabledFontColor := Style.GetStyleFontColor(sfButtonTextDisabled);
 
-  AColorMap.BtnSelectedFont       :=Style.GetSystemColor(clHighlightText);//Style.GetStyleFontColor(sfButtonTextHot);
-  AColorMap.SelectedFontColor     :=Style.GetSystemColor(clHighlightText);//Style.GetStyleFontColor(sfButtonTextHot);
-  AColorMap.HotFontColor          :=Style.GetSystemColor(clHighlightText);//Style.GetStyleFontColor(sfButtonTextHot);
+  AColorMap.BtnSelectedFont := Style.GetSystemColor(clHighlightText); // Style.GetStyleFontColor(sfButtonTextHot);
+  AColorMap.SelectedFontColor := Style.GetSystemColor(clHighlightText); // Style.GetStyleFontColor(sfButtonTextHot);
+  AColorMap.HotFontColor := Style.GetSystemColor(clHighlightText); // Style.GetStyleFontColor(sfButtonTextHot);
 
-  AColorMap.BtnFrameColor         :=Style.GetSystemColor(clBtnShadow);
+  AColorMap.BtnFrameColor := Style.GetSystemColor(clBtnShadow);
 
-  AColorMap.FrameTopLeftInner     :=Style.GetStyleColor(scBorder);
-  AColorMap.FrameTopLeftOuter     :=AColorMap.FrameTopLeftInner;
-  AColorMap.FrameBottomRightInner :=AColorMap.FrameTopLeftInner;
-  AColorMap.FrameBottomRightOuter :=AColorMap.FrameTopLeftInner;
+  AColorMap.FrameTopLeftInner := Style.GetStyleColor(scBorder);
+  AColorMap.FrameTopLeftOuter := AColorMap.FrameTopLeftInner;
+  AColorMap.FrameBottomRightInner := AColorMap.FrameTopLeftInner;
+  AColorMap.FrameBottomRightOuter := AColorMap.FrameTopLeftInner;
 end;
 {$ENDIF}
 
-procedure ProcessComponent(AColorMap:TColorizerColorMap;AStyle: TActionBarStyle;AComponent: TComponent;Restore : Boolean = False; Invalidate: Boolean = False);
+procedure ProcessComponent(AColorMap : TColorizerColorMap; AStyle : TActionBarStyle; AComponent : TComponent;
+  Restore : Boolean = False; Invalidate : Boolean = False);
 var
-  Index          : Integer;
-  LActionManager : TActionManager;
-  LForm          : TForm;
-  LParentForm : TCustomForm;
+  Index: Integer;
+  LActionManager: TActionManager;
+  LForm: TForm;
+  LParentForm: TCustomForm;
 begin
-    if not Assigned(AComponent) or not Assigned(AColorMap) or (csDesigning in AComponent.ComponentState) then  exit;
+  if not Assigned(AComponent) or not Assigned(AColorMap) or (csDesigning in AComponent.ComponentState) then
+    exit;
 
-    //AddLog2('ProcessComponent '+AComponent.Name);
+  // AddLog2('ProcessComponent '+AComponent.Name);
 
-    //cbDeviceSelector
-//    if SameText(AComponent.Name, 'cbDeviceSelector') and TComboBox(AComponent).im then
-//    begin
-//      //TRttiUtils.DumpObject(AComponent, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\cbDeviceSelector.pas');
-//
-//    end;
-
-
-//    if SameText(AComponent.ClassName, 'TComToolBarFrame') then
-//     TRttiUtils.DumpObject(AComponent, 'C:\Dephi\github\Delphi-IDE-Colorizer\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas');
-//    else
-//    if SameText(AComponent.ClassName, 'TCastaliaNavToolbarDropdown') then
-//     TRttiUtils.DumpObject(AComponent, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas');
+  // cbDeviceSelector
+  // if SameText(AComponent.Name, 'cbDeviceSelector') and TComboBox(AComponent).im then
+  // begin
+  // //TRttiUtils.DumpObject(AComponent, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\cbDeviceSelector.pas');
+  //
+  // end;
 
 
-//    if SameText(AComponent.ClassName, 'TListBox') and SameText(AComponent.Name, 'ResultsList') then
-//    begin
-//       AddLog2(Format('Name %s',[AComponent.Name]));
-//       s:= GetPropValue(TListBox(AComponent), 'Style');
-//       AddLog2(Format('%s Value %s',['Style', s]));
-//
-////       p:=  @(TComboBox(AComponent).OnDrawItem);
-//       //csOwnerDrawVariable combobox
-//    end;
-//
+  // if SameText(AComponent.ClassName, 'TComToolBarFrame') then
+  // TRttiUtils.DumpObject(AComponent, 'C:\Dephi\github\Delphi-IDE-Colorizer\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas');
+  // else
+  // if SameText(AComponent.ClassName, 'TCastaliaNavToolbarDropdown') then
+  // TRttiUtils.DumpObject(AComponent, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+AComponent.ClassName+'.pas');
 
-    if (AComponent is TForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(AComponent.ClassName)>=0) then
-    begin
 
-      LForm:=TForm(AComponent);
-      LForm.Color := AColorMap.Color;
-      LForm.Font.Color:=AColorMap.FontColor;
+  // if SameText(AComponent.ClassName, 'TListBox') and SameText(AComponent.Name, 'ResultsList') then
+  // begin
+  // AddLog2(Format('Name %s',[AComponent.Name]));
+  // s:= GetPropValue(TListBox(AComponent), 'Style');
+  // AddLog2(Format('%s Value %s',['Style', s]));
+  //
+  /// /       p:=  @(TComboBox(AComponent).OnDrawItem);
+  // //csOwnerDrawVariable combobox
+  // end;
+  //
 
-      if Invalidate then
-        LForm.Invalidate;
-    end
-    else
-    if AComponent Is TControl then
-    begin
-      LParentForm:= GetParentForm(TControl(AComponent));
-      if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
-       exit;
-    end;
+  if (AComponent is TForm) and Assigned(TColorizerLocalSettings.HookedWindows) and
+    (TColorizerLocalSettings.HookedWindows.IndexOf(AComponent.ClassName) >= 0) then
+  begin
 
-    if AComponent is TActionManager then
-    begin
-      LActionManager:=TActionManager(AComponent);
-      {$IFDEF DELPHI2009_UP}
-//      if not ActnStyleList.ContainsKey(LActionManager) then
-//          ActnStyleList.Add(LActionManager, LActionManager.Style);
-      if TColorizerLocalSettings.ActnStyleList.IndexOf(LActionManager)=-1 then
-          TColorizerLocalSettings.ActnStyleList.Add(LActionManager);
-      {$ENDIF}
-      LActionManager.Style := AStyle;
-    end
-    else
-    if AComponent is TFrame then
+    LForm := TForm(AComponent);
+    LForm.Color := AColorMap.Color;
+    LForm.Font.Color := AColorMap.FontColor;
+
+    if Invalidate then
+      LForm.Invalidate;
+  end
+  else if AComponent Is TControl then
+  begin
+    LParentForm := GetParentForm(TControl(AComponent));
+    if not(Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and
+      (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName) >= 0)) then
+      exit;
+  end;
+
+  if AComponent is TActionManager then
+  begin
+    LActionManager := TActionManager(AComponent);
+{$IFDEF DELPHI2009_UP}
+    // if not ActnStyleList.ContainsKey(LActionManager) then
+    // ActnStyleList.Add(LActionManager, LActionManager.Style);
+    if TColorizerLocalSettings.ActnStyleList.IndexOf(LActionManager) = -1 then
+      TColorizerLocalSettings.ActnStyleList.Add(LActionManager);
+{$ENDIF}
+    LActionManager.Style := AStyle;
+  end
+  else if AComponent is TFrame then
     with TFrame(AComponent) do
     begin
       Color := AColorMap.Color;
-      Font.Color:=AColorMap.FontColor;
+      Font.Color := AColorMap.FontColor;
     end;
 
+  // if  SameText(AComponent.ClassName, 'TTokenWindow') then
+  // AddLog2('ProcessComponent', AComponent.ClassName);
 
-    RunWrapper(AComponent, AColorMap, Invalidate, Restore);
+  RunWrapper(AComponent, AColorMap, Invalidate, Restore);
 
-    //process components
-    for Index := 0 to AComponent.ComponentCount - 1 do
-     ProcessComponent(AColorMap, AStyle, AComponent.Components[Index], Restore, Invalidate);
+  // process components
+  for Index := 0 to AComponent.ComponentCount - 1 do
+    ProcessComponent(AColorMap, AStyle, AComponent.Components[Index], Restore, Invalidate);
 
-    //process dock clients
-    if AComponent is TWinControl then
-     for Index := 0 to TWinControl(AComponent).DockClientCount - 1 do
-     if TWinControl(AComponent).DockClients[Index].Visible and (TColorizerLocalSettings.HookedWindows.IndexOf(TWinControl(AComponent).DockClients[Index].ClassName)>=0) then
-     begin
-       //AddLog('DockClients '+TWinControl(AComponent).DockClients[Index].ClassName);
-       ProcessComponent(AColorMap, AStyle, TWinControl(AComponent).DockClients[Index]);
-       if Invalidate and  (TWinControl(AComponent).DockClients[Index] is TForm) then
-        TWinControl(AComponent).DockClients[Index].Invalidate();
-     end;
+  // process dock clients
+  if AComponent is TWinControl then
+    for Index := 0 to TWinControl(AComponent).DockClientCount - 1 do
+      if TWinControl(AComponent).DockClients[Index].Visible and
+        (TColorizerLocalSettings.HookedWindows.IndexOf(TWinControl(AComponent).DockClients[Index].ClassName) >= 0) then
+      begin
+        // AddLog('DockClients '+TWinControl(AComponent).DockClients[Index].ClassName);
+        ProcessComponent(AColorMap, AStyle, TWinControl(AComponent).DockClients[Index]);
+        if Invalidate and (TWinControl(AComponent).DockClients[Index] is TForm) then
+          TWinControl(AComponent).DockClients[Index].Invalidate();
+      end;
 end;
-
 
 procedure RestoreActnManagerStyles;
 var
-  LActionManager : TActionManager;
+  LActionManager: TActionManager;
 begin
   try
-    if (TColorizerLocalSettings.ActnStyleList.Count>0)  and Assigned(ActionBarStyles) then
+    if (TColorizerLocalSettings.ActnStyleList.Count > 0) and Assigned(ActionBarStyles) then
     begin
-      for LActionManager in TColorizerLocalSettings.ActnStyleList{.Keys} do
+      for LActionManager in TColorizerLocalSettings.ActnStyleList { .Keys } do
       begin
-         //LActionManager.Style:= ActnStyleList.Items[LActionManager];//ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
-        if ActionBarStyles.IndexOf(DefaultActnBarStyle)>=0 then
+        // LActionManager.Style:= ActnStyleList.Items[LActionManager];//ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
+        if ActionBarStyles.IndexOf(DefaultActnBarStyle) >= 0 then
         begin
-         if Assigned(LActionManager.Style) and Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
-         begin
-           //AddLog('ActionBarStyles '+ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)].GetStyleName);
-           LActionManager.Style:= ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
-         end;
+          if Assigned(LActionManager.Style) and
+            Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
+          begin
+            // AddLog('ActionBarStyles '+ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)].GetStyleName);
+            LActionManager.Style := ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
+          end;
         end;
       end;
     end;
-  except on e: exception do //sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
-    AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ',[e.Message, e.StackTrace]));
+  except
+    on e: exception do
+    // sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
+      AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ',
+        [e.Message, e.StackTrace]));
   end;
 end;
 
 procedure RestoreActnManagerStylesBackup;
 {$IFNDEF DLLWIZARD}
 var
-  LActionManager : TActionManager;
+  LActionManager: TActionManager;
 {$ENDIF}
 begin
 {$IFNDEF DLLWIZARD}
- {$IFDEF DELPHI2009_UP}
+{$IFDEF DELPHI2009_UP}
   try
-    if (TColorizerLocalSettings.ActnStyleList.Count>0)  and Assigned(ActionBarStyles) then
+    if (TColorizerLocalSettings.ActnStyleList.Count > 0) and Assigned(ActionBarStyles) then
     begin
-      for LActionManager in TColorizerLocalSettings.ActnStyleList{.Keys} do
+      for LActionManager in TColorizerLocalSettings.ActnStyleList { .Keys } do
       begin
-         //LActionManager.Style:= ActnStyleList.Items[LActionManager];//ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
-        if ActionBarStyles.IndexOf(DefaultActnBarStyle)>=0 then
+        // LActionManager.Style:= ActnStyleList.Items[LActionManager];//ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
+        if ActionBarStyles.IndexOf(DefaultActnBarStyle) >= 0 then
         begin
-         if Assigned(LActionManager.Style) and Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
-         begin
-           //AddLog('ActionBarStyles '+ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)].GetStyleName);
-           LActionManager.Style:= ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
-         end;
+          if Assigned(LActionManager.Style) and
+            Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
+          begin
+            // AddLog('ActionBarStyles '+ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)].GetStyleName);
+            LActionManager.Style := ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
+          end;
         end;
       end;
     end;
-  except on e: exception do //sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
-    AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ',[e.Message, e.StackTrace]));
+  except
+    on e: exception do
+    // sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
+      AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ',
+        [e.Message, e.StackTrace]));
   end;
- {$ELSE DELPHI2009_UP}
-   //TODO
- {$ENDIF}
-
+{$ELSE DELPHI2009_UP}
+  // TODO
+{$ENDIF}
 {$ENDIF}
 end;
 
 procedure RestoreIDESettings();
 var
- NativeColorMap : TColorizerColorMap;
+  NativeColorMap: TColorizerColorMap;
 {$IFDEF DELPHIXE_UP}
- LThemedColorMap : TThemedColorMap;
+  LThemedColorMap: TThemedColorMap;
 {$ELSE}
- LThemedColorMap: TStandardColorMap;
+  LThemedColorMap: TStandardColorMap;
 {$ENDIF}
 begin
 {$IFDEF DELPHIXE2_UP}
   if TColorizerLocalSettings.Settings.UseVCLStyles then
-    if not TStyleManager.ActiveStyle.IsSystemStyle  then
-     TStyleManager.SetStyle('Windows');
+    if not TStyleManager.ActiveStyle.IsSystemStyle then
+      TStyleManager.SetStyle('Windows');
 {$ENDIF}
   NativeColorMap := TColorizerColorMap.Create(nil);
   try
 
 {$IFDEF DELPHIXE_UP}
-  LThemedColorMap  := TThemedColorMap.Create(nil);
-  try
-    NativeColorMap.Assign(LThemedColorMap);
-  finally
-   LThemedColorMap.Free;
-  end;
+    LThemedColorMap := TThemedColorMap.Create(nil);
+    try
+      NativeColorMap.Assign(LThemedColorMap);
+    finally
+      LThemedColorMap.Free;
+    end;
 {$ELSE}
-  LThemedColorMap  := TStandardColorMap.Create(nil);
-  try
-    NativeColorMap.Assign(LThemedColorMap);
-  finally
-   LThemedColorMap.Free;
-  end;
+    LThemedColorMap := TStandardColorMap.Create(nil);
+    try
+      NativeColorMap.Assign(LThemedColorMap);
+    finally
+      LThemedColorMap.Free;
+    end;
 {$ENDIF}
-
-    NativeColorMap.WindowColor:=clWindow;
-  {$IFDEF DELPHIXE_UP}
+    NativeColorMap.WindowColor := clWindow;
+{$IFDEF DELPHIXE_UP}
     RefreshIDETheme(NativeColorMap, PlatformDefaultStyle, True, False);
-  {$ELSE}
+{$ELSE}
     RefreshIDETheme(NativeColorMap, XPStyle, True, False);
-  {$ENDIF}
+{$ENDIF}
   finally
     NativeColorMap.Free;
   end;
-  //RestoreActnManagerStyles();
+  // RestoreActnManagerStyles();
 end;
 
+{$IFDEF ENABLELOG}
+
+var
+  sLogFileName: string;
+  LogCritSect: TCriticalSection;
+{$ENDIF}
+
+procedure AddLog2(const Category, Message: string);
 {$IFDEF ENABLELOG}
 var
-  sLogFileName : string;
+  LFileStream: TFileStream;
+  LBuffer: TBytes;
+  Data: String;
 {$ENDIF}
-
-
-procedure AddLog2(const Category, Message : string);
 begin
 {$IFDEF ENABLELOG}
-TFile.AppendAllText(sLogFileName, Format('%s %s : %s %s',[FormatDateTime('hh:nn:ss.zzz', Now), Category, Message, sLineBreak]));
+  LogCritSect.Enter;
+  try
+    try
+      if (TFile.Exists(sLogFileName)) then
+        LFileStream := TFileStream.Create(sLogFileName, fmOpenReadWrite or fmShareDenyNone)
+      else
+        LFileStream := TFileStream.Create(sLogFileName, fmCreate or fmShareDenyNone);
+      try
+        LFileStream.Seek(0, soFromEnd);
+        Data := Format('%s %s : %s %s', [FormatDateTime('hh:nn:ss.zzz', Now), Category, Message, sLineBreak]);
+        LBuffer := TEncoding.ANSI.GetBytes(Data);
+        LFileStream.WriteBuffer(LBuffer, Length(LBuffer));
+      finally
+        LFileStream.Free;
+      end;
+    except
+      on e: EFOpenError do;
+    end;
+  finally
+    LogCritSect.Leave;
+  end;
 {$ENDIF}
 end;
 
 
-//procedure DumpTypes;
-//var
-//  LCtx : TRttiContext;
-//  LType : TRttiType;
-//begin
-//  LCtx:=TRttiContext.Create;
-//  try
-//    for LType in LCtx.GetTypes do
+// procedure DumpTypes;
+// var
+// LCtx : TRttiContext;
+// LType : TRttiType;
+// begin
+// LCtx:=TRttiContext.Create;
+// try
+// for LType in LCtx.GetTypes do
 //
-//     //if StartsText('Gdiplus', LType.QualifiedName) then
-//     //if SameText('DebugMgrOpts.TLogColors', LType.QualifiedName) then
-//     if ContainsText(LType.QualifiedName, 'TInspListBox') then
-//     begin
-//       AddLog2(LType.QualifiedName);
-//       TRttiUtils.DumpRttiType(LType, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+LType.QualifiedName+'.pas');
-//     end;
+// //if StartsText('Gdiplus', LType.QualifiedName) then
+// //if SameText('DebugMgrOpts.TLogColors', LType.QualifiedName) then
+// if ContainsText(LType.QualifiedName, 'TInspListBox') then
+// begin
+// AddLog2(LType.QualifiedName);
+// TRttiUtils.DumpRttiType(LType, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\'+LType.QualifiedName+'.pas');
+// end;
 //
-//  finally
-//    LCtx.Free;
-//  end;
-//end;
+// finally
+// LCtx.Free;
+// end;
+// end;
 
 //
-//procedure DumpUnits;
-//var
-//  LCtx : TRttiContext;
-//  LType : TRttiType;
-//  LUnits : TStrings;
-//  LUnitName : string;
-//  p : integer;
-//begin
-//  LUnits:=TStringList.Create;
-//  try
-//    LCtx:=TRttiContext.Create;
-//    try
-//      for LType in LCtx.GetTypes do
-//      begin
-//       LUnitName :=  LType.QualifiedName;
-//       p:= LastDelimiter('.', LUnitName);
-//       if (p>0) and (Pos('<', LUnitName)=0) then
-//       begin
-//         LUnitName := Copy(LType.QualifiedName, 1, p-1);
-//         if (LUnitName<>'') and (not StartsText('Data', LUnitName)) and (not StartsText('Bind', LUnitName)) and (not StartsText('Agent', LUnitName))
-//         and (not StartsText('id', LUnitName)) and (not StartsText('FIREDAC.', LUnitName)) and (not StartsText('Datasnap.', LUnitName))
-//         and (not StartsText('FMX', LUnitName)) and (not StartsText('System.', LUnitName)) and (not StartsText('WinApi.', LUnitName))
-//         and (not StartsText('Castalia', LUnitName)) and (not StartsText('Vcl.', LUnitName)) and (LUnits.IndexOf(LUnitName)<0) then
-//         begin
-//           AddLog2('Dumping '+LUnitName);
-//           LUnits.Add(LUnitName);
-//           TRttiUtils.DumpUnit(LUnitName, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\units\'+LUnitName+'.pas');
-//         end;
-//       end;
-//      end;
-//    finally
-//      LCtx.Free;
-//    end;
-//  finally
-//    LUnits.Free;
-//  end;
-//end;
-
+// procedure DumpUnits;
+// var
+// LCtx : TRttiContext;
+// LType : TRttiType;
+// LUnits : TStrings;
+// LUnitName : string;
+// p : integer;
+// begin
+// LUnits:=TStringList.Create;
+// try
+// LCtx:=TRttiContext.Create;
+// try
+// for LType in LCtx.GetTypes do
+// begin
+// LUnitName :=  LType.QualifiedName;
+// p:= LastDelimiter('.', LUnitName);
+// if (p>0) and (Pos('<', LUnitName)=0) then
+// begin
+// LUnitName := Copy(LType.QualifiedName, 1, p-1);
+// if (LUnitName<>'') and (not StartsText('Data', LUnitName)) and (not StartsText('Bind', LUnitName)) and (not StartsText('Agent', LUnitName))
+// and (not StartsText('id', LUnitName)) and (not StartsText('FIREDAC.', LUnitName)) and (not StartsText('Datasnap.', LUnitName))
+// and (not StartsText('FMX', LUnitName)) and (not StartsText('System.', LUnitName)) and (not StartsText('WinApi.', LUnitName))
+// and (not StartsText('Castalia', LUnitName)) and (not StartsText('Vcl.', LUnitName)) and (LUnits.IndexOf(LUnitName)<0) then
+// begin
+// AddLog2('Dumping '+LUnitName);
+// LUnits.Add(LUnitName);
+// TRttiUtils.DumpUnit(LUnitName, 'C:\Dephi\google-code\delphi-ide-theme-editor\IDE PlugIn\Galileo\units\'+LUnitName+'.pas');
+// end;
+// end;
+// end;
+// finally
+// LCtx.Free;
+// end;
+// finally
+// LUnits.Free;
+// end;
+// end;
 
 initialization
+
 {$IFDEF ENABLELOG}
- sLogFileName:=ExtractFilePath(GetModuleLocation())+'log.txt';
- ShowMessage('Log enabled');
+  LogCritSect := TCriticalSection.Create;
+sLogFileName := ExtractFilePath(GetModuleLocation()) + 'log.txt';
+ShowMessage('Log enabled');
 {$ENDIF}
 
-//DumpTypes;
-//DumpUnits;
+// DumpTypes;
+// DumpUnits;
 finalization
+
+{$IFDEF ENABLELOG}
+  LogCritSect.Free;
+{$ENDIF}
 
 end.

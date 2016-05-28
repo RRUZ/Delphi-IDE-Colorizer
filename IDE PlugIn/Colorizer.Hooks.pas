@@ -24,6 +24,7 @@ unit Colorizer.Hooks;
 interface
 {$I ..\Common\Jedi.inc}
 
+
 uses
   SyncObjs,
   Controls;
@@ -96,6 +97,11 @@ uses
   System.Types,
   uMisc,
   DDetours;
+
+{$IFDEF DELPHIX_LONDON}
+const
+ sVclModule =  'vcl240.bpl';
+{$ENDIF}
 
 type
  TWinControlClass        = class(TWinControl);
@@ -182,20 +188,140 @@ var
 
   FGutterBkColor : TColor = clNone;
 type
-
   TBitBtnHelper = class helper for TBitBtn
     function  DrawItemAddress: Pointer;
   end;
 
-  TCustomStatusBarHelper = class helper for TCustomStatusBar
+
+
+ {$IF (CompilerVersion >= 31)}
+ {$LEGACYIFEND ON}
+ {$HINTS OFF}
+
+  TTabSetShadow = class(TCustomControl)
   private
-    function GetCanvasRW: TCanvas;
-    procedure SetCanvasRW(const Value: TCanvas);
-  public
-    function  WMPaintAddress: Pointer;
-    procedure DoUpdatePanels(UpdateRects, UpdateText: Boolean);
-    property  CanvasRW : TCanvas read GetCanvasRW Write SetCanvasRW;
-   end;
+    FStartMargin: Integer;
+    FEndMargin: Integer;
+    FTabs: TStrings;
+    FTabIndex: Integer;
+    FFirstIndex: Integer;
+    FVisibleTabs: Integer;
+    FSelectedColor: TColor;
+    FUnselectedColor: TColor;
+    FBackgroundColor: TColor;
+    FDitherBackground: Boolean;
+    FAutoScroll: Boolean;
+    FStyle: TTabStyle;
+    FOwnerDrawHeight: Integer;
+    FOnMeasureTab: TMeasureTabEvent;
+    FOnDrawTab: TDrawTabEvent;
+    FOnChange: TTabChangeEvent;
+
+    FEdgeImageList: TImageList;
+    FMemBitmap: TBitmap;   { used for off-screen drawing }
+    FBrushBitmap: TBitmap; { used for background pattern }
+    FTabPositions: TList;
+
+    FSortedTabPositions: TList;
+    FTabHeight: Integer;
+    FScroller: TScroller;
+    FDoFix: Boolean;
+    FSoftTop: Boolean;
+    FImages: TCustomImageList;
+    FImageChangeLink: TChangeLink;
+    FOnGetImageIndex: TTabGetImageEvent;
+    FShrinkToFit: Boolean;
+    FEdgeWidth: Integer;
+    FTabPosition: TTabPosition;
+
+  end;
+
+  TCustomListViewShadow = class(TCustomMultiSelectListControl)
+  private
+    FCanvas: TCanvas;
+    FBorderStyle: TBorderStyle;
+    FViewStyle: TViewStyle;
+    FReadOnly: Boolean;
+    FLargeImages: TCustomImageList;
+    FSaveSelectedIndex: Integer;
+    FSmallImages: TCustomImageList;
+    FStateImages: TCustomImageList;
+    FGroupHeaderImages: TCustomImageList;
+    FDragImage: TDragImageList;
+    FMultiSelect: Boolean;
+    FSortType: TSortType;
+    FColumnClick: Boolean;
+    FShowColumnHeaders: Boolean;
+    FListItems: TListItems;
+    FClicked: Boolean;
+    FRClicked: Boolean;
+    FIconOptions: TIconOptions;
+    FHideSelection: Boolean;
+    FListColumns: TListColumns;
+    FMemStream: TMemoryStream;
+    FOwnerData: Boolean;
+    FOwnerDraw: Boolean;
+    FColStream: TMemoryStream;
+    FCheckStream: TMemoryStream;
+    FDefEditProc: TWindowProcPtr;
+    FDefHeaderProc: TWindowProcPtr;
+    FEditHandle: HWND;
+    FHeaderHandle: HWND;
+  end;
+
+  TCategoryButtonsShadow = class(TCustomControl)
+  private
+    FButtonFlow: TCatButtonFlow;
+    FCollapsedHeight: Integer;
+    FDownButton: TButtonItem;
+    FDragButton: TButtonItem;
+    FHotButton: TButtonItem;
+    FDragCategory: TButtonCategory;
+    FDragStartPos: TPoint;
+    FDragStarted: Boolean;
+    FDragImageList: TDragImageList;
+    FGradientDirection: TGradientDirection;
+    FBackGradientDirection: TGradientDirection;
+    FGutterSize: Integer;
+    FScrollSize: Integer;
+    FSideBufferSize: Integer;
+    FImageChangeLink: TChangeLink;
+    FImages: TCustomImageList;
+    FInsertLeft,
+    FInsertTop,
+    FInsertRight,
+    FInsertBottom: TBaseItem;
+    FIgnoreUpdate: Boolean;
+    FScrollBarMax: Integer;
+    FScrollBarPos: Integer;
+    FPageAmount: Integer;
+    FButtonCategories: TButtonCategories;
+    FButtonOptions: TCatButtonOptions;
+    FButtonWidth, FButtonHeight: Integer;
+    FBorderStyle: TBorderStyle;
+    FSelectedItem: TBaseItem;
+    FFocusedItem: TBaseItem;
+    FMouseInControl: Boolean;
+    FScrollBarShown: Boolean;
+    FBackgroundGradientColor: TColor;
+    FHotButtonColor: TColor;
+    FSelectedButtonColor: TColor;
+    FRegularButtonColor: TColor;
+    FInplaceEdit: TCustomEdit;
+    FPanPoint: TPoint;
+  end;
+
+ {$HINTS ON}
+ {$IFEND}
+//  TCustomStatusBarHelper = class helper for TCustomStatusBar
+//  private
+//    function GetCanvasRW: TCanvas;
+//    procedure SetCanvasRW(const Value: TCanvas);
+//  public
+//    function  WMPaintAddress: Pointer;
+//    procedure DoUpdatePanels(UpdateRects, UpdateText: Boolean);
+//    property  CanvasRW : TCanvas read GetCanvasRW Write SetCanvasRW;
+//   end;
 
   TCustomFormHelper = class helper for TCustomForm
   public
@@ -268,12 +394,12 @@ begin
   begin
     LParentForm:= GetParentForm(Self);
     if Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0) then
-      EnableHookTBitBtn:=True;
+      EnableHookTBitBtn := True;
   end;
 
   Trampoline_TBitBtn_DrawItem(Self, DrawItemStruct);
   if EnableHookTBitBtn then
-  EnableHookTBitBtn:=False;
+    EnableHookTBitBtn := False;
 end;
 
 
@@ -547,7 +673,7 @@ begin
   if SameText('TDisassemblyView', Self.ClassName) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
   begin
     //AddLog2('CustomDefaultHandler', Self.ClassName+' '+WM_To_String(TMessage(Message).Msg));
-    if TMessage(Message).Msg=WM_SIZE then
+    if TMessage(Message).Msg = WM_SIZE then
      Colorizer.Utils.ProcessComponent(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.ActionBarStyle, Self);
   end;
 
@@ -1798,166 +1924,346 @@ end;
 
 function TBitBtnHelper.DrawItemAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure(const DrawItemStruct: TDrawItemStruct) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.DrawItem;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Buttons@TBitBtn@DrawItem$qqrrx17tagDRAWITEMSTRUCT')
+  else
+    raise Exception.CreateFmt('Package %s not found', [sVclModule]);
+  {$IFEND}
 end;
 
 { TCustomStatusBarHelper }
 
-procedure TCustomStatusBarHelper.DoUpdatePanels(UpdateRects,
-  UpdateText: Boolean);
-begin
-  Self.UpdatePanels(UpdateRects, UpdateText);
-end;
-
-function TCustomStatusBarHelper.GetCanvasRW: TCanvas;
-begin
- Result:= Self.FCanvas;
-end;
-
-procedure TCustomStatusBarHelper.SetCanvasRW(const Value: TCanvas);
-begin
- Self.FCanvas:= Value;
-end;
-
-function TCustomStatusBarHelper.WMPaintAddress: Pointer;
-var
-  MethodAddr: procedure(var Message: TWMPaint) of object;
-begin
-  MethodAddr := Self.WMPaint;
-  Result     := TMethod(MethodAddr).Code;
-end;
+//procedure TCustomStatusBarHelper.DoUpdatePanels(UpdateRects,
+//  UpdateText: Boolean);
+//begin
+//  Self.UpdatePanels(UpdateRects, UpdateText);
+//end;
+//
+//function TCustomStatusBarHelper.GetCanvasRW: TCanvas;
+//begin
+// Result:= Self.FCanvas;
+//end;
+//
+//procedure TCustomStatusBarHelper.SetCanvasRW(const Value: TCanvas);
+//begin
+// Self.FCanvas:= Value;
+//end;
+//
+//function TCustomStatusBarHelper.WMPaintAddress: Pointer;
+//var
+//  MethodAddr: procedure(var Message: TWMPaint) of object;
+//begin
+//  MethodAddr := Self.WMPaint;
+//  Result     := TMethod(MethodAddr).Code;
+//end;
 
 { TCustomComboBoxBarHelper }
 
 function TCustomComboBoxBarHelper.WMPaintAddress: Pointer;
 var
-  MethodAddr: procedure(var Message: TWMPaint) of object;
+  {$IF (CompilerVersion < 31)}
+   MethodAddr: procedure(var Message: TWMPaint) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.WMPaint;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Stdctrls@TCustomComboBox@WMPaint$qqrr24Winapi@Messages@TWMPaint')
+  else
+    raise Exception.CreateFmt('Package %s not found', [sVclModule]);
+  {$IFEND}
 end;
 
 function TWinControlHelper.WMNCPaintAddress : Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure(var Message: TWMNCPaint) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.WMNCPaint;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Controls@TWinControl@WMNCPaint$qqrr26Winapi@Messages@TWMNCPaint')
+  else
+    raise Exception.CreateFmt('Package %s not found', [sVclModule]);
+  {$IFEND}
 end;
 
 { TCustomFormHelper }
 
 function TCustomFormHelper.SetVisibleAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure(Value: Boolean) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.SetVisible;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Forms@TCustomForm@SetVisible$qqro')
+  else
+    raise Exception.CreateFmt('Package %s not found', [sVclModule]);
+  {$IFEND}
 end;
 
 { TTabSetHelper }
 
 function TTabSetHelper.DoModernPaintingAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.DoModernPainting;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Tabs@TTabSet@DoModernPainting$qqrv')
+  else
+    raise Exception.CreateFmt('Package %s not found', [sVclModule]);
+  {$IFEND}
 end;
 
 function TTabSetHelper.GetEdgeWidth: Integer;
 begin
- Result:=Self.FEdgeWidth;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FEdgeWidth;
+ {$ELSE}
+   Result := TTabSetShadow(Self).FEdgeWidth;
+ {$IFEND}
 end;
 
 function TTabSetHelper.GetMemBitmap: TBitmap;
 begin
- Result:=Self.FMemBitmap;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FMemBitmap;
+ {$ELSE}
+   Result := TTabSetShadow(Self).FMemBitmap;
+ {$IFEND}
 end;
 
 function TTabSetHelper.GetTabPositions: TList;
 begin
-  Result:=Self.FTabPositions;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FTabPositions;
+ {$ELSE}
+   Result := TTabSetShadow(Self).FTabPositions;
+ {$IFEND}
 end;
 
 { TCustomListViewHelper }
 
 function TCustomListViewHelper.GetHeaderHandle: HWND;
 begin
-  Result:=Self.FHeaderHandle;
+ {$IF (CompilerVersion < 31)}
+   Result  := Self.FHeaderHandle;
+ {$ELSE}
+   Result := TCustomListViewShadow(Self).FHeaderHandle;
+ {$IFEND}
 end;
 
 function TCustomListViewHelper.HeaderWndProcAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure(var Message: TMessage) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.HeaderWndProc;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Comctrls@TCustomListView@HeaderWndProc$qqrr24Winapi@Messages@TMessage')
+  else
+    raise Exception.CreateFmt('Package %s not found.', [sVclModule]);
+  {$IFEND}
 end;
 
 { TCategoryButtonsHelper }
 
 function TCategoryButtonsHelper.DrawCategoryAddress: Pointer;
 var
+  {$IF (CompilerVersion < 31)}
   MethodAddr: procedure(const Category: TButtonCategory; const Canvas: TCanvas; StartingPos: Integer) of object;
+  {$ELSE}
+  hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
+  {$IF (CompilerVersion < 31)}
   MethodAddr := Self.DrawCategory;
   Result     := TMethod(MethodAddr).Code;
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+    Result := GetProcAddress(hModule, '@Vcl@Categorybuttons@TCategoryButtons@DrawCategory$qqrxp35Vcl@Categorybuttons@TButtonCategoryxp20Vcl@Graphics@TCanvasi')
+  else
+    raise Exception.CreateFmt('Package %s not found.', [sVclModule]);
+  {$IFEND}
 end;
+
 
 procedure TCategoryButtonsHelper.GetCategoryBoundsHelper(
   const Category: TButtonCategory; const StartingPos: Integer;
   var CategoryBounds, ButtonBounds: TRect);
+  {$IF (CompilerVersion < 31)}
+  {$ELSE}
+  type
+  TGetCategoryBounds = procedure(Self : TCategoryButtons; const Category: TButtonCategory; const StartingPos: Integer; var CategoryBounds, ButtonBounds: TRect);
+  var
+    LGetCategoryBounds : TGetCategoryBounds;
+    hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
- Self.GetCategoryBounds(Category, StartingPos, CategoryBounds, ButtonBounds);
+  {$IF (CompilerVersion < 31)}
+  Self.GetCategoryBounds(Category, StartingPos, CategoryBounds, ButtonBounds);
+  {$ELSE}
+  hModule := LoadPackage(sVclModule);
+  if (hModule > 0) then
+  begin
+    @LGetCategoryBounds := GetProcAddress(hModule, '@Vcl@Categorybuttons@TCategoryButtons@GetCategoryBounds$qqrxp35Vcl@Categorybuttons@TButtonCategoryxir18System@Types@TRectt3');
+    LGetCategoryBounds(Self, Category, StartingPos, CategoryBounds, ButtonBounds);
+  end;
+  {$IFEND}
 end;
 
 procedure TCategoryButtonsHelper.AdjustCategoryBoundsHelper(const Category: TButtonCategory; var CategoryBounds: TRect; IgnoreButtonFlow: Boolean = False);
+  {$IF (CompilerVersion < 31)}
+  {$ELSE}
+  type
+  TAdjustCategoryBounds = procedure(Self : TCategoryButtons; const Category: TButtonCategory; var CategoryBounds: TRect; IgnoreButtonFlow: Boolean = False);
+  var
+    LAdjustCategoryBounds : TAdjustCategoryBounds;
+    hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
- Self.AdjustCategoryBounds(Category, CategoryBounds, IgnoreButtonFlow);
+  {$IF (CompilerVersion < 31)}
+    Self.AdjustCategoryBounds(Category, CategoryBounds, IgnoreButtonFlow);
+  {$ELSE}
+    hModule := LoadPackage(sVclModule);
+    if (hModule > 0) then
+    begin
+      @LAdjustCategoryBounds := GetProcAddress(hModule, '@Vcl@Categorybuttons@TCategoryButtons@AdjustCategoryBounds$qqrxp35Vcl@Categorybuttons@TButtonCategoryr18System@Types@TRecto');
+      LAdjustCategoryBounds(Self, Category, CategoryBounds, IgnoreButtonFlow);
+    end;
+  {$IFEND}
 end;
 
 function  TCategoryButtonsHelper.GetChevronBoundsHelper(const CategoryBounds: TRect): TRect;
+  {$IF (CompilerVersion < 31)}
+  {$ELSE}
+  type
+  TGetChevronBounds = function(Self : TCategoryButtons; const CategoryBounds: TRect): TRect;
+  var
+    LGetChevronBounds : TGetChevronBounds;
+    hModule : Winapi.Windows.HMODULE;
+  {$IFEND}
 begin
- Result := Self.GetChevronBounds(CategoryBounds);
+  {$IF (CompilerVersion < 31)}
+    Result := Self.GetChevronBounds(CategoryBounds);
+  {$ELSE}
+    hModule := LoadPackage(sVclModule);
+    if (hModule > 0) then
+    begin
+      @LGetChevronBounds := GetProcAddress(hModule, '@Vcl@Categorybuttons@TCategoryButtons@GetChevronBounds$qqrrx18System@Types@TRect');
+      Result := LGetChevronBounds(Self, CategoryBounds);
+    end;
+  {$IFEND}
 end;
 
 function TCategoryButtonsHelper.InsertBottomHelper: TBaseItem;
 begin
- Result:= Self.FInsertBottom;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FInsertBottom;
+ {$ELSE}
+   Result := TCategoryButtonsShadow(Self).FInsertBottom;
+ {$IFEND}
 end;
 
 function TCategoryButtonsHelper.InsertLeftHelper: TBaseItem;
 begin
- Result:= Self.FInsertLeft;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FInsertLeft;
+ {$ELSE}
+   Result := TCategoryButtonsShadow(Self).FInsertLeft;
+ {$IFEND}
 end;
 
 function TCategoryButtonsHelper.InsertRightHelper: TBaseItem;
 begin
- Result:= Self.FInsertRight;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FInsertRight;
+ {$ELSE}
+   Result := TCategoryButtonsShadow(Self).FInsertRight;
+ {$IFEND}
 end;
 
 function TCategoryButtonsHelper.InsertTopHelper: TBaseItem;
 begin
- Result:= Self.FInsertTop;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FInsertTop;
+ {$ELSE}
+   Result := TCategoryButtonsShadow(Self).FInsertTop;
+ {$IFEND}
 end;
 
 function  TCategoryButtonsHelper.FSideBufferSizeHelper : Integer;
 begin
- Result:= Self.FSideBufferSize;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FSideBufferSize;
+ {$ELSE}
+   Result := TCategoryButtonsShadow(Self).FSideBufferSize;
+ {$IFEND}
 end;
 
 function  TCategoryButtonsHelper.FHotButtonHelper: TButtonItem;
 begin
- Result:= Self.FHotButton;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FHotButton;
+ {$ELSE}
+   Result := TCategoryButtonsShadow(Self).FHotButton;
+ {$IFEND}
 end;
 
 function  TCategoryButtonsHelper.FDownButtonHelper: TButtonItem;
 begin
- Result:= Self.FDownButton;
+ {$IF (CompilerVersion < 31)}
+   Result := Self.FDownButton;
+ {$ELSE}
+   Result := TCategoryButtonsShadow(Self).FDownButton;
+ {$IFEND}
 end;
 
 type
@@ -2237,6 +2543,7 @@ var
         LDetails := LStyleServices.GetElementDetails(tcbCategoryGlyphOpened)
        else
         LDetails := LStyleServices.GetElementDetails(tcbCategoryGlyphClosed);
+
         LStyleServices.DrawElement(Canvas.Handle, LDetails, Rect(X, Y, X+Width, Y+Height));
 //         LBuffer:=TBitmap.Create;
 //         try
@@ -2292,26 +2599,26 @@ var
   CatHeight: Integer;
   CategoryBounds, CategoryFrameBounds,
   ButtonBounds, ChevronBounds: TRect;
-  {$IFDEF DELPHIXE2_UP}LColor, {$ENDIF}FontColor, GradientColor, SourceColor, TempColor: TColor;
+  {$IFDEF DELPHIXE2_UP}LColor, {$ENDIF}LFontColor, GradientColor, SourceColor, TempColor: TColor;
   Caption: string;
   CaptionRect: TRect;
   CategoryRealBounds: TRect;
 
   LParentForm : TCustomForm;
 begin
-  LParentForm:=GetParentForm(Self);
+  LParentForm := GetParentForm(Self);
 
   if Assigned(TColorizerLocalSettings.Settings) and (TColorizerLocalSettings.Settings.Enabled)
-    and Assigned(LParentForm) and  (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0) {SameText(Self.ClassName, 'TIDECategoryButtons') and}
+    and Assigned(LParentForm) and  (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName) >= 0) {SameText(Self.ClassName, 'TIDECategoryButtons') and}
     and Assigned(TColorizerLocalSettings.ColorMap) then
   begin
     Self.GetCategoryBoundsHelper(Category, StartingPos, CategoryBounds, ButtonBounds);
-    FontColor   := TColorizerLocalSettings.ColorMap.FontColor;
+    LFontColor   := TColorizerLocalSettings.ColorMap.FontColor;
 
     {$IFDEF DELPHIXE2_UP}
     if TColorizerLocalSettings.Settings.UseVCLStyles and TColorizerLocalSettings.Settings.VCLStylesControls and TColorizerLocalSettings.Settings.VCLStylesMenusColors then
     begin
-      LStyleServices:= ColorizerStyleServices;
+      LStyleServices := ColorizerStyleServices;
       if Self.SelectedItem = Category then
         LDetails := LStyleServices.GetElementDetails(tcbCategorySelected)
       else if Category.Color <> clNone then
@@ -2333,7 +2640,7 @@ begin
       if (Self.SelectedItem = Category) and (Self.SelectedButtonColor <> clNone) then
       begin
         SourceColor := TColorizerLocalSettings.ColorMap.HotColor;//Self.SelectedButtonColor
-        FontColor   := TColorizerLocalSettings.ColorMap.HotFontColor;
+        LFontColor   := TColorizerLocalSettings.ColorMap.HotFontColor;
       end
       else
       if Category.Color <> clNone then
@@ -2475,8 +2782,8 @@ begin
       CapLeft := 2;
 
 
+    Canvas.Font.Color  := LFontColor;
     Canvas.Brush.Style := bsClear;
-    Canvas.Font.Color  := FontColor;
     {$IFDEF DELPHIXE2_UP}
     if TColorizerLocalSettings.Settings.UseVCLStyles and TColorizerLocalSettings.Settings.VCLStylesControls and TColorizerLocalSettings.Settings.VCLStylesMenusColors then
     begin
@@ -2500,8 +2807,13 @@ begin
       Canvas.Font.Orientation := 900;
     end;
 
-    CaptionRect.Right := CaptionRect.Left + CatHeight;
+    CaptionRect.Right  := CaptionRect.Left + CatHeight;
     CaptionRect.Bottom := CaptionRect.Top + Canvas.TextHeight(Caption);
+    //TColorizerLocalSettings.ColorMap.UpdateColors();
+    //LFontColor         := TColorizerLocalSettings.ColorMap.FontColor;
+    //AddLog2(Format('LFontColor %x', [LFontColor]));
+    //Canvas.Font.Color  := LFontColor;
+    SetTextColor(Canvas.Handle, ColorToRGB(LFontColor));
     Canvas.TextRect(CaptionRect, Caption, [tfNoClip, tfEndEllipsis]);
 
     if (boBoldCaptions in Self.ButtonOptions) then

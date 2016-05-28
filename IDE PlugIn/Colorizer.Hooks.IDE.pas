@@ -24,6 +24,11 @@ unit Colorizer.Hooks.IDE;
 interface
 {$I ..\Common\Jedi.inc}
 
+{$IF RTLVersion>=24}
+  {$LEGACYIFEND ON}
+{$IFEND}
+{$DEFINE USE_VCL_STYLESAPI}
+
 var
   DrawNamePair               : Boolean     = False;
   DrawItemPopupSearchForm    : Boolean     = False;
@@ -37,7 +42,7 @@ var
   {.$ENDIF}
   HookVTPaintNormalText      : Boolean     = false;
   HookPropListBox_DrawPropItem : Boolean   = false;
-  {$IFDEF DELPHIX_SEATTLE}
+  {$IFDEF DELPHIX_SEATTLE_UP}
   HookNavSymbolSearchFormDrawItem : Boolean = False;
   {$ENDIF}
 
@@ -51,6 +56,7 @@ const
 {$IFDEF DELPHIXE7} sVclIDEModule =  'vclide210.bpl';{$ENDIF}
 {$IFDEF DELPHIXE8} sVclIDEModule =  'vclide220.bpl';{$ENDIF}
 {$IFDEF DELPHIX_SEATTLE} sVclIDEModule =  'vclide230.bpl';{$ENDIF}
+{$IFDEF DELPHIX_LONDON} sVclIDEModule =  'vclide240.bpl';{$ENDIF}
 
 {$IFDEF DELPHIXE}  sCoreIDEModule =  'coreide150.bpl';{$ENDIF}
 {$IFDEF DELPHIXE2} sCoreIDEModule =  'coreide160.bpl';{$ENDIF}
@@ -61,6 +67,7 @@ const
 {$IFDEF DELPHIXE7} sCoreIDEModule =  'coreide210.bpl';{$ENDIF}
 {$IFDEF DELPHIXE8} sCoreIDEModule =  'coreide220.bpl';{$ENDIF}
 {$IFDEF DELPHIX_SEATTLE}sCoreIDEModule =  'coreide230.bpl';{$ENDIF}
+{$IFDEF DELPHIX_LONDON} sCoreIDEModule =  'coreide240.bpl';{$ENDIF}
 
 {$IFDEF DELPHIXE6} sModernThemeModule =  'ModernTheme200.bpl';{$ENDIF}
 
@@ -72,6 +79,9 @@ const
 
 {$IFDEF DELPHIX_SEATTLE} sModernThemeModule =  'ModernTheme230.bpl';{$ENDIF}
 {$IFDEF DELPHIX_SEATTLE} sdesignideModule   =  'designide230.bpl';{$ENDIF}
+
+{$IFDEF DELPHIX_LONDON} sModernThemeModule =  'ModernTheme240.bpl';{$ENDIF}
+{$IFDEF DELPHIX_LONDON} sdesignideModule   =  'designide240.bpl';{$ENDIF}
 
 procedure InstallHooksIDE;
 Procedure RemoveHooksIDE;
@@ -210,7 +220,7 @@ var
  }
  Trampoline_TCustomPropListBox_DrawPropItem : procedure (Self:  TObject; Index : Integer; PropItem : TObject; Canvas  : TCanvas; var ARect : TRect;  Bool1, Bool2 : Boolean);
 
- {$IFDEF DELPHIX_SEATTLE}
+ {$IFDEF DELPHIX_SEATTLE_UP}
  Trampoline_TNavSymbolSearchForm_ResultsListDrawItem : procedure(Self:  TObject; Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState) ;
  Trampoline_NavToolbarDropdown_Paint : procedure(Self:  TObject);
  {$ENDIF}

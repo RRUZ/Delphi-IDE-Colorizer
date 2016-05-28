@@ -20,7 +20,7 @@ RequestExecutionLevel admin
 !endif
 
 !ifndef VER_MINOR
-  !define VER_MINOR "8.2.8"
+  !define VER_MINOR "8.7.1"
 !endif
 
 !ifndef IDE_VERSION_DXE
@@ -32,6 +32,7 @@ RequestExecutionLevel admin
 !ifndef IDE_VERSION_DXE7
 !ifndef IDE_VERSION_DXE8
 !ifndef IDE_VERSION_DXSeattle
+!ifndef IDE_VERSION_DXBerlin
 
   !define FULL_VERSION    "1"  
   ;!define IDE_VERSION_DXE  "1"  
@@ -43,7 +44,9 @@ RequestExecutionLevel admin
   !define IDE_VERSION_DXE7 "1"
   !define IDE_VERSION_DXE8 "1"
   !define IDE_VERSION_DXSeattle "1"
+  !define IDE_VERSION_DXBerlin "1"
   
+!endif
 !endif
 !endif
 !endif
@@ -91,8 +94,12 @@ RequestExecutionLevel admin
   !endif  
   !ifdef IDE_VERSION_DXSeattle
     !define IDE_SHORT_NAME "DXSeattle"
-    !define IDE_LONG_NAME "RAD Studio 10 Seattle / Appmethod 1.17"
+    !define IDE_LONG_NAME "RAD Studio 10 Seattle"
   !endif    
+  !ifdef IDE_VERSION_DXBerlin
+    !define IDE_SHORT_NAME "DXBerlin"
+    !define IDE_LONG_NAME "RAD Studio 10.1 Berlin"
+  !endif   
 !endif
 
 !ifdef IDE_VERSION
@@ -281,8 +288,15 @@ FileLoop:
 !endif
 
 !ifdef IDE_VERSION_DXSeattle
-  IfFileExists "$INSTDIR\XE8\DelphiIDEColorizer_DXSeattle.dll" 0 +4
-  FileOpen $0 "$INSTDIR\XE8\DelphiIDEColorizer_DXSeattle.dll" a
+  IfFileExists "$INSTDIR\DXSeattle\DelphiIDEColorizer_DXSeattle.dll" 0 +4
+  FileOpen $0 "$INSTDIR\DXSeattle\DelphiIDEColorizer_DXSeattle.dll" a
+  IfErrors FileInUse
+  FileClose $0
+!endif
+
+!ifdef IDE_VERSION_DXBerlin
+  IfFileExists "$INSTDIR\DXBerlin\DelphiIDEColorizer_DXBerlin.dll" 0 +4
+  FileOpen $0 "$INSTDIR\DXBerlin\DelphiIDEColorizer_DXBerlin.dll" a
   IfErrors FileInUse
   FileClose $0
 !endif
@@ -472,6 +486,21 @@ Section "RAD Studio 10 Seattle" SecDXSeattle
 SectionEnd
 !endif
 
+!ifdef IDE_VERSION_DXBerlin
+Section "RAD Studio 10.1 Berlin" SecDXBerlin
+  SectionIn 1 2
+  SetOutPath $INSTDIR\DXBerlin
+  File "HookedWindows.dat"
+  File "HookedScrollBars.dat"  
+  File "WinAPIClasses.dat"  
+  SetOverwrite off
+  File "Init\Settings.ini"
+  SetOverwrite on  
+  File "DelphiIDEColorizer_DXBerlin.dll" 
+  WriteRegStr HKCU "Software\Embarcadero\BDS\18.0\Experts" "DelphiIDEColorizer_DXBerlin" "$INSTDIR\DXBerlin\DelphiIDEColorizer_DXBerlin.dll"
+SectionEnd
+!endif
+
 !define SF_SELBOLD    9
 
 Function .onInit
@@ -535,6 +564,9 @@ FunctionEnd
 !ifdef IDE_VERSION_DXSeattle
   !insertmacro MUI_DESCRIPTION_TEXT ${SecDXSeattle} "Delphi IDE Colorizer for RAD Studio 10 Seattle"
 !endif	
+!ifdef IDE_VERSION_DXBerlin
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXBerlin} "Delphi IDE Colorizer for RAD Studio 10.1 Berlin"
+!endif	
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function SetCheckBoxes
@@ -567,6 +599,9 @@ Function SetCheckBoxes
 !endif
 !ifdef IDE_VERSION_DXSeattle
   !insertmacro SET_COMPILER_CHECKBOX HKCU "Software\Embarcadero\BDS\17.0" "App" ${SecDXSeattle}
+!endif
+!ifdef IDE_VERSION_DXBerlin
+  !insertmacro SET_COMPILER_CHECKBOX HKCU "Software\Embarcadero\BDS\18.0" "App" ${SecDXBerlin}
 !endif
 FunctionEnd
 
@@ -615,6 +650,10 @@ Section "Uninstall"
   Delete "$INSTDIR\DXSeattle\*.dat" 
   Delete "$INSTDIR\DXSeattle\*.xml"    
   Delete "$INSTDIR\DXSeattle\*.exe"   
+  Delete "$INSTDIR\DXBerlin\*.dll"
+  Delete "$INSTDIR\DXBerlin\*.dat" 
+  Delete "$INSTDIR\DXBerlin\*.xml"    
+  Delete "$INSTDIR\DXBerlin\*.exe"  
   
   Delete "$INSTDIR\dock_images\*.*"        
   RMDir  "$INSTDIR\dock_images"    
@@ -653,6 +692,9 @@ Section "Uninstall"
 !endif
 !ifdef IDE_VERSION_DXSeattle
   DeleteRegValue HKCU "Software\Embarcadero\BDS\17.0\Experts" "DelphiIDEColorizer_DXSeattle"
+!endif
+!ifdef IDE_VERSION_DXBerlin
+  DeleteRegValue HKCU "Software\Embarcadero\BDS\18.0\Experts" "DelphiIDEColorizer_DXBerlin"
 !endif
   ;MessageBox MB_YESNO|MB_ICONQUESTION "$(SQUERYDELETE)" IDNO NoDelete
   DeleteRegKey HKCU "Software\The Road To Delphi\DIC"

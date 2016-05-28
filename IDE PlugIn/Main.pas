@@ -122,8 +122,8 @@ Const
   sColorizerPluginDescription=
   'Delphi IDE Colorizer %s'+sLineBreak+
   'https://github.com/RRUZ/Delphi-IDE-Colorizer'+sLineBreak+
-  'Copyright: 2011-2015 Rodrigo Ruz V.'+sLineBreak+
-  'http://theroadtodelphi.wordpress.com/'+sLineBreak+
+  'Copyright: 2011-2016 Rodrigo Ruz V.'+sLineBreak+
+  'http://theroadtodelphi.com/'+sLineBreak+
   'All rights reserved.'+sLineBreak+
   ''+sLineBreak+
   'This is a freeware, you can use it freely without any fee.';

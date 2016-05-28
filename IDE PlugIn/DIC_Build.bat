@@ -80,7 +80,20 @@ echo DXSeattle
 call "C:\Program Files (x86)\Embarcadero\Studio\17.0\bin\rsvars.bat"
 msbuild.exe "DelphiIDEColorizer_DXSeattle.dproj" /target:Clean;Build /p:Platform=Win32 /p:config=debug
 set BUILD_STATUS=%ERRORLEVEL%
+if %BUILD_STATUS%==0 GOTO DXBerlin
+pause
+EXIT
+
+
+:DXBerlin
+echo DXBerlin
+call "C:\Program Files (x86)\Embarcadero\Studio\18.0\bin\rsvars.bat"
+msbuild.exe "DelphiIDEColorizer_DXBerlin.dproj" /target:Clean;Build /p:Platform=Win32 /p:config=debug
+set BUILD_STATUS=%ERRORLEVEL%
 if %BUILD_STATUS%==0 GOTO DONE
+pause
+EXIT
+
 :DONE
 
 del *.bpl

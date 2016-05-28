@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{899118EB-3285-4D20-A91A-46C1A763C809}</ProjectGuid>
-        <MainSource>DelphiIDEColorizerDXSeattle.dpk</MainSource>
+        <MainSource>DelphiIDEColorizerDXBerlin.dpk</MainSource>
         <ProjectVersion>18.1</ProjectVersion>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
@@ -47,7 +47,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <SanitizedProjectName>DelphiIDEColorizerDXSeattle</SanitizedProjectName>
+        <SanitizedProjectName>DelphiIDEColorizerDXBerlin</SanitizedProjectName>
         <DCC_BplOutput>.\</DCC_BplOutput>
         <DesignOnlyPackage>true</DesignOnlyPackage>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -76,7 +76,7 @@
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <DCC_UsePackage>vcl;vclimg;DelphiIDEColorizerXE2;Jcl;mbColorLibDXE6;mbColorLibDXE7;mbColorLibDXE8;mbColorLibDXSeattle;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>vcl;vclimg;DelphiIDEColorizerXE2;Jcl;mbColorLibDXE6;mbColorLibDXE7;mbColorLibDXE8;mbColorLibDXSeattle;mbColorLibDXBerlin;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -91,6 +91,7 @@
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <ILINK_MapFileType>DetailedSegments</ILINK_MapFileType>
         <DCC_BplOutput>.\</DCC_BplOutput>
         <VerInfo_MinorVer>0</VerInfo_MinorVer>
         <VerInfo_MajorVer>1</VerInfo_MajorVer>
@@ -115,7 +116,7 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
-        <DCCReference Include="mbColorLibDXSeattle.dcp"/>
+        <DCCReference Include="mbColorLibDXBerlin.dcp"/>
         <DCCReference Include="Jcl.dcp"/>
         <DCCReference Include="Main.pas"/>
         <DCCReference Include="Colorizer.Utils.pas"/>
@@ -134,7 +135,6 @@
         <DCCReference Include="..\Units\uMisc.pas"/>
         <DCCReference Include="..\Units\uRegistry.pas"/>
         <DCCReference Include="uRttiHelper.pas"/>
-        <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Ext.pas"/>
         <DCCReference Include="..\Common\delphi-detours-library\DDetours.pas"/>
         <DCCReference Include="..\Common\delphi-detours-library\InstDecode.pas"/>
         <DCCReference Include="..\Units\uDelphiIDEHighlight.pas"/>
@@ -143,6 +143,7 @@
         <DCCReference Include="Colorizer.Hooks.UxTheme.pas"/>
         <DCCReference Include="..\Units\uColorSelector.pas"/>
         <DCCReference Include="Colorizer.Hooks.GDIPOBJ.pas"/>
+        <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Ext.pas"/>
         <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Utils.FlatControls.pas"/>
         <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Utils.FlatStyleHook.pas"/>
         <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Utils.FlatMenus.pas"/>
@@ -206,7 +207,7 @@
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp210.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
                 <Source>
-                    <Source Name="MainSource">DelphiIDEColorizerDXSeattle.dpk</Source>
+                    <Source Name="MainSource">DelphiIDEColorizerDXBerlin.dpk</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>
@@ -214,10 +215,10 @@
                 <Platform value="Win64">False</Platform>
             </Platforms>
             <ModelSupport>False</ModelSupport>
-            <Deployment Version="2">
-                <DeployFile LocalName="DelphiIDEColorizerDXSeattle.bpl" Configuration="Debug" Class="ProjectOutput">
+            <Deployment Version="3">
+                <DeployFile LocalName="DelphiIDEColorizerDXBerlin.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>DelphiIDEColorizerDXSeattle.bpl</RemoteName>
+                        <RemoteName>DelphiIDEColorizerDXBerlin.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -276,16 +277,19 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Required="true" Name="ProjectOutput">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                    </Platform>
                     <Platform Name="iOSDevice64">
                         <Operation>1</Operation>
                     </Platform>
-                    <Platform Name="OSX32">
+                    <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
                     </Platform>
-                    <Platform Name="iOSDevice32">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                    </Platform>
+                    <Platform Name="Linux64">
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="OSX32">
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Android">
@@ -316,12 +320,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="AndroidLibnativeX86File">
-                    <Platform Name="Android">
-                        <RemoteDir>library\lib\x86</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="AndroidLibnativeX86File"/>
                 <DeployClass Name="ProjectiOSDeviceDebug">
                     <Platform Name="iOSDevice64">
                         <RemoteDir>..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF</RemoteDir>
