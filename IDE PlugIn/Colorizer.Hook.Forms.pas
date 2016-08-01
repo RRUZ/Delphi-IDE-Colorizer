@@ -287,41 +287,46 @@ var
  sClassName  : string;
 {$ENDIF}
 begin
-{$IFDEF DELPHIXE2_UP}
- sClassName:=Self.ClassName;
-// if (TWinControlClass(Self).WindowHandle <> 0) then
-//  sClassName := GetWindowClassName(TWinControlClass(Self).WindowHandle);
- LWindowProc := Self.WindowProc;
-  if not TColorizerLocalSettings.Unloading and
-     (sClassName<>'') and Assigned(TColorizerLocalSettings.Settings) and (TColorizerLocalSettings.Settings.Enabled)
-     and TColorizerLocalSettings.Settings.UseVCLStyles and TColorizerLocalSettings.Settings.VCLStylesForms
-     and (TColorizerLocalSettings.Settings.VCLStyleName<>'') and (Self.Visible)
-     and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(sClassName)>=0) and
-     (Self.Parent=nil) and (Self.HostDockSite=nil) and
-     not (csDesigning in Self.ComponentState) and
-     not (csDestroying in Self.ComponentState) and
-     not (csDestroyingHandle in Self.ControlState) and
-     not (csOverrideStylePaint in Self.ControlStyle) and
-     HandleColorizerStyleMessage(Self, Message, LWindowProc) then
-    Exit;
-{$ENDIF}
+  try
+	{$IFDEF DELPHIXE2_UP}
+	 sClassName:=Self.ClassName;
+	// if (TWinControlClass(Self).WindowHandle <> 0) then
+	//  sClassName := GetWindowClassName(TWinControlClass(Self).WindowHandle);
+	 LWindowProc := Self.WindowProc;
+	  if not TColorizerLocalSettings.Unloading and
+		 (sClassName<>'') and Assigned(TColorizerLocalSettings.Settings) and (TColorizerLocalSettings.Settings.Enabled)
+		 and TColorizerLocalSettings.Settings.UseVCLStyles and TColorizerLocalSettings.Settings.VCLStylesForms
+		 and (TColorizerLocalSettings.Settings.VCLStyleName<>'') and (Self.Visible)
+		 and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(sClassName)>=0) and
+		 (Self.Parent=nil) and (Self.HostDockSite=nil) and
+		 not (csDesigning in Self.ComponentState) and
+		 not (csDestroying in Self.ComponentState) and
+		 not (csDestroyingHandle in Self.ControlState) and
+		 not (csOverrideStylePaint in Self.ControlStyle) and
+		 HandleColorizerStyleMessage(Self, Message, LWindowProc) then
+		Exit;
+	{$ENDIF}
 
-  //if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and (SameText(Self.ClassName, 'TDisassemblyView')) then
-    //AddLog('Detour_TCustomForm_WndProc', Self.ClassName+' '+WM_To_String(Message.Msg));
-{$IFDEF DLLWIZARD}
- case Message.Msg of
-  WM_PAINT  : if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and (SameText(Self.ClassName, 'TAppBuilder')) then
-              begin
-                 RefreshIDETheme();
-              end;
+	  //if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and (SameText(Self.ClassName, 'TDisassemblyView')) then
+		//AddLog('Detour_TCustomForm_WndProc', Self.ClassName+' '+WM_To_String(Message.Msg));
+	{$IFDEF DLLWIZARD}
+	 case Message.Msg of
+	  WM_PAINT  : if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and (SameText(Self.ClassName, 'TAppBuilder')) then
+				  begin
+					 RefreshIDETheme();
+				  end;
 
-  WM_CLOSE  : if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and (SameText(Self.ClassName, 'TAppBuilder')) then
-              begin
-                RestoreIDESettingsFast();
-              end;
- end;
-{$ENDIF}
- Trampoline_TCustomForm_WndProc(Self, Message);
+	  WM_CLOSE  : if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and (SameText(Self.ClassName, 'TAppBuilder')) then
+				  begin
+					RestoreIDESettingsFast();
+				  end;
+	 end;
+	{$ENDIF}
+	 Trampoline_TCustomForm_WndProc(Self, Message);
+  except
+    on E : Exception do
+     AddLog2('Detour_TCustomForm_WndProc', E.Message);
+  end; 
 end;
 
 procedure Detour_TCustomForm_DoCreate(Self : TCustomForm);

@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{80949812-1024-4503-A5D1-7C2204F40CB0}</ProjectGuid>
-        <ProjectVersion>16.0</ProjectVersion>
+        <ProjectVersion>16.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <MainSource>DelphiIDEColorizer_XE7.dpr</MainSource>
         <Base>True</Base>
@@ -108,7 +108,6 @@
             <Form>FormIDEColorizerSettings</Form>
         </DCCReference>
         <DCCReference Include="..\Units\uDelphiVersions.pas"/>
-        <DCCReference Include="..\Units\uSupportedIDEs.pas"/>
         <DCCReference Include="..\Units\uMisc.pas"/>
         <DCCReference Include="..\Units\uRegistry.pas"/>
         <DCCReference Include="uRttiHelper.pas"/>
@@ -120,6 +119,7 @@
         <DCCReference Include="Colorizer.Wrappers.pas"/>
         <DCCReference Include="..\Units\uColorSelector.pas"/>
         <DCCReference Include="Colorizer.Hooks.GDIPOBJ.pas"/>
+        <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Utils.Graphics.pas"/>
         <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Utils.FlatControls.pas"/>
         <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Utils.FlatStyleHook.pas"/>
         <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Utils.FlatMenus.pas"/>
@@ -182,7 +182,7 @@
                     <VersionInfoKeys Name="CFBundleDevelopmentRegion"/>
                 </VersionInfoKeys>
                 <Source>
-                    <Source Name="MainSource">DelphiIDEColorizer_XE6.dpr</Source>
+                    <Source Name="MainSource">DelphiIDEColorizer_XE7.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k180.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>

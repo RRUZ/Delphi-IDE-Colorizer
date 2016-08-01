@@ -39,9 +39,9 @@ TRegisteredTypeLibraryTabFrame
 TExpanderForm
 TSearchProgressDlg
 TExpandableEvalView
-TProgressForm
+*TProgressForm
 TDebugInspector
-TEvalDialog
+*TEvalDialog
 FMTFormBoundary
 FMTFormContainerForm
 TViewFormUnitDialog
@@ -50,8 +50,8 @@ TfmGrepResults
 TfmMacroLibrary
 TfmToDo
 TAddBP
-TSrchDialog
-TRplcDialog
+*TSrchDialog
+*TRplcDialog
 TGotoLineDialog
 TGetAddress
 TAddModuleForm
