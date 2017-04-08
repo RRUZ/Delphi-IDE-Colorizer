@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.Hooks.IDE.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -24,7 +24,7 @@ unit Colorizer.Hooks.IDE;
 interface
 {$I ..\Common\Jedi.inc}
 
-{$IF RTLVersion>=24}
+{$IF RTLVersion >= 24}
   {$LEGACYIFEND ON}
 {$IFEND}
 {$DEFINE USE_VCL_STYLESAPI}
@@ -56,7 +56,8 @@ const
 {$IFDEF DELPHIXE7} sVclIDEModule =  'vclide210.bpl';{$ENDIF}
 {$IFDEF DELPHIXE8} sVclIDEModule =  'vclide220.bpl';{$ENDIF}
 {$IFDEF DELPHIX_SEATTLE} sVclIDEModule =  'vclide230.bpl';{$ENDIF}
-{$IFDEF DELPHIX_LONDON} sVclIDEModule =  'vclide240.bpl';{$ENDIF}
+{$IFDEF DELPHIX_BERLIN} sVclIDEModule =  'vclide240.bpl';{$ENDIF}
+{$IFDEF DELPHIX_TOKYO} sVclIDEModule =  'vclide250.bpl';{$ENDIF}
 
 {$IFDEF DELPHIXE}  sCoreIDEModule =  'coreide150.bpl';{$ENDIF}
 {$IFDEF DELPHIXE2} sCoreIDEModule =  'coreide160.bpl';{$ENDIF}
@@ -67,7 +68,9 @@ const
 {$IFDEF DELPHIXE7} sCoreIDEModule =  'coreide210.bpl';{$ENDIF}
 {$IFDEF DELPHIXE8} sCoreIDEModule =  'coreide220.bpl';{$ENDIF}
 {$IFDEF DELPHIX_SEATTLE}sCoreIDEModule =  'coreide230.bpl';{$ENDIF}
-{$IFDEF DELPHIX_LONDON} sCoreIDEModule =  'coreide240.bpl';{$ENDIF}
+{$IFDEF DELPHIX_BERLIN} sCoreIDEModule =  'coreide240.bpl';{$ENDIF}
+{$IFDEF DELPHIX_TOKYO} sCoreIDEModule =  'coreide250.bpl';{$ENDIF}
+
 
 {$IFDEF DELPHIXE6} sModernThemeModule =  'ModernTheme200.bpl';{$ENDIF}
 
@@ -80,8 +83,12 @@ const
 {$IFDEF DELPHIX_SEATTLE} sModernThemeModule =  'ModernTheme230.bpl';{$ENDIF}
 {$IFDEF DELPHIX_SEATTLE} sdesignideModule   =  'designide230.bpl';{$ENDIF}
 
-{$IFDEF DELPHIX_LONDON} sModernThemeModule =  'ModernTheme240.bpl';{$ENDIF}
-{$IFDEF DELPHIX_LONDON} sdesignideModule   =  'designide240.bpl';{$ENDIF}
+{$IFDEF DELPHIX_BERLIN} sModernThemeModule =  'ModernTheme240.bpl';{$ENDIF}
+{$IFDEF DELPHIX_BERLIN} sdesignideModule   =  'designide240.bpl';{$ENDIF}
+
+{$IFDEF DELPHIX_TOKYO} sModernThemeModule =  'ModernTheme250.bpl';{$ENDIF}
+{$IFDEF DELPHIX_TOKYO} sdesignideModule   =  'designide250.bpl';{$ENDIF}
+
 
 procedure InstallHooksIDE;
 Procedure RemoveHooksIDE;
@@ -740,7 +747,11 @@ var
   function CalcButtonSize(
     const CaptionRect: TRect): Integer;
   const
-    cButtonBuffer = 8;
+    {$IFDEF DELPHIX_SEATTLE_UP}
+    cButtonBuffer = 4;
+    {$ELSE}
+    cButtonBuffer = 4;
+    {$ENDIF}
   begin
     if Self.DockCaptionOrientation = dcoHorizontal then
       Result := CaptionRect.Bottom - CaptionRect.Top - cButtonBuffer
@@ -750,7 +761,11 @@ var
 
   function GetCloseRect(const CaptionRect: TRect): TRect;
   const
+    {$IFDEF DELPHIX_SEATTLE_UP}
+    cSideBuffer = 8;
+    {$ELSE}
     cSideBuffer = 4;
+    {$ENDIF}
   var
     CloseSize: Integer;
   begin
@@ -778,15 +793,15 @@ var
     PinSize := CalcButtonSize(CaptionRect);
     if Self.DockCaptionOrientation = dcoHorizontal then
     begin
-      Result.Left := CaptionRect.Right - 2*PinSize - 2*cSideBuffer;
+      Result.Left := CaptionRect.Right - (2 * PinSize) - (2 * cSideBuffer);
       Result.Top := CaptionRect.Top + ((CaptionRect.Bottom - CaptionRect.Top) - PinSize) div 2;
     end
     else
     begin
       Result.Left := CaptionRect.Left + ((CaptionRect.Right - CaptionRect.Left) - PinSize) div 2;
-      Result.Top := CaptionRect.Top + 2*cSideBuffer + 2*PinSize;
+      Result.Top := CaptionRect.Top + (2 * cSideBuffer) + (2 * PinSize);
     end;
-    Result.Right := Result.Left + PinSize + 2;
+    Result.Right := Result.Left + (PinSize + 2);
     Result.Bottom := Result.Top + PinSize;
   end;
 
@@ -975,7 +990,7 @@ begin
     if Self.DockCaptionPinButton <> dcpbNone then
     begin
       PinRect := GetPinRect(CaptionRect);
-      LPngImage:=TPNGImage.Create;
+      LPngImage := TPNGImage.Create;
       try
         if Self.DockCaptionPinButton = dcpbUp then
          LPngImage.LoadFromResourceName(HInstance, 'pin_dock_left')

@@ -1,4 +1,4 @@
-//**************************************************************************************************
+// **************************************************************************************************
 //
 // Unit Colorizer.XPStyleActnCtrls
 // unit Colorizer.XPStyleActnCtrls  for the Delphi IDE Colorizer
@@ -14,18 +14,18 @@
 // The Original Code is Colorizer.XPStyleActnCtrls.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
-//**************************************************************************************************
+// **************************************************************************************************
 
 unit Colorizer.XPStyleActnCtrls;
 
 interface
+
 {$I ..\Common\Jedi.inc}
 
-uses
-  ActnMan,
+uses ActnMan,
   ActnMenus,
   Classes,
   Graphics,
@@ -34,108 +34,107 @@ uses
 
 type
   TColorizerColorMap = class(TXPColorMap)
-  private
-    FWindowColor: TColor;
-  public
-    procedure Assign(Source: TPersistent); override;
-    procedure UpdateColors; override;
-  published
-    property WindowColor: TColor read FWindowColor write FWindowColor default clNone;
+    private
+      FWindowColor : TColor;
+    public
+      procedure Assign(Source : TPersistent);override;
+      procedure UpdateColors;override;
+    published
+      property WindowColor : TColor
+        read FWindowColor
+        write FWindowColor
+        default clNone;
   end;
 
-
-{ TColorXPStyleActionBars }
+  { TColorXPStyleActionBars }
 
   TColorXPStyleActionBars = class(TActionBarStyleEx)
-  public
-    function GetColorMapClass(ActionBar: TCustomActionBar): TCustomColorMapClass; override;
-    function GetControlClass(ActionBar: TCustomActionBar;
-      AnItem: TActionClientItem): TCustomActionControlClass; override;
-    function GetPopupClass(ActionBar: TCustomActionBar): TCustomPopupClass; override;
-    function GetAddRemoveItemClass(ActionBar: TCustomActionBar): TCustomAddRemoveItemClass; override;
-    function GetStyleName: string; override;
-    function GetScrollBtnClass: TCustomToolScrollBtnClass; override;
+    public
+      function GetColorMapClass(ActionBar : TCustomActionBar) : TCustomColorMapClass;override;
+      function GetControlClass(
+        ActionBar : TCustomActionBar;
+        AnItem    : TActionClientItem) : TCustomActionControlClass;override;
+      function GetPopupClass(ActionBar : TCustomActionBar) : TCustomPopupClass;override;
+      function GetAddRemoveItemClass(ActionBar : TCustomActionBar) : TCustomAddRemoveItemClass;override;
+      function GetStyleName : string;override;
+      function GetScrollBtnClass : TCustomToolScrollBtnClass;override;
   end;
 
   TColorThemedStyleActionBars = class(TActionBarStyleEx)
-  public
-    function GetColorMapClass(ActionBar: TCustomActionBar): TCustomColorMapClass; override;
-    function GetControlClass(ActionBar: TCustomActionBar;
-      AnItem: TActionClientItem): TCustomActionControlClass; override;
-    function GetPopupClass(ActionBar: TCustomActionBar): TCustomPopupClass; override;
-    function GetAddRemoveItemClass(ActionBar: TCustomActionBar): TCustomAddRemoveItemClass; override;
-    function GetStyleName: string; override;
-    function GetScrollBtnClass: TCustomToolScrollBtnClass; override;
+    public
+      function GetColorMapClass(ActionBar : TCustomActionBar) : TCustomColorMapClass;override;
+      function GetControlClass(
+        ActionBar : TCustomActionBar;
+        AnItem    : TActionClientItem) : TCustomActionControlClass;override;
+      function GetPopupClass(ActionBar : TCustomActionBar) : TCustomPopupClass;override;
+      function GetAddRemoveItemClass(ActionBar : TCustomActionBar) : TCustomAddRemoveItemClass;override;
+      function GetStyleName : string;override;
+      function GetScrollBtnClass : TCustomToolScrollBtnClass;override;
   end;
 
 var
-  ColorXPStyle: TColorXPStyleActionBars;
+  ColorXPStyle : TColorXPStyleActionBars;
 
 implementation
 
-uses
-  Colorizer.Utils,
+uses Colorizer.Utils,
   Colorizer.StoreColorMap,
   ListActns,
   ThemedActnCtrls,
   XPActnCtrls,
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   PlatformDefaultStyleActnCtrls,
   Colorizer.Vcl.Styles,
-  {$ENDIF}
+{$ENDIF}
   Themes;
 
 { TColorXPStyleActionBars }
 
-function TColorXPStyleActionBars.GetAddRemoveItemClass(
-  ActionBar: TCustomActionBar): TCustomAddRemoveItemClass;
+function TColorXPStyleActionBars.GetAddRemoveItemClass(ActionBar : TCustomActionBar) : TCustomAddRemoveItemClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetAddRemoveItemClass(ActionBar)
   else
-  {$ENDIF}
+{$ENDIF}
     Result := TXPStyleAddRemoveItem;
 end;
 
-function TColorXPStyleActionBars.GetColorMapClass(
-  ActionBar: TCustomActionBar): TCustomColorMapClass;
+function TColorXPStyleActionBars.GetColorMapClass(ActionBar : TCustomActionBar) : TCustomColorMapClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetColorMapClass(ActionBar)
   else
-  {$ENDIF}
-    Result := {TXPColorMap{TTwilightColorMap}TColorizerColorMap; //use own
+{$ENDIF}
+    Result := { TXPColorMap{TTwilightColorMap } TColorizerColorMap; // use own
 end;
 
-function TColorXPStyleActionBars.GetControlClass(ActionBar: TCustomActionBar;
-  AnItem: TActionClientItem): TCustomActionControlClass;
+function TColorXPStyleActionBars.GetControlClass(
+  ActionBar : TCustomActionBar;
+  AnItem    : TActionClientItem) : TCustomActionControlClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetControlClass(ActionBar, AnItem)
   else
-  {$ENDIF}
+{$ENDIF}
   begin
     if ActionBar is TCustomActionToolBar then
     begin
       if AnItem.HasItems then
         Result := TXPStyleDropDownBtn
+      else if (AnItem.Action is TStaticListAction) or (AnItem.Action is TVirtualListAction) then
+        Result := TCustomComboControl
       else
-        if (AnItem.Action is TStaticListAction) or
-           (AnItem.Action is TVirtualListAction) then
-          Result := TCustomComboControl
-        else
-          Result := TXPStyleButton;
+        Result := TXPStyleButton;
     end
     else if ActionBar is TCustomActionMainMenuBar then
       Result := TXPStyleMenuButton
     else if ActionBar is TCustomizeActionToolBar then
     begin
-      with TCustomizeActionToolbar(ActionBar) do
-        if not Assigned(RootMenu) or
-           (AnItem.ParentItem <> TCustomizeActionToolBar(RootMenu).AdditionalItem) then
+      with TCustomizeActionToolBar(ActionBar) do
+        if not Assigned(RootMenu) or (AnItem.ParentItem <> TCustomizeActionToolBar(RootMenu).AdditionalItem) then
           Result := TXPStyleMenuItem
         else
           Result := TXPStyleAddRemoveItem;
@@ -147,38 +146,37 @@ begin
   end;
 end;
 
-function TColorXPStyleActionBars.GetPopupClass(
-  ActionBar: TCustomActionBar): TCustomPopupClass;
+function TColorXPStyleActionBars.GetPopupClass(ActionBar : TCustomActionBar) : TCustomPopupClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetPopupClass(ActionBar)
   else
-  {$ENDIF}
-  if ActionBar is TCustomActionToolBar then
-    Result := TXPStyleCustomizePopup
-  else
-    Result := TXPStylePopupMenu;
+{$ENDIF}
+    if ActionBar is TCustomActionToolBar then
+      Result := TXPStyleCustomizePopup
+    else
+      Result := TXPStylePopupMenu;
 end;
 
-function TColorXPStyleActionBars.GetScrollBtnClass: TCustomToolScrollBtnClass;
+function TColorXPStyleActionBars.GetScrollBtnClass : TCustomToolScrollBtnClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetScrollBtnClass
   else
-  {$ENDIF}
+{$ENDIF}
     Result := TXPStyleToolScrollBtn;
 end;
 
-function TColorXPStyleActionBars.GetStyleName: string;
+function TColorXPStyleActionBars.GetStyleName : string;
 begin
   Result := 'Color XP Style';
 end;
 
 { TColorXPColorMap }
 
-procedure TColorizerColorMap.Assign(Source: TPersistent);
+procedure TColorizerColorMap.Assign(Source : TPersistent);
 begin
   if Source is TCustomActionBarColorMap then
   begin
@@ -212,66 +210,62 @@ begin
   inherited;
   WindowColor := clNone;
   if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
-   LoadColorMapFromXmlFile(Self, TColorizerLocalSettings.Settings.ThemeFileName);
+    LoadColorMapFromXmlFile(Self, TColorizerLocalSettings.Settings.ThemeFileName);
 
- {$IFDEF DELPHIXE2_UP}
-  if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and TColorizerLocalSettings.Settings.UseVCLStyles and TColorizerLocalSettings.Settings.VCLStylesMenusColors  then
-   AssignColorsFromVCLStyle(Self, ColorizerStyleServices);
- {$ENDIF}
+{$IFDEF DELPHIXE2_UP}
+  if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and TColorizerLocalSettings.Settings.UseVCLStyles and
+    TColorizerLocalSettings.Settings.VCLStylesMenusColors then
+    AssignColorsFromVCLStyle(Self, ColorizerStyleServices);
+{$ENDIF}
 end;
 
 { TColorThemedStyleActionBars }
 
-function TColorThemedStyleActionBars.GetAddRemoveItemClass(
-  ActionBar: TCustomActionBar): TCustomAddRemoveItemClass;
+function TColorThemedStyleActionBars.GetAddRemoveItemClass(ActionBar : TCustomActionBar) : TCustomAddRemoveItemClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetAddRemoveItemClass(ActionBar)
   else
-  {$ENDIF}
+{$ENDIF}
     Result := TThemedAddRemoveItem;
 end;
 
-function TColorThemedStyleActionBars.GetColorMapClass(
-  ActionBar: TCustomActionBar): TCustomColorMapClass;
+function TColorThemedStyleActionBars.GetColorMapClass(ActionBar : TCustomActionBar) : TCustomColorMapClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetColorMapClass(ActionBar)
   else
-  {$ENDIF}
+{$ENDIF}
     Result := TColorizerColorMap;
 end;
 
 function TColorThemedStyleActionBars.GetControlClass(
-  ActionBar: TCustomActionBar;
-  AnItem: TActionClientItem): TCustomActionControlClass;
+  ActionBar : TCustomActionBar;
+  AnItem    : TActionClientItem) : TCustomActionControlClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetControlClass(ActionBar, AnItem)
   else
-  {$ENDIF}
+{$ENDIF}
   begin
     if ActionBar is TCustomActionToolBar then
     begin
       if AnItem.HasItems then
         Result := TThemedDropDownButton
+      else if (AnItem.Action is TStaticListAction) or (AnItem.Action is TVirtualListAction) then
+        Result := TCustomComboControl
       else
-        if (AnItem.Action is TStaticListAction) or
-           (AnItem.Action is TVirtualListAction) then
-          Result := TCustomComboControl
-        else
-          Result := TThemedButtonControl;
+        Result := TThemedButtonControl;
     end
     else if ActionBar is TCustomActionMainMenuBar then
       Result := TThemedMenuButton
     else if ActionBar is TCustomizeActionToolBar then
     begin
-      with TCustomizeActionToolbar(ActionBar) do
-        if not Assigned(RootMenu) or
-           (AnItem.ParentItem <> TCustomizeActionToolBar(RootMenu).AdditionalItem) then
+      with TCustomizeActionToolBar(ActionBar) do
+        if not Assigned(RootMenu) or (AnItem.ParentItem <> TCustomizeActionToolBar(RootMenu).AdditionalItem) then
           Result := TThemedMenuItem
         else
           Result := TThemedAddRemoveItem;
@@ -283,42 +277,43 @@ begin
   end;
 end;
 
-function TColorThemedStyleActionBars.GetPopupClass(
-  ActionBar: TCustomActionBar): TCustomPopupClass;
+function TColorThemedStyleActionBars.GetPopupClass(ActionBar : TCustomActionBar) : TCustomPopupClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetPopupClass(ActionBar)
   else
-  {$ENDIF}
-  if ActionBar is TCustomActionToolBar then
-    Result := TThemedCustomizePopup
-  else
-    Result := TThemedPopupMenu;
+{$ENDIF}
+    if ActionBar is TCustomActionToolBar then
+      Result := TThemedCustomizePopup
+    else
+      Result := TThemedPopupMenu;
 end;
 
-function TColorThemedStyleActionBars.GetScrollBtnClass: TCustomToolScrollBtnClass;
+function TColorThemedStyleActionBars.GetScrollBtnClass : TCustomToolScrollBtnClass;
 begin
-  {$IFDEF DELPHIXE2_UP}
+{$IFDEF DELPHIXE2_UP}
   if TStyleManager.IsCustomStyleActive then
     Result := PlatformDefaultStyle.GetScrollBtnClass
   else
-  {$ENDIF}
+{$ENDIF}
     Result := TThemedToolScrollBtn;
 end;
 
-
-function TColorThemedStyleActionBars.GetStyleName: string;
+function TColorThemedStyleActionBars.GetStyleName : string;
 begin
   Result := 'Color Themed';
 end;
 
 initialization
-  ColorXPStyle := TColorXPStyleActionBars.Create;
-  RegisterActnBarStyle(ColorXPStyle);
-  TColorizerLocalSettings.ActionBarStyle:=ColorXPStyle;
-finalization
-  UnregisterActnBarStyle(ColorXPStyle);
-  ColorXPStyle.Free;
-end.
 
+ColorXPStyle := TColorXPStyleActionBars.Create;
+RegisterActnBarStyle(ColorXPStyle);
+TColorizerLocalSettings.ActionBarStyle := ColorXPStyle;
+
+finalization
+
+UnregisterActnBarStyle(ColorXPStyle);
+ColorXPStyle.Free;
+
+end.

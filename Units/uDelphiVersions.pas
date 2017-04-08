@@ -14,7 +14,7 @@
 // The Original Code is uDelphiVersions.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -217,8 +217,8 @@ function DelphiIsOldVersion(DelphiVersion:TDelphiVersions) : Boolean;
 function GetIndexClosestColor(AColor:TColor) : Integer;
 {$ENDIF}
 
-function GetDelphiVersionMappedColor(AColor:TColor;DelphiVersion:TDelphiVersions) : TColor;
-function GetVCLStylesFolder(DelphiVersion:TDelphiVersions) : string;
+function GetDelphiVersionMappedColor(AColor : TColor; DelphiVersion : TDelphiVersions) : TColor;
+function GetVCLStylesFolder(DelphiVersion : TDelphiVersions) : string;
 
 {
 

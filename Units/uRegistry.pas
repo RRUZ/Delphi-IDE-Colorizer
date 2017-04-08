@@ -1,4 +1,4 @@
-//**************************************************************************************************
+// **************************************************************************************************
 //
 // Unit uRegistry
 // unit with windows registry helper functions  for the Delphi IDE Theme Editor
@@ -14,38 +14,37 @@
 // The Original Code is uRegistry.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
-//**************************************************************************************************
+// **************************************************************************************************
 
 unit uRegistry;
 
 interface
 
-uses
-  Windows,
+uses Windows,
   Registry;
 
-function RegReadStr(const RegPath, RegValue: string; var Str: string; const RootKey: HKEY): boolean;
-function RegReadInt(const RegPath, RegValue: string; var IntValue: integer; const RootKey: HKEY): boolean;
-function RegWriteStr(const RegPath, RegValue: string; const Str: string; const RootKey: HKEY): boolean;
-function RegWriteInt(const RegPath, RegValue: string; IntValue: integer; const RootKey: HKEY): boolean;
-function RegKeyExists(const RegPath: string; const RootKey: HKEY): boolean;
-function RegLoadKey(const RegPath, FileName: string; const RootKey: HKEY): boolean;
-function RegSaveKey(const RegPath, FileName: string; const RootKey: HKEY): boolean;
+function RegReadStr(const RegPath, RegValue : string;var Str : string;const RootKey : HKEY) : boolean;
+function RegReadInt(const RegPath, RegValue : string;var IntValue : integer;const RootKey : HKEY) : boolean;
+function RegWriteStr(const RegPath, RegValue : string;const Str : string;const RootKey : HKEY) : boolean;
+function RegWriteInt(const RegPath, RegValue : string;IntValue : integer;const RootKey : HKEY) : boolean;
+function RegKeyExists(const RegPath : string;const RootKey : HKEY) : boolean;
+function RegLoadKey(const RegPath, FileName : string;const RootKey : HKEY) : boolean;
+function RegSaveKey(const RegPath, FileName : string;const RootKey : HKEY) : boolean;
 
 implementation
 
-function RegLoadKey(const RegPath, FileName: string; const RootKey: HKEY): boolean;
+function RegLoadKey(const RegPath, FileName : string;const RootKey : HKEY) : boolean;
 var
-  Reg: TRegistry;
+  Reg : TRegistry;
 begin
   try
     Reg := TRegistry.Create;
     try
       Reg.RootKey := RootKey;
-      Result      := Reg.LoadKey(RegPath, FileName);
+      Result := Reg.LoadKey(RegPath, FileName);
       Reg.CloseKey;
     finally
       Reg.Free;
@@ -55,15 +54,15 @@ begin
   end;
 end;
 
-function RegSaveKey(const RegPath, FileName: string; const RootKey: HKEY): boolean;
+function RegSaveKey(const RegPath, FileName : string;const RootKey : HKEY) : boolean;
 var
-  Reg: TRegistry;
+  Reg : TRegistry;
 begin
   try
     Reg := TRegistry.Create;
     try
       Reg.RootKey := RootKey;
-      Result      := Reg.SaveKey(RegPath, FileName);
+      Result := Reg.SaveKey(RegPath, FileName);
       Reg.CloseKey;
     finally
       Reg.Free;
@@ -73,15 +72,15 @@ begin
   end;
 end;
 
-function RegWriteStr(const RegPath, RegValue: string; const Str: string; const RootKey: HKEY): boolean;
+function RegWriteStr(const RegPath, RegValue : string;const Str : string;const RootKey : HKEY) : boolean;
 var
-  Reg: TRegistry;
+  Reg : TRegistry;
 begin
   try
     Reg := TRegistry.Create;
     try
       Reg.RootKey := RootKey;
-      Result      := Reg.OpenKey(RegPath, True);
+      Result := Reg.OpenKey(RegPath, True);
       if Result then
         Reg.WriteString(RegValue, Str);
     finally
@@ -92,16 +91,15 @@ begin
   end;
 end;
 
-function RegReadStr(const RegPath, RegValue: string; var Str: string;
-  const RootKey: HKEY): boolean;
+function RegReadStr(const RegPath, RegValue : string;var Str : string;const RootKey : HKEY) : boolean;
 var
-  Reg: TRegistry;
+  Reg : TRegistry;
 begin
   try
     Reg := TRegistry.Create;
     try
       Reg.RootKey := RootKey;
-      Result      := Reg.OpenKey(RegPath, True);
+      Result := Reg.OpenKey(RegPath, True);
       if Result then
         Str := Reg.ReadString(RegValue);
     finally
@@ -112,16 +110,15 @@ begin
   end;
 end;
 
-function RegWriteInt(const RegPath, RegValue: string; IntValue: integer;
-  const RootKey: HKEY): boolean;
+function RegWriteInt(const RegPath, RegValue : string;IntValue : integer;const RootKey : HKEY) : boolean;
 var
-  Reg: TRegistry;
+  Reg : TRegistry;
 begin
   try
     Reg := TRegistry.Create;
     try
       Reg.RootKey := RootKey;
-      Result      := Reg.OpenKey(RegPath, True);
+      Result := Reg.OpenKey(RegPath, True);
       if Result then
         Reg.WriteInteger(RegValue, IntValue);
     finally
@@ -132,16 +129,15 @@ begin
   end;
 end;
 
-function RegReadInt(const RegPath, RegValue: string; var IntValue: integer;
-  const RootKey: HKEY): boolean;
+function RegReadInt(const RegPath, RegValue : string;var IntValue : integer;const RootKey : HKEY) : boolean;
 var
-  Reg: TRegistry;
+  Reg : TRegistry;
 begin
   try
     Reg := TRegistry.Create;
     try
       Reg.RootKey := RootKey;
-      Result      := Reg.OpenKey(RegPath, True);
+      Result := Reg.OpenKey(RegPath, True);
       if Result then
         IntValue := Reg.ReadInteger(RegValue);
     finally
@@ -152,15 +148,15 @@ begin
   end;
 end;
 
-function RegKeyExists(const RegPath: string; const RootKey: HKEY): boolean;
+function RegKeyExists(const RegPath : string;const RootKey : HKEY) : boolean;
 var
-  Reg: TRegistry;
+  Reg : TRegistry;
 begin
   try
     Reg := TRegistry.Create;
     try
       Reg.RootKey := RootKey;
-      Result      := Reg.KeyExists(RegPath);
+      Result := Reg.KeyExists(RegPath);
     finally
       Reg.Free;
     end;

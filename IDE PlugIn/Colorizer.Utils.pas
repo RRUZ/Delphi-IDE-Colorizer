@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.Utils.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 // **************************************************************************************************
@@ -27,7 +27,7 @@ interface
 
 uses
 {$IFDEF DELPHIXE2_UP}
-  Vcl.Themes,
+    Vcl.Themes,
   Vcl.Styles,
   Colorizer.Vcl.Styles,
 {$ENDIF}
@@ -48,59 +48,59 @@ uses
   Colorizer.Settings,
   Colorizer.XPStyleActnCtrls;
 
-{.$DEFINE ENABLELOG}
-procedure AddLog2(const Message: string); overload;
-procedure AddLog2(const Category, Message: string); overload;
+{ .$DEFINE ENABLELOG }
+  procedure AddLog2(const Message : string);overload;
+  procedure AddLog2(const Category, Message : string);overload;
 
-procedure RefreshIDETheme(AColorMap: TColorizerColorMap; AStyle: TActionBarStyle; Restore: Boolean = False; Invalidate: Boolean = False); overload;
-procedure RefreshIDETheme(Invalidate: Boolean = False); overload;
-procedure RestoreIDESettings();
-procedure RestoreIDESettingsFast();
+  procedure RefreshIDETheme(AColorMap : TColorizerColorMap;AStyle : TActionBarStyle;Restore : Boolean = False;Invalidate : Boolean = False);overload;
+  procedure RefreshIDETheme(Invalidate : Boolean = False);overload;
+  procedure RestoreIDESettings();
+  procedure RestoreIDESettingsFast();
 
-procedure LoadSettings(AColorMap: TColorizerColorMap; Settings: TSettings);
-procedure ProcessComponent(AColorMap: TColorizerColorMap; AStyle: TActionBarStyle; AComponent: TComponent; Restore: Boolean = False; Invalidate: Boolean = False);
-procedure GenerateColorMap(AColorMap: TColorizerColorMap; Color, FontColor: TColor);
-{$IF CompilerVersion >= 23}overload; {$IFEND}
-{$IFDEF DELPHIXE2_UP}
-procedure AssignColorsFromVCLStyle(AColorMap: TColorizerColorMap; Style: TCustomStyleServices);
-procedure RegisterVClStylesFiles;
-{$ENDIF}
+  procedure LoadSettings(AColorMap : TColorizerColorMap;Settings : TSettings);
+  procedure ProcessComponent(AColorMap : TColorizerColorMap;AStyle : TActionBarStyle;AComponent : TComponent;Restore : Boolean = False;
+    Invalidate : Boolean = False);
+  procedure GenerateColorMap(AColorMap : TColorizerColorMap;Color, FontColor : TColor);{$IF CompilerVersion >= 23}overload; {$IFEND}
+  {$IFDEF DELPHIXE2_UP}
+  procedure AssignColorsFromVCLStyle(AColorMap : TColorizerColorMap;Style : TCustomStyleServices);
+  procedure RegisterVClStylesFiles;
+  {$ENDIF}
 
 type
   TColorizerLocalSettings = class
-  public
-    class var FActnStyleList: TList<TActionManager>;
-    class var FColorMap: TColorizerColorMap;
-    class var FActionBarStyle: TActionBarStyle;
-    class var FHookedWindows: TStringList;
-    class var FHookedScrollBars: TStringList;
-    class var FWinAPIClasses: TStringList;
-    class var FHookedWindowsText: string;
-    class var FHookedScrollBarsText: string;
-    class var FVCLStylesPath: string;
-    class var FSettings: TSettings;
-    class var FImagesGutterChanged: Boolean;
-    class var FIDEData: TDelphiVersionData;
-    class var FDockImages: TPngImage;
-    class var FUnloading: Boolean;
-    class var FModernTheme: TModernTheme;
-  public
-    class property ActnStyleList: TList<TActionManager> read FActnStyleList write FActnStyleList;
-    class property ColorMap: TColorizerColorMap read FColorMap write FColorMap;
-    class property ActionBarStyle: TActionBarStyle read FActionBarStyle write FActionBarStyle;
-    class property HookedWindows: TStringList read FHookedWindows write FHookedWindows;
-    class property HookedScrollBars: TStringList read FHookedScrollBars write FHookedScrollBars;
-    class property WinAPIClasses: TStringList read FWinAPIClasses write FWinAPIClasses;
-    class property HookedWindowsText: string read FHookedWindowsText write FHookedWindowsText;
-    class property HookedScrollBarsText: string read FHookedScrollBarsText write FHookedScrollBarsText;
-    class property VCLStylesPath: string read FVCLStylesPath write FVCLStylesPath;
-    class property Settings: TSettings read FSettings write FSettings;
-    class property ImagesGutterChanged: Boolean read FImagesGutterChanged write FImagesGutterChanged;
-    class property IDEData: TDelphiVersionData read FIDEData write FIDEData;
-    class property ModernTheme: TModernTheme read FModernTheme write FModernTheme;
+    public
+      class var FActnStyleList : TList<TActionManager>;
+      class var FColorMap : TColorizerColorMap;
+      class var FActionBarStyle : TActionBarStyle;
+      class var FHookedWindows : TStringList;
+      class var FHookedScrollBars : TStringList;
+      class var FWinAPIClasses : TStringList;
+      class var FHookedWindowsText : string;
+      class var FHookedScrollBarsText : string;
+      class var FVCLStylesPath : string;
+      class var FSettings : TSettings;
+      class var FImagesGutterChanged : Boolean;
+      class var FIDEData : TDelphiVersionData;
+      class var FDockImages : TPngImage;
+      class var FUnloading : Boolean;
+      class var FModernTheme : TModernTheme;
+    public
+      class property ActnStyleList : TList<TActionManager> read FActnStyleList write FActnStyleList;
+      class property ColorMap : TColorizerColorMap read FColorMap write FColorMap;
+      class property ActionBarStyle : TActionBarStyle read FActionBarStyle write FActionBarStyle;
+      class property HookedWindows : TStringList read FHookedWindows write FHookedWindows;
+      class property HookedScrollBars : TStringList read FHookedScrollBars write FHookedScrollBars;
+      class property WinAPIClasses : TStringList read FWinAPIClasses write FWinAPIClasses;
+      class property HookedWindowsText : string read FHookedWindowsText write FHookedWindowsText;
+      class property HookedScrollBarsText : string read FHookedScrollBarsText write FHookedScrollBarsText;
+      class property VCLStylesPath : string read FVCLStylesPath write FVCLStylesPath;
+      class property Settings : TSettings read FSettings write FSettings;
+      class property ImagesGutterChanged : Boolean read FImagesGutterChanged write FImagesGutterChanged;
+      class property IDEData : TDelphiVersionData read FIDEData write FIDEData;
+      class property ModernTheme : TModernTheme read FModernTheme write FModernTheme;
 
-    class property DockImages: TPngImage read FDockImages write FDockImages;
-    class property Unloading: Boolean read FUnloading write FUnloading;
+      class property DockImages : TPngImage read FDockImages write FDockImages;
+      class property Unloading : Boolean read FUnloading write FUnloading;
   end;
 
 implementation
@@ -109,7 +109,7 @@ implementation
 
 uses
 {$IFDEF DELPHIXE_UP}
-  Vcl.PlatformDefaultStyleActnCtrls,
+    Vcl.PlatformDefaultStyleActnCtrls,
 {$ELSE}
   Vcl.XPStyleActnCtrls,
 {$ENDIF}
@@ -140,8 +140,8 @@ uses
 
 procedure RegisterVClStylesFiles;
 var
-  sPath, FileName: string;
-  LFiles: TStringDynArray;
+  sPath, FileName : string;
+  LFiles : TStringDynArray;
 begin
   sPath := TColorizerLocalSettings.VCLStylesPath;
   if DirectoryExists(sPath) then
@@ -168,25 +168,25 @@ begin
 end;
 {$ENDIF}
 
-procedure AddLog2(const Message: string);
+procedure AddLog2(const Message : string);
 begin
   AddLog2('', Message);
 end;
 
-procedure RefreshIDETheme(Invalidate: Boolean = False);
+procedure RefreshIDETheme(Invalidate : Boolean = False);
 begin
   RefreshIDETheme(TColorizerLocalSettings.ColorMap, TColorizerLocalSettings.ActionBarStyle, False, Invalidate);
 end;
 
 procedure RestoreIDESettingsFast();
 var
-  i, j: Integer;
-  LComponent: TComponent;
-  NativeColorMap: TColorizerColorMap;
+  i, j : Integer;
+  LComponent : TComponent;
+  NativeColorMap : TColorizerColorMap;
 {$IFDEF DELPHIXE_UP}
-  LThemedColorMap: TThemedColorMap;
+  LThemedColorMap : TThemedColorMap;
 {$ELSE}
-  LThemedColorMap: TStandardColorMap;
+  LThemedColorMap : TStandardColorMap;
 {$ENDIF}
 begin
   NativeColorMap := TColorizerColorMap.Create(nil);
@@ -212,9 +212,9 @@ begin
   end;
 end;
 
-procedure RefreshIDETheme(AColorMap: TColorizerColorMap; AStyle: TActionBarStyle; Restore: Boolean = False; Invalidate: Boolean = False);
+procedure RefreshIDETheme(AColorMap : TColorizerColorMap;AStyle : TActionBarStyle;Restore : Boolean = False;Invalidate : Boolean = False);
 var
-  Index: Integer;
+  Index : Integer;
 begin
   for Index := 0 to Screen.FormCount - 1 do
   // if TColorizerLocalSettings.HookedWindows.IndexOf(Screen.Forms[Index].ClassName)>=0 then
@@ -231,7 +231,7 @@ begin
   // {$ENDIF}
 end;
 
-procedure LoadSettings(AColorMap: TColorizerColorMap; Settings: TSettings);
+procedure LoadSettings(AColorMap : TColorizerColorMap;Settings : TSettings);
 begin
   if Settings = nil then
     exit;
@@ -248,7 +248,7 @@ begin
   // ActionBarStyle:= TActionBarStyle(ActionBarStyles.Objects[ActionBarStyles.IndexOf(Settings.StyleBarName)]);
 end;
 
-procedure GenerateColorMap(AColorMap : TColorizerColorMap; Color, FontColor : TColor);
+procedure GenerateColorMap(AColorMap : TColorizerColorMap;Color, FontColor : TColor);
 begin
   AColorMap.Color := Color;
   AColorMap.ShadowColor := GetShadowColor(Color);
@@ -273,10 +273,10 @@ end;
 
 {$IFDEF DELPHIXE2_UP}
 
-procedure AssignColorsFromVCLStyle(AColorMap : TColorizerColorMap; Style : TCustomStyleServices);
+procedure AssignColorsFromVCLStyle(AColorMap : TColorizerColorMap;Style : TCustomStyleServices);
 var
-  LDetails: TThemedElementDetails;
-  ThemeTextColor: TColor;
+  LDetails : TThemedElementDetails;
+  ThemeTextColor : TColor;
 begin
   AColorMap.Color := Style.GetStyleColor(scPanel);
   AColorMap.ShadowColor := Style.GetStyleColor(scBorder);
@@ -284,7 +284,7 @@ begin
   LDetails := Style.GetElementDetails(tmMenuBarItemNormal);
   Style.GetElementColor(LDetails, ecTextColor, ThemeTextColor);
 
-  //AddLog2(Format('ThemeTextColor %x', [ThemeTextColor]));
+  // AddLog2(Format('ThemeTextColor %x', [ThemeTextColor]));
 
   AColorMap.FontColor := ThemeTextColor; // Style.GetStyleFontColor(sfButtonTextNormal);
   AColorMap.MenuColor := Style.GetSystemColor(clMenu);
@@ -311,13 +311,13 @@ begin
 end;
 {$ENDIF}
 
-procedure ProcessComponent(AColorMap : TColorizerColorMap; AStyle : TActionBarStyle; AComponent : TComponent;
-  Restore : Boolean = False; Invalidate : Boolean = False);
+procedure ProcessComponent(AColorMap : TColorizerColorMap;AStyle : TActionBarStyle;AComponent : TComponent;Restore : Boolean = False;
+  Invalidate : Boolean = False);
 var
-  Index: Integer;
-  LActionManager: TActionManager;
-  LForm: TForm;
-  LParentForm: TCustomForm;
+  Index : Integer;
+  LActionManager : TActionManager;
+  LForm : TForm;
+  LParentForm : TCustomForm;
 begin
   if not Assigned(AComponent) or not Assigned(AColorMap) or (csDesigning in AComponent.ComponentState) then
     exit;
@@ -350,8 +350,8 @@ begin
   // end;
   //
 
-  if (AComponent is TForm) and Assigned(TColorizerLocalSettings.HookedWindows) and
-    (TColorizerLocalSettings.HookedWindows.IndexOf(AComponent.ClassName) >= 0) then
+  if (AComponent is TForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(AComponent.ClassName) >= 0)
+  then
   begin
 
     LForm := TForm(AComponent);
@@ -364,8 +364,8 @@ begin
   else if AComponent Is TControl then
   begin
     LParentForm := GetParentForm(TControl(AComponent));
-    if not(Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and
-      (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName) >= 0)) then
+    if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)
+      >= 0)) then
       exit;
   end;
 
@@ -375,7 +375,7 @@ begin
 {$IFDEF DELPHI2009_UP}
     // if not ActnStyleList.ContainsKey(LActionManager) then
     // ActnStyleList.Add(LActionManager, LActionManager.Style);
-    if TColorizerLocalSettings.ActnStyleList.IndexOf(LActionManager) = -1 then
+    if TColorizerLocalSettings.ActnStyleList.IndexOf(LActionManager) = - 1 then
       TColorizerLocalSettings.ActnStyleList.Add(LActionManager);
 {$ENDIF}
     LActionManager.Style := AStyle;
@@ -411,7 +411,7 @@ end;
 
 procedure RestoreActnManagerStyles;
 var
-  LActionManager: TActionManager;
+  LActionManager : TActionManager;
 begin
   try
     if (TColorizerLocalSettings.ActnStyleList.Count > 0) and Assigned(ActionBarStyles) then
@@ -421,8 +421,7 @@ begin
         // LActionManager.Style:= ActnStyleList.Items[LActionManager];//ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
         if ActionBarStyles.IndexOf(DefaultActnBarStyle) >= 0 then
         begin
-          if Assigned(LActionManager.Style) and
-            Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
+          if Assigned(LActionManager.Style) and Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
           begin
             // AddLog('ActionBarStyles '+ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)].GetStyleName);
             LActionManager.Style := ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
@@ -431,17 +430,16 @@ begin
       end;
     end;
   except
-    on e: exception do
-    // sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
-      AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ',
-        [e.Message, e.StackTrace]));
+    on e : exception do
+      // sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
+      AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ', [e.Message, e.StackTrace]));
   end;
 end;
 
 procedure RestoreActnManagerStylesBackup;
 {$IFNDEF DLLWIZARD}
 var
-  LActionManager: TActionManager;
+  LActionManager : TActionManager;
 {$ENDIF}
 begin
 {$IFNDEF DLLWIZARD}
@@ -454,8 +452,7 @@ begin
         // LActionManager.Style:= ActnStyleList.Items[LActionManager];//ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
         if ActionBarStyles.IndexOf(DefaultActnBarStyle) >= 0 then
         begin
-          if Assigned(LActionManager.Style) and
-            Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
+          if Assigned(LActionManager.Style) and Assigned(ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)]) then
           begin
             // AddLog('ActionBarStyles '+ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)].GetStyleName);
             LActionManager.Style := ActionBarStyles.Style[ActionBarStyles.IndexOf(DefaultActnBarStyle)];
@@ -464,10 +461,9 @@ begin
       end;
     end;
   except
-    on e: exception do
-    // sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
-      AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ',
-        [e.Message, e.StackTrace]));
+    on e : exception do
+      // sometimes the references to the objects contained in ActionBarStyles are lost when the IDE is closed.
+      AddLog2('', Format(' LActionManager.Style exception RestoreActnManagerStyles Message %s Trace %s ', [e.Message, e.StackTrace]));
   end;
 {$ELSE DELPHI2009_UP}
   // TODO
@@ -477,11 +473,11 @@ end;
 
 procedure RestoreIDESettings();
 var
-  NativeColorMap: TColorizerColorMap;
+  NativeColorMap : TColorizerColorMap;
 {$IFDEF DELPHIXE_UP}
-  LThemedColorMap: TThemedColorMap;
+  LThemedColorMap : TThemedColorMap;
 {$ELSE}
-  LThemedColorMap: TStandardColorMap;
+  LThemedColorMap : TStandardColorMap;
 {$ENDIF}
 begin
 {$IFDEF DELPHIXE2_UP}
@@ -522,16 +518,16 @@ end;
 {$IFDEF ENABLELOG}
 
 var
-  sLogFileName: string;
-  LogCritSect: TCriticalSection;
+  sLogFileName : string;
+  LogCritSect : TCriticalSection;
 {$ENDIF}
 
-procedure AddLog2(const Category, Message: string);
+procedure AddLog2(const Category, Message : string);
 {$IFDEF ENABLELOG}
 var
-  LFileStream: TFileStream;
-  LBuffer: TBytes;
-  Data: String;
+  LFileStream : TFileStream;
+  LBuffer : TBytes;
+  Data : String;
 {$ENDIF}
 begin
 {$IFDEF ENABLELOG}
@@ -551,7 +547,7 @@ begin
         LFileStream.Free;
       end;
     except
-      on e: EFOpenError do;
+      on e : EFOpenError do;
     end;
   finally
     LogCritSect.Leave;

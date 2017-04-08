@@ -14,7 +14,7 @@
 // The Original Code is Main.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -122,7 +122,7 @@ Const
   sColorizerPluginDescription=
   'Delphi IDE Colorizer %s'+sLineBreak+
   'https://github.com/RRUZ/Delphi-IDE-Colorizer'+sLineBreak+
-  'Copyright: 2011-2016 Rodrigo Ruz V.'+sLineBreak+
+  'Copyright: 2011-2017 Rodrigo Ruz V.'+sLineBreak+
   'http://theroadtodelphi.com/'+sLineBreak+
   'All rights reserved.'+sLineBreak+
   ''+sLineBreak+

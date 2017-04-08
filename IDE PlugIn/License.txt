@@ -1,5 +1,5 @@
 Delphi IDE Colorizer https://github.com/RRUZ/Delphi-IDE-Colorizer
-Copyright © 2011-2015  Rodrigo Ruz V. 
+Copyright © 2011-2017  Rodrigo Ruz V. 
 https://github.com/RRUZ
 
 

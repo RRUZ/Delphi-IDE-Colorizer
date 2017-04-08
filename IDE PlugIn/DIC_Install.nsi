@@ -20,7 +20,7 @@ RequestExecutionLevel admin
 !endif
 
 !ifndef VER_MINOR
-  !define VER_MINOR "8.7.5"
+  !define VER_MINOR "8.8.1"
 !endif
 
 !ifndef IDE_VERSION_DXE
@@ -33,6 +33,7 @@ RequestExecutionLevel admin
 !ifndef IDE_VERSION_DXE8
 !ifndef IDE_VERSION_DXSeattle
 !ifndef IDE_VERSION_DXBerlin
+!ifndef IDE_VERSION_DXTokyo
 
   !define FULL_VERSION    "1"  
   ;!define IDE_VERSION_DXE  "1"  
@@ -45,7 +46,8 @@ RequestExecutionLevel admin
   !define IDE_VERSION_DXE8 "1"
   !define IDE_VERSION_DXSeattle "1"
   !define IDE_VERSION_DXBerlin "1"
-  
+  !define IDE_VERSION_DXTokyo "1"  
+!endif
 !endif
 !endif
 !endif
@@ -99,6 +101,10 @@ RequestExecutionLevel admin
   !ifdef IDE_VERSION_DXBerlin
     !define IDE_SHORT_NAME "DXBerlin"
     !define IDE_LONG_NAME "RAD Studio 10.1 Berlin"
+  !endif   
+  !ifdef IDE_VERSION_DXTokyo
+    !define IDE_SHORT_NAME "DXTokyo"
+    !define IDE_LONG_NAME "RAD Studio 10.2 Tokyo"
   !endif   
 !endif
 
@@ -169,36 +175,30 @@ FunctionEnd
 
 !insertmacro MUI_LANGUAGE "English"
 
-; CnWizards Name
+
 LangString APPNAME        1033 "Delphi IDE Colorizer"
 
-; Install Type
 LangString TYPICALINST    1033 "Typical"
 LangString MINIINST       1033 "Minimized"
 LangString CUSTINST       1033 "Custom"
 
-; Section Name
 LangString PROGRAMDATA    1033 "Data files"
 LangString HELPFILE       1033 "Help Files"
 LangString OTHERTOOLS     1033 "Tools"
 
-; Shortcut Name
 LangString SUNINSTALL     1033 "Uninstall"
 
 
-; Dialog Message
 LangString SQUERYIDE      1033 "Setup has detected some wizard dlls are in using.$\n\
                                 Please close Delphi (RAD Studio) first.$\n$\n\
                                 Click [OK] to retry and continue.$\n\
                                 Click [Cancel] to exit Setup."
 LangString SQUERYDELETE   1033 "Delete user data files and wizards settings?$\n(If you want to keep them, please click [No].)"
 
-; Section Description
 LangString DESCDATA       1033 "The core programs and data files required to use wizards."
 LangString DESCHELP       1033 "Help file for wizards."
 LangString DESDLL         1033 "Install wizard dll file for #DLL#."
 
-;!include "Lang\DIC_en.nsh"
 !verbose 4
 
 
@@ -297,6 +297,13 @@ FileLoop:
 !ifdef IDE_VERSION_DXBerlin
   IfFileExists "$INSTDIR\DXBerlin\DelphiIDEColorizer_DXBerlin.dll" 0 +4
   FileOpen $0 "$INSTDIR\DXBerlin\DelphiIDEColorizer_DXBerlin.dll" a
+  IfErrors FileInUse
+  FileClose $0
+!endif
+
+!ifdef IDE_VERSION_DXTokyo
+  IfFileExists "$INSTDIR\DXBerlin\DelphiIDEColorizer_DXTokyo.dll" 0 +4
+  FileOpen $0 "$INSTDIR\DXBerlin\DelphiIDEColorizer_DXTokyo.dll" a
   IfErrors FileInUse
   FileClose $0
 !endif
@@ -501,6 +508,21 @@ Section "RAD Studio 10.1 Berlin" SecDXBerlin
 SectionEnd
 !endif
 
+!ifdef IDE_VERSION_DXTokyo
+Section "RAD Studio 10.2 Tokyo" SecDXTokyo
+  SectionIn 1 2
+  SetOutPath $INSTDIR\DXTokyo
+  File "HookedWindows.dat"
+  File "HookedScrollBars.dat"  
+  File "WinAPIClasses.dat"  
+  SetOverwrite off
+  File "Init\Settings.ini"
+  SetOverwrite on  
+  File "DelphiIDEColorizer_DXTokyo.dll" 
+  WriteRegStr HKCU "Software\Embarcadero\BDS\19.0\Experts" "DelphiIDEColorizer_DXTokyo" "$INSTDIR\DXTokyo\DelphiIDEColorizer_DXTokyo.dll"
+SectionEnd
+!endif
+
 !define SF_SELBOLD    9
 
 Function .onInit
@@ -567,6 +589,9 @@ FunctionEnd
 !ifdef IDE_VERSION_DXBerlin
   !insertmacro MUI_DESCRIPTION_TEXT ${SecDXBerlin} "Delphi IDE Colorizer for RAD Studio 10.1 Berlin"
 !endif	
+!ifdef IDE_VERSION_DXTokyo
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDXTokyo} "Delphi IDE Colorizer for RAD Studio 10.2 Tokyo"
+!endif	
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function SetCheckBoxes
@@ -602,6 +627,9 @@ Function SetCheckBoxes
 !endif
 !ifdef IDE_VERSION_DXBerlin
   !insertmacro SET_COMPILER_CHECKBOX HKCU "Software\Embarcadero\BDS\18.0" "App" ${SecDXBerlin}
+!endif
+!ifdef IDE_VERSION_DXTokyo
+  !insertmacro SET_COMPILER_CHECKBOX HKCU "Software\Embarcadero\BDS\19.0" "App" ${SecDXTokyo}
 !endif
 FunctionEnd
 
@@ -654,6 +682,10 @@ Section "Uninstall"
   Delete "$INSTDIR\DXBerlin\*.dat" 
   Delete "$INSTDIR\DXBerlin\*.xml"    
   Delete "$INSTDIR\DXBerlin\*.exe"  
+  Delete "$INSTDIR\DXTokyo\*.dll"
+  Delete "$INSTDIR\DXTokyo\*.dat" 
+  Delete "$INSTDIR\DXTokyo\*.xml"    
+  Delete "$INSTDIR\DXTokyo\*.exe" 
   
   Delete "$INSTDIR\dock_images\*.*"        
   RMDir  "$INSTDIR\dock_images"    
@@ -695,6 +727,9 @@ Section "Uninstall"
 !endif
 !ifdef IDE_VERSION_DXBerlin
   DeleteRegValue HKCU "Software\Embarcadero\BDS\18.0\Experts" "DelphiIDEColorizer_DXBerlin"
+!endif
+!ifdef IDE_VERSION_DXTokyo
+  DeleteRegValue HKCU "Software\Embarcadero\BDS\19.0\Experts" "DelphiIDEColorizer_DXTokyo"
 !endif
   ;MessageBox MB_YESNO|MB_ICONQUESTION "$(SQUERYDELETE)" IDNO NoDelete
   DeleteRegKey HKCU "Software\The Road To Delphi\DIC"

@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.Hooks.ThemedActnCtrl.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -449,9 +449,14 @@ end;
 
 { TThemedMenuItemHelper }
 
-{$IFDEF DELPHIX_LONDON}
+{$IFDEF DELPHIX_BERLIN}
 const
  sVclActnBandModule =  'vclactnband240.bpl';
+{$ENDIF}
+
+{$IFDEF DELPHIX_TOKYO}
+const
+ sVclActnBandModule =  'vclactnband250.bpl';
 {$ENDIF}
 
 

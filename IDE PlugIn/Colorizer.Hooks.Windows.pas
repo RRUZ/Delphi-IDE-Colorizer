@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.Hooks.Windows.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -66,7 +66,7 @@ var
   Trampoline_GetSysColor                   : function (nIndex: Integer): DWORD; stdcall = nil;
   Trampoline_DrawFrameControl              : function (DC: HDC; Rect: PRect; uType, uState: UINT): BOOL; stdcall = nil;
   Trampoline_DrawEdge                      : function (hdc: HDC; var qrc: TRect; edge: UINT; grfFlags: UINT): BOOL; stdcall = nil;
-  Trampoline_FillRect                       : function(hDC: hDC; const lprc: TRect; hbr: HBRUSH): Integer; stdcall;
+  Trampoline_FillRect                      : function(hDC: hDC; const lprc: TRect; hbr: HBRUSH): Integer; stdcall;
 
 var
   VCLStylesBrush: TObjectDictionary<string, TListStyleBrush>;

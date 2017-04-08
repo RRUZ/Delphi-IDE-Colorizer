@@ -90,6 +90,15 @@ echo DXBerlin
 call "C:\Program Files (x86)\Embarcadero\Studio\18.0\bin\rsvars.bat"
 msbuild.exe "DelphiIDEColorizer_DXBerlin.dproj" /target:Clean;Build /p:Platform=Win32 /p:config=debug
 set BUILD_STATUS=%ERRORLEVEL%
+if %BUILD_STATUS%==0 GOTO DXTokyo
+pause
+EXIT
+
+:DXTokyo
+echo DXTokyo
+call "C:\Program Files (x86)\Embarcadero\Studio\19.0\bin\rsvars.bat"
+msbuild.exe "DelphiIDEColorizer_DXTokyo.dproj" /target:Clean;Build /p:Platform=Win32 /p:config=debug
+set BUILD_STATUS=%ERRORLEVEL%
 if %BUILD_STATUS%==0 GOTO DONE
 pause
 EXIT

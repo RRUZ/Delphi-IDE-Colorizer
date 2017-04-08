@@ -14,7 +14,7 @@
 // The Original Code is Colorizer.Hooks.pas.
 //
 // The Initial Developer of the Original Code is Rodrigo Ruz V.
-// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2016 Rodrigo Ruz V.
+// Portions created by Rodrigo Ruz V. are Copyright (C) 2011-2017 Rodrigo Ruz V.
 // All Rights Reserved.
 //
 //**************************************************************************************************
@@ -98,9 +98,14 @@ uses
   uMisc,
   DDetours;
 
-{$IFDEF DELPHIX_LONDON}
+{$IFDEF DELPHIX_BERLIN}
 const
  sVclModule =  'vcl240.bpl';
+{$ENDIF}
+
+{$IFDEF DELPHIX_TOKYO}
+const
+ sVclModule =  'vcl250.bpl';
 {$ENDIF}
 
 type
@@ -392,8 +397,8 @@ begin
 
   if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and (not (csDesigning in Self.ComponentState)) and Assigned(TColorizerLocalSettings.ColorMap) then
   begin
-    LParentForm:= GetParentForm(Self);
-    if Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0) then
+    LParentForm := GetParentForm(Self);
+    if Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName) >= 0) then
       EnableHookTBitBtn := True;
   end;
 
@@ -533,7 +538,7 @@ begin
     exit;
   end;
 
-  LParentForm:= GetParentForm(Self);
+  LParentForm := GetParentForm(Self);
 //  if LParentForm<>nil then
 //   AddLog('Detour_TCustomControlBar_PaintControlFrame', 'LParentForm.ClassName '+ LParentForm.ClassName);
   if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
@@ -691,7 +696,7 @@ begin
 
     if not ApplyHook then
     begin
-      LParentForm:= GetParentForm(Self);
+      LParentForm := GetParentForm(Self);
       if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
       begin
        Trampoline_TWinControl_DefaultHandler(Self, Message);
@@ -711,7 +716,7 @@ begin
           begin
             //AddLog('CustomDefaultHandler', 'Color Applied'+Self.ClassName);
             SetTextColor(TMessage(Message).WParam, ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor));
-            Self.Brush.Color:=TColorizerLocalSettings.ColorMap.WindowColor;
+            Self.Brush.Color := TColorizerLocalSettings.ColorMap.WindowColor;
             SetBkColor(TMessage(Message).WParam, ColorToRGB(Self.Brush.Color));
             TMessage(Message).Result := Self.Brush.Handle;
             Exit;
@@ -755,7 +760,7 @@ begin
    exit;
   end;
 
-  LParentForm:= GetParentForm(Self);
+  LParentForm := GetParentForm(Self);
   if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
   begin
     Trampoline_Bevel_Paint(Self);
@@ -809,7 +814,7 @@ begin
      exit;
     end;
 
-    LParentForm:= GetParentForm(Self);
+    LParentForm := GetParentForm(Self);
     if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
     begin
       Trampoline_TCustomCombo_WndProc(Self, Message);
@@ -871,7 +876,7 @@ begin
    exit;
   end;
 
-  LParentForm:= GetParentForm(Self);
+  LParentForm := GetParentForm(Self);
   if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
   begin
    Trampoline_DoModernPainting(Self);
@@ -1191,7 +1196,7 @@ var
 begin
 //  if (TButtonControl(Self) is TCustomCheckBox) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and not (csDesigning in Self.ComponentState) then
 //  begin
-//    LParentForm:= GetParentForm(Self);
+//    LParentForm := GetParentForm(Self);
 //    if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
 //    begin
 //      Trampoline_TButtonControl_WndProc(Self, Message);
@@ -1216,7 +1221,7 @@ begin
 //  else
 //  if (TButtonControl(Self) is TRadioButton) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and not (csDesigning in Self.ComponentState) then
 //  begin
-//    LParentForm:= GetParentForm(Self);
+//    LParentForm := GetParentForm(Self);
 //    if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
 //    begin
 //      Trampoline_TButtonControl_WndProc(Self, Message);
@@ -1241,7 +1246,7 @@ begin
   if (TButtonControl(Self) is TButton) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and not (csDesigning in Self.ComponentState) then
   begin
 
-    LParentForm:= GetParentForm(Self);
+    LParentForm := GetParentForm(Self);
     if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
     begin
       Trampoline_TButtonControl_WndProc(Self, Message);
@@ -1453,7 +1458,7 @@ var
 begin
   if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and not (csDesigning in Self.ComponentState) then
   begin
-    LParentForm:= GetParentForm(Self);
+    LParentForm := GetParentForm(Self);
     if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
     begin
       Trampoline_CustomComboBox_WMPaint(Self, Message);
@@ -1733,15 +1738,19 @@ begin
   if ((TWinControl(Self) is TCustomPanel)) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and not (csDesigning in Self.ComponentState) then
   begin
 
-    LParentForm:= GetParentForm(Self);
+    //OutputDebugString(Pchar('Detour_TWinControl_WMNCPaint ' + Self.ClassName));
+
+    LParentForm := GetParentForm(Self);
     if not (Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0)) then
     begin
-      //AddLog('CustomWinControl_WMNCPaint Ignored (1)', Self.ClassName);
+      //AddLog('Detour_TWinControl_WMNCPaint Ignored (1)', Self.ClassName);
       Trampoline_TWinControl_WMNCPaint(Self, Message);
       if Assigned(TColorizerLocalSettings.Settings) and (TColorizerLocalSettings.Settings.Enabled) then
       DrawNCBorder(Self, True);
       exit;
     end;
+
+    //OutputDebugString(Pchar('Detour_TWinControl_WMNCPaint ' + Self.ClassName));
 
     if (Self.BevelKind <> bkNone) or (Self.BorderWidth > 0) then
     begin
@@ -2999,16 +3008,16 @@ begin
     if Assigned(TColorizerLocalSettings.IDEData) then
     begin
       ImportDelphiIDEThemeFromReg(ATheme, TColorizerLocalSettings.IDEData.Version, False);
-      sColor:=ATheme[LineNumber].BackgroundColorNew;
+      sColor := ATheme[LineNumber].BackgroundColorNew;
       try
-        Result:=StringToColor(sColor);
+        Result := StringToColor(sColor);
       except
         if Assigned(TColorizerLocalSettings.ColorMap) then
-         Result:=TColorizerLocalSettings.ColorMap.Color
+         Result := TColorizerLocalSettings.ColorMap.Color
         else
-         Result:=clBtnFace;
+         Result := clBtnFace;
       end;
-      FGutterBkColor:=Result;
+      FGutterBkColor := Result;
     end
     else
     if Assigned(TColorizerLocalSettings.ColorMap) then
@@ -3123,7 +3132,7 @@ begin
     else
     begin
        SaveIndex := SaveDC(DC);
-       LCanvas:=TCanvas.Create;
+       LCanvas := TCanvas.Create;
        try
          LCanvas.Handle:=DC;
          LCanvas.Brush.Color:=TColorizerLocalSettings.ColorMap.Color;
@@ -3144,7 +3153,7 @@ begin
     if SameText(sCaller, sTVirtualTreeColumnsSignature) then
     begin
        SaveIndex := SaveDC(DC);
-       LCanvas:=TCanvas.Create;
+       LCanvas := TCanvas.Create;
        try
          LCanvas.Handle:=DC;
          {$IFDEF DELPHIXE2_UP}
@@ -3336,7 +3345,7 @@ begin
   if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled and  (Message.Msg=WM_PAINT) then
   if not (csDesigning in Self.ComponentState) then
   begin
-    LParentForm:= GetParentForm(Self);
+    LParentForm := GetParentForm(Self);
     if Assigned(LParentForm) and Assigned(TColorizerLocalSettings.HookedWindows) and (TColorizerLocalSettings.HookedWindows.IndexOf(LParentForm.ClassName)>=0) then
     begin
         HeaderDC := BeginPaint(Self.GetHeaderHandle, PS);
@@ -3431,7 +3440,7 @@ var
   LValue : TColor;
 begin
 //    AddLog2('Detour_TFont_SetColor 1');
-    LValue:=Value;
+    LValue := Value;
     if EnableStockHook and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
     begin
 //      AddLog2('Detour_TFont_SetColor 2');
@@ -3458,47 +3467,51 @@ var
  LThemeServicesDrawElement2   : TThemeServicesDrawElement2;
 {$ENDIF}
 begin
-  //FHOOK := SetWindowsHookEx(WH_CALLWNDPROC, @HookCallWndProc, 0, GetCurrentThreadId());
-  Trampoline_TWinControl_DefaultHandler:=InterceptCreate(@TWinControl.DefaultHandler, @Detour_TWinControl_DefaultHandler);
+  ////FHOOK := SetWindowsHookEx(WH_CALLWNDPROC, @HookCallWndProc, 0, GetCurrentThreadId());
+
+  Trampoline_TWinControl_DefaultHandler := InterceptCreate(@TWinControl.DefaultHandler, @Detour_TWinControl_DefaultHandler);
+  //XXXX
   Trampoline_TWinControl_WMNCPaint      := InterceptCreate(TWinControl(nil).WMNCPaintAddress, @Detour_TWinControl_WMNCPaint);
 
-  //Trampoline_TCustomActionPopupMenu_CreateParams :=InterceptCreate(@TCustomActionPopupMenuClass.CreateParams, @Detour_TCustomActionPopupMenu_CreateParams);
+
+  ////Trampoline_TCustomActionPopupMenu_CreateParams :=InterceptCreate(@TCustomActionPopupMenuClass.CreateParams, @Detour_TCustomActionPopupMenu_CreateParams);
 
   Trampoline_HintWindow_Paint := InterceptCreate(@THintWindowClass.Paint, @Detour_THintWindow_Paint);
   Trampoline_Bevel_Paint      := InterceptCreate(@TBevelClass.Paint, @Detour_TBevel_Paint);
 
-  TrampolineCustomImageList_DoDraw:=InterceptCreate(@TCustomImageListClass.DoDraw, @Detour_TCustomImageList_DoDraw);
-  Trampoline_TCanvas_FillRect     :=InterceptCreate(@TCanvas.FillRect, @Detour_TCanvas_FillRect);
+  TrampolineCustomImageList_DoDraw:= InterceptCreate(@TCustomImageListClass.DoDraw, @Detour_TCustomImageList_DoDraw);
+  Trampoline_TCanvas_FillRect     := InterceptCreate(@TCanvas.FillRect, @Detour_TCanvas_FillRect);
 
 
   {$IFDEF DELPHIXE6_UP}
   {$ELSE}
-  Trampoline_TCanvas_LineTo       :=InterceptCreate(@TCanvas.LineTo, @Detour_TCanvas_LineTo);
+  Trampoline_TCanvas_LineTo       := InterceptCreate(@TCanvas.LineTo, @Detour_TCanvas_LineTo);
   {$ENDIF}
 
+///////  Trampoline_TCanvas_Polygon      :=InterceptCreate(@TCanvas.Polygon, @Detour_TCanvas_Polygon);
+///////  Trampoline_TCanvas_Polyline     :=InterceptCreate(@TCanvas.Polyline, @Detour_TCanvas_Polyline);
+///////  Trampoline_TCustomStatusBar_WMPAINT   := InterceptCreate(TCustomStatusBarClass(nil).WMPaintAddress,   @Detour_TStatusBar_WMPaint);
 
   Trampoline_TCanvas_Rectangle    :=InterceptCreate(@TCanvas.Rectangle, @Detour_TCanvas_Rectangle);
-
-//  Trampoline_TCanvas_Polygon      :=InterceptCreate(@TCanvas.Polygon, @Detour_TCanvas_Polygon);
-//  Trampoline_TCanvas_Polyline     :=InterceptCreate(@TCanvas.Polyline, @Detour_TCanvas_Polyline);
-
-  //Trampoline_TCustomStatusBar_WMPAINT   := InterceptCreate(TCustomStatusBarClass(nil).WMPaintAddress,   @Detour_TStatusBar_WMPaint);
-
-
+  //XXXX
   Trampoline_TBitBtn_DrawItem    := InterceptCreate(TBitBtnClass(nil).DrawItemAddress,  @Detour_TBitBtn_DrawItem);
+//
+  //find more methods.
 
-  //hoy
+  //XXXX
   Trampoline_CustomComboBox_WMPaint     := InterceptCreate(TCustomComboBox(nil).WMPaintAddress,   @Detour_TCustomComboBox_WMPaint);
+  //XXXX
   Trampoline_TCustomCombo_WndProc       := InterceptCreate(@TCustomComboClass.WndProc,   @Detour_TCustomCombo_WndProc);
 
   {$IFDEF DELPHIXE7_UP}
   Trampoline_TCustomComboBox_DrawItem       := InterceptCreate(@TCustomComboBoxClass.DrawItem,   @Detour_TCustomComboBox_DrawItem);
   Trampoline_TCustomListBox_DrawItem        := InterceptCreate(@TCustomListBoxClass.DrawItem,   @Detour_TCustomListBox_DrawItem);
   {$ENDIF}
- //Trampoline_TBitmap_SetSize := InterceptCreate(@TBitmap.SetSize,   @CustomSetSize);
+
+////Trampoline_TBitmap_SetSize := InterceptCreate(@TBitmap.SetSize,   @CustomSetSize);
 //************************************************
 {$IFDEF DELPHIXE2_UP}
-  //Trampoline_TStyleEngine_HandleMessage     := InterceptCreate(@TStyleEngine.HandleMessage,   @Detour_TStyleEngine_HandleMessage);
+  ////Trampoline_TStyleEngine_HandleMessage     := InterceptCreate(@TStyleEngine.HandleMessage,   @Detour_TStyleEngine_HandleMessage);
   Trampoline_TUxThemeStyle_DoDrawElement    := InterceptCreate(@TUxThemeStyleClass.DoDrawElement,   @Detour_TUxThemeStyle_DrawElement);
 {$ELSE}
   LThemeServicesDrawElement2                := ThemeServices.DrawElement;
@@ -3506,32 +3519,30 @@ begin
   if Assigned(DrawThemeBackground) then
     Trampoline_DrawThemeBackground            := InterceptCreate(@DrawThemeBackground,   @Detour_UxTheme_DrawBackground);
 {$ENDIF}
-
+//
   Trampoline_TCustomListView_HeaderWndProc  := InterceptCreate(TCustomListViewClass(nil).HeaderWndProcAddress, @Detour_TCustomListView_WndProc);
-// **************************************************
+  Trampoline_TCustomControlBar_PaintControlFrame   :=  InterceptCreate(@TCustomControlBarClass.PaintControlFrame, @Detour_TCustomControlBar_PaintControlFrame);
 
-   Trampoline_TCustomControlBar_PaintControlFrame   :=  InterceptCreate(@TCustomControlBarClass.PaintControlFrame, @Detour_TCustomControlBar_PaintControlFrame);
-
-// *******************************************
   Trampoline_TCategoryButtons_DrawCategory := InterceptCreate(TCategoryButtons(nil).DrawCategoryAddress,   @Detour_TCategoryButtons_DrawCategory);
   Trampoline_TCategoryButtons_DrawButton   := InterceptCreate(@TCategoryButtonsClass.DrawButton,   @Detour_TCategoryButtons_DrawButton);
-
   Trampoline_TCustomPanel_Paint            := InterceptCreate(@TCustomPanelClass.Paint, @Detour_TCustomPanel_Paint);
 
-
+  //XXXX
   Trampoline_DoModernPainting           := InterceptCreate(TTabSet(nil).DoModernPaintingAddress, @Detour_TTabSet_DoModernPainting);
-
+  //XXXX
   Trampoline_TSplitter_Paint            := InterceptCreate(@TSplitterClass.Paint, @Detour_TSplitter_Paint);
+  //XXXX
   Trampoline_TCustomGroupBox_Paint      := InterceptCreate(@TCustomGroupBoxClass.Paint, @Detour_TCustomGroupBox_Paint);
 
-  //***********************
+  //XXXX
   Trampoline_TButtonControl_WndProc     := InterceptCreate(@TButtonControlClass.WndProc, @Detour_TButtonControlClass_WndProc);
-// *******************************************
+  //XXXX
   Trampoline_TCustomLabel_DoDrawText   := InterceptCreate(@TCustomLabelClass.DoDrawText, @Detour_TCustomLabelClass_DoDrawText);
 
   {$IFDEF DELPHIXE7_UP}
+  //XXXX
   Trampoline_TBrush_SetColor           := InterceptCreate(@TBrushClass.SetColor, @Detour_TBrush_SetColor);
-  //Trampoline_TFont_SetColor            := InterceptCreate(@TFontClass.SetColor, @Detour_TFont_SetColor);
+  ////Trampoline_TFont_SetColor            := InterceptCreate(@TFontClass.SetColor, @Detour_TFont_SetColor);
   {$ENDIF}
 
 end;
