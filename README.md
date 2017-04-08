@@ -14,6 +14,10 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
   * Compatible with <a href='http://www.cnpack.org/index.php?lang=en'>CnWizards</a> and <a href='http://www.gexperts.org'>GExperts</a>
   * Replace the icons used in the gutter and the debugger.
   * Includes 80+ themes.
+  
+
+(click on the images to enlarge)
+
 
 ![](https://dl.dropboxusercontent.com/u/12733424/Blog/Delphi%20IDE%20Theme%20Editor/DIC/DIC%20Images/DIC_DXTokio.png)
 ![](https://dl.dropboxusercontent.com/u/12733424/Blog/Delphi%20IDE%20Theme%20Editor/DIC/xe8_codeeditor.png)
