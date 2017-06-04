@@ -243,7 +243,7 @@ begin
   if QuerySvcs(BorlandIDEServices, IOTAAboutBoxServices, LAboutBoxServices) and (FPlugInInfo<>InvalidIndex) then
      LAboutBoxServices.RemovePluginInfo(FPlugInInfo);
 
-  FPlugInInfo:=InvalidIndex;
+  FPlugInInfo := InvalidIndex;
 end;
 
 procedure InstallAllHooks;
@@ -301,7 +301,7 @@ var
 {$ENDIF}
 begin
   AddLog2('FinalizeIDEColorizer', 'Init');
-  IDEWizard.FTimerRefresher.Enabled:=False;
+  IDEWizard.FTimerRefresher.Enabled := False;
   IDEWizard.FTimerRefresher.Free;
 
 {$IFNDEF DLLWIZARD}

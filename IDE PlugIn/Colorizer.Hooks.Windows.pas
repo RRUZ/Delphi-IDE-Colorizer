@@ -173,18 +173,18 @@ var
   OrgColor, LFontColor: Cardinal;
   RestoreColor : Boolean;
 begin
- OrgColor:=0;
- RestoreColor:=False;
+ OrgColor := 0;
+ RestoreColor := False;
 
-  if (uFormat=2084) and HookVTPaintNormalText and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
+  if (uFormat = 2084) and HookVTPaintNormalText and TColorizerLocalSettings.Settings.Enabled then
   begin
-   LFontColor :=ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor);
-   RestoreColor:=True;
-   OrgColor:=SetTextColor(hDC, LFontColor);
+   LFontColor := ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor);
+   RestoreColor := True;
+   OrgColor := SetTextColor(hDC, LFontColor);
   end;
 
   //SetTextColor(hDC, ColorToRGB(clRed));
-  Result:=Trampoline_DrawText(hDC, lpString, nCount, lpRect, uFormat);
+  Result := Trampoline_DrawText(hDC, lpString, nCount, lpRect, uFormat);
   if RestoreColor then
     SetTextColor(hDC, OrgColor);
 end;
@@ -193,7 +193,7 @@ end;
 {.$IFDEF DELPHIXE6_UP}
 function Detour_WinApi_DrawTextEx(DC: HDC; lpchText: LPCWSTR; cchText: Integer; var p4: TRect;  dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; stdcall;
 begin
- if (dwDTFormat AND DT_CALCRECT = 0) and (HookDrawActiveTab or HookDrawInActiveTab) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
+ if (dwDTFormat AND DT_CALCRECT = 0) and (HookDrawActiveTab or HookDrawInActiveTab)  and TColorizerLocalSettings.Settings.Enabled then
  begin
      if HookDrawActiveTab then
      begin
@@ -211,7 +211,7 @@ begin
         SetTextColor(DC, ColorToRGB(TryStrToColor(TColorizerLocalSettings.Settings.TabIDEActiveFontColor, TColorizerLocalSettings.ColorMap.FontColor)));
      end;
  end;
- Result:=Trampoline_DrawTextEx(DC, lpchText, cchText, p4, dwDTFormat, DTParams);
+ Result := Trampoline_DrawTextEx(DC, lpchText, cchText, p4, dwDTFormat, DTParams);
 end;
 {.$ENDIF}
 
@@ -222,12 +222,12 @@ var
  LBgColor, OrgColor : Cardinal;
  RestoreColor{, RestoreBg} : Boolean;
 begin
- OrgColor     :=0;
- RestoreColor :=False;
+ OrgColor     := 0;
+ RestoreColor := False;
 
  if Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
  begin
- {$IFDEF DELPHIX_SEATTLE_UP}
+  {$IFDEF DELPHIX_SEATTLE_UP}
   if HookNavSymbolSearchFormDrawItem then
   begin
      SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor));
@@ -237,7 +237,7 @@ begin
   {$ENDIF}
   if DrawNamePair then
   begin
-    LBgColor:=GetBkColor(DC);
+    LBgColor := GetBkColor(DC);
     if (TColor(LBgColor) = clWhite) or (TColor(LBgColor) = TColorizerLocalSettings.ColorMap.WindowColor) then
     begin
      if TColor(LBgColor) = clWhite then
@@ -249,7 +249,7 @@ begin
      SetBkColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.SelectedColor));
      SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.SelectedFontColor));
     end;
-    DrawNamePair:=False;
+    DrawNamePair := False;
   end
   else
   begin
@@ -260,7 +260,7 @@ begin
         SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.SelectedFontColor))
       else
       begin
-        if TColor(GetTextColor(DC))=$006D6D6D then
+        if TColor(GetTextColor(DC)) = $006D6D6D then
          SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.DisabledFontColor))
         else
          SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor));
@@ -273,7 +273,7 @@ begin
         SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.SelectedFontColor))
       else
       begin
-        if TColor(GetTextColor(DC))=$006D6D6D then
+        if TColor(GetTextColor(DC)) = $006D6D6D then
          SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.DisabledFontColor))
         else
          SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor));
@@ -286,7 +286,7 @@ begin
         SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.SelectedFontColor))
       else
       begin
-        if TColor(GetTextColor(DC))=$006D6D6D then
+        if TColor(GetTextColor(DC)) = $006D6D6D then
          SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.DisabledFontColor))
         else
          SetTextColor(DC, ColorToRGB(TColorizerLocalSettings.ColorMap.FontColor));
@@ -434,16 +434,12 @@ end;
 
 procedure InstallHooksWinAPI();
 begin
- Trampoline_DrawText                       := InterceptCreate(@Windows.DrawTextW, @Detour_WinApi_DrawText);
- Trampoline_DrawTextEx                     := InterceptCreate(@Windows.DrawTextEx, @Detour_WinApi_DrawTextEx);
- Trampoline_ExtTextOutW                    := InterceptCreate(@Windows.ExtTextOutW, @Detour_WinApi_ExtTextOutW);  //OK
-
-
- Trampoline_GetSysColor      :=  InterceptCreate(user32, 'GetSysColor', @Detour_WinApi_GetSysColor);
-
-
+ Trampoline_DrawText := InterceptCreate(@Windows.DrawTextW, @Detour_WinApi_DrawText);
+ Trampoline_DrawTextEx := InterceptCreate(@Windows.DrawTextEx, @Detour_WinApi_DrawTextEx);
+ Trampoline_ExtTextOutW := InterceptCreate(@Windows.ExtTextOutW, @Detour_WinApi_ExtTextOutW);  //OK
+ Trampoline_GetSysColor :=  InterceptCreate(user32, 'GetSysColor', @Detour_WinApi_GetSysColor);
  //TrampolineGetSysColorBrush  := InterceptCreate(user32, 'GetSysColorBrush', @InterceptGetSysColorBrush);
- Trampoline_DrawEdge :=  InterceptCreate(user32, 'DrawEdge', @Detour_WinApi_DrawEdge);
+ Trampoline_DrawEdge := InterceptCreate(user32, 'DrawEdge', @Detour_WinApi_DrawEdge);
  //Trampoline_DrawFrameControl :=  InterceptCreate(user32, 'DrawFrameControl', @Detour_WinApi_DrawFrameControl);
  //TrampolineFillRect := InterceptCreate(user32, 'FillRect', @InterceptFillRect);
 end;
@@ -467,10 +463,9 @@ initialization
   VCLStylesLock  := TCriticalSection.Create;
   VCLStylesBrush := TObjectDictionary<string, TListStyleBrush>.Create([doOwnsValues]);
 finalization
-VCLStylesBrush.Free;
-VCLStylesLock.Free;
-VCLStylesLock := nil;
-
+ VCLStylesBrush.Free;
+ VCLStylesLock.Free;
+ VCLStylesLock := nil;
 
 end.
 

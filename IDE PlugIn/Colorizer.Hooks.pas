@@ -3168,26 +3168,26 @@ begin
          begin
            if TColorizerLocalSettings.Settings.HeaderCustom  then
            begin
-             LColor1:= TryStrToColor(TColorizerLocalSettings.Settings.HeaderStartGrad, TColorizerLocalSettings.ColorMap.Color);
-             LColor2:= TryStrToColor(TColorizerLocalSettings.Settings.HeaderEndGrad, TColorizerLocalSettings.ColorMap.Color);
+             LColor1 := TryStrToColor(TColorizerLocalSettings.Settings.HeaderStartGrad, TColorizerLocalSettings.ColorMap.Color);
+             LColor2 := TryStrToColor(TColorizerLocalSettings.Settings.HeaderEndGrad, TColorizerLocalSettings.ColorMap.Color);
            end
            else
            begin
-             LColor1:= TColorizerLocalSettings.ColorMap.Color;
-             LColor2:= TColorizerLocalSettings.ColorMap.Color;
+             LColor1 := TColorizerLocalSettings.ColorMap.Color;
+             LColor2 := TColorizerLocalSettings.ColorMap.Color;
            end;
 
            GradientFillCanvas(LCanvas, LColor1, LColor2, R, gdVertical);
-           LCanvas.Brush.Style:=TBrushStyle.bsClear;
+           LCanvas.Brush.Style := TBrushStyle.bsClear;
 
            if TColorizerLocalSettings.Settings.HeaderCustom  then
-            LCanvas.Pen.Color:= TryStrToColor(TColorizerLocalSettings.Settings.HeaderBorderColor, TColorizerLocalSettings.ColorMap.FrameTopLeftOuter)
+            LCanvas.Pen.Color := TryStrToColor(TColorizerLocalSettings.Settings.HeaderBorderColor, TColorizerLocalSettings.ColorMap.FrameTopLeftOuter)
            else
             LCanvas.Pen.Color:=TColorizerLocalSettings.ColorMap.FrameTopLeftOuter;
            LCanvas.Rectangle(R);
          end;
        finally
-          LCanvas.Handle:=0;
+          LCanvas.Handle := 0;
           LCanvas.Free;
           RestoreDC(DC, SaveIndex);
        end;
@@ -3401,10 +3401,10 @@ procedure   Detour_TCustomComboBox_DrawItem(Self: TCustomComboBox;Index: Integer
 begin
                                                                                          //Galileo Ownerdraw
   if  (TCustomComboBoxClass(Self).Style in [csOwnerDrawFixed, csOwnerDrawVariable]) and  MatchText(Self.Name, ['cbPlatforms', 'cbDevices', 'cbStyleSelector', 'cbDeviceSelector']) and Assigned(TColorizerLocalSettings.Settings) and TColorizerLocalSettings.Settings.Enabled then
-    EnableStockHook:=True;
+    EnableStockHook := True;
 
   Trampoline_TCustomComboBox_DrawItem(Self, Index, Rect, State);
-  EnableStockHook:=False;
+  EnableStockHook := False;
 end;
 
 
@@ -3412,10 +3412,10 @@ procedure  Detour_TCustomListBox_DrawItem(Self : TCustomListBox; Index: Integer;
 begin
                           //CASTALIA
   if (TCustomListBoxClass(Self).Style = lbOwnerDrawVariable) and MatchText(Self.Name, ['ResultsList']) then
-    EnableStockHook:=True;
+    EnableStockHook := True;
 
   Trampoline_TCustomListBox_DrawItem(Self, Index, Rect, State);
-  EnableStockHook:=False;
+  EnableStockHook := False;
 end;
 
 procedure  Detour_TBrush_SetColor(Self: TBrush; Value: TColor);
