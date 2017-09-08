@@ -19,7 +19,7 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
 (click on the images to enlarge)
 
 
-![](https://github.com/RRUZ/Delphi-IDE-Colorizer/blob/master/Images/DIC_DXTokio.png)
+![](https://raw.githubusercontent.com/RRUZ/Delphi-IDE-Colorizer/master/Images/DIC_DXTokio.png)
 ![](https://github.com/RRUZ/Delphi-IDE-Colorizer/blob/master/Images/xe8_codeeditor.png)
 ![](https://github.com/RRUZ/Delphi-IDE-Colorizer/blob/master/Images/xe8_mobilview.png)
 
