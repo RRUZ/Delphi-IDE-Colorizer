@@ -125,6 +125,7 @@
         <DCCReference Include="uRttiHelper.pas"/>
         <DCCReference Include="..\Common\Vcl Styles Utils\Vcl.Styles.Ext.pas"/>
         <DCCReference Include="..\Common\delphi-detours-library\DDetours.pas"/>
+        <DCCReference Include="..\Common\delphi-detours-library\CPUID.pas"/>
         <DCCReference Include="..\Common\delphi-detours-library\InstDecode.pas"/>
         <DCCReference Include="..\Units\uDelphiIDEHighlight.pas"/>
         <DCCReference Include="..\Units\uStackTrace.pas"/>

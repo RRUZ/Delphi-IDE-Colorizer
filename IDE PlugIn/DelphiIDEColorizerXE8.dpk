@@ -55,6 +55,7 @@ contains
   uRttiHelper in 'uRttiHelper.pas',
   Vcl.Styles.Ext in '..\Common\Vcl Styles Utils\Vcl.Styles.Ext.pas',
   DDetours in '..\Common\delphi-detours-library\DDetours.pas',
+  CPUID in '..\Common\delphi-detours-library\CPUID.pas',
   InstDecode in '..\Common\delphi-detours-library\InstDecode.pas',
   uDelphiIDEHighlight in '..\Units\uDelphiIDEHighlight.pas',
   uStackTrace in '..\Units\uStackTrace.pas',
