@@ -26,6 +26,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_UnitSearchPath>..\Common\mbColorLib2.0.2;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<UsePackages>true</UsePackages>
 			<DCC_UsePackage>rtl;vcl;vclx;designide</DCC_UsePackage>
 			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>

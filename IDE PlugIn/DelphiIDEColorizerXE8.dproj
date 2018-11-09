@@ -47,6 +47,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_UnitSearchPath>..\Common\mbColorLib2.0.2;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <SanitizedProjectName>DelphiIDEColorizerXE8</SanitizedProjectName>
         <DCC_BplOutput>.\</DCC_BplOutput>
         <DesignOnlyPackage>true</DesignOnlyPackage>
