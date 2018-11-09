@@ -16,6 +16,7 @@ uses
   uRegistry in '..\Units\uRegistry.pas',
   uRttiHelper in 'uRttiHelper.pas',
   DDetours in '..\Common\delphi-detours-library\DDetours.pas',
+  CPUID in '..\Common\delphi-detours-library\CPUID.pas',
   InstDecode in '..\Common\delphi-detours-library\InstDecode.pas',
   uDelphiIDEHighlight in '..\Units\uDelphiIDEHighlight.pas',
   uStackTrace in '..\Units\uStackTrace.pas',
