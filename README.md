@@ -4,7 +4,7 @@ The Delphi IDE Colorizer (DIC) is a plugin which allows to **skin the look and f
 
 `Dear users,`
 
-`We would like to inform you that I have decided to archive the DIC on GitHub. Working on this project has been a challenging but rewarding experience, as it allowed me to delve deeper into the internals of Rad Studio. However, with Rad Studio now offering out-of-the-box styling options, there is no longer a need for this project to continue.`
+`We would like to inform you that I have decided to archive the Delphi-IDE-Colorizer on GitHub. Working on this project has been a challenging but rewarding experience, as it allowed me to delve deeper into the internals of Rad Studio. However, with Rad Studio now offering out-of-the-box styling options, there is no longer a need for this project to continue.`
 
 `Thank you for your support and understanding.`
 
